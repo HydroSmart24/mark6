@@ -8,20 +8,21 @@ import IconButton from '../components/Buttons/IconButton';
 import BasicContainer from '../components/Containers/BasicContainer';
 import Prediction from '../components/PredictConumption/PredictConsumpGraph';
 
-
 export default function TabOneScreen() {
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
-      <BasicContainer style={styles.basicContainer} height={300}> 
+      <BasicContainer style={styles.basicContainer} height={230}> 
         <View style={styles.rowContainer}>
           <View style={styles.leftColumn}>
-            <HomeFilterHealth size={90} value={30} />
+            <View style={styles.homeFilterHealthWrapper}>
+              <HomeFilterHealth size={113} value={30} />
+            </View>
+            <WaterQuality title="Water Quality" style={styles.waterQualityButton} />
           </View>
           <View style={styles.rightColumn}>
-            <TankLevel size={160} />
+            <TankLevel size={150} />
           </View>
         </View>
-        <WaterQuality title="Water Quality" style={styles.waterQualityButton} />
       </BasicContainer>
       
       <View style={styles.buttonRow}>
@@ -42,7 +43,7 @@ const styles = StyleSheet.create({
     paddingVertical: 100,
   },
   basicContainer: {
-    width: '80%', 
+    width: '85%', 
     marginBottom: 20, 
   },
   rowContainer: {
@@ -52,13 +53,21 @@ const styles = StyleSheet.create({
   },
   leftColumn: {
     flex: 1,
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     alignItems: 'flex-start',
   },
   rightColumn: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'flex-end',
+    marginLeft: 20, // Adjust margin as needed
+  },
+  homeFilterHealthWrapper: {
+    marginBottom: 2, // Reduced margin to bring HomeFilterHealth closer to WaterQuality
+  },
+  waterQualityButton: {
+    marginTop: 5, // Reduced space between HomeFilterHealth and WaterQuality
+    width: '100%', // Adjust width to fit the column
   },
   buttonRow: {
     flexDirection: 'row',
@@ -70,12 +79,6 @@ const styles = StyleSheet.create({
   },
   buttonSpacing: {
     marginLeft: 25, 
-  },
-  waterQualityButton: {
-    width: '90%',
-  },
-  touchable: {
-    width: '100%', // Ensure the TouchableOpacity takes the full width of its container
   },
   prediction: {
     marginTop: 50, 

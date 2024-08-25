@@ -6,13 +6,17 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import HomeScreen from './Screens/index';
 import DebrisMainScreen from './Screens/Debris/DebrisMain';
 import DetectScreen from './Screens/Debris/DetectScreen';
+import AuthScreen from './Screens/Auth/AuthScreen'; // Import AuthScreen
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import { onAuthStateChanged, User } from 'firebase/auth';
+import { auth } from './firebase/firebaseConfig'; // Import your Firebase config
 
 type RootStackParamList = {
   index: undefined;
   main: undefined;
   DebrisMain: undefined;
   DetectScreen: undefined;
+  AuthScreen: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -97,16 +101,39 @@ function MainDrawerNavigator() {
 }
 
 export default function App() {
+  const [user, setUser] = React.useState<User | null>(null);
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+      setLoading(false);
+    });
+
+    return unsubscribe; // Cleanup the subscription on unmount
+  }, []);
+
+  if (loading) {
+    // You can add a loading indicator here if needed
+    return null;
+  }
+
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="index">
-        <Stack.Screen
-          name="index"
-          component={MainDrawerNavigator}
-          options={{ headerShown: false }} // Hide the header for the drawer navigator
-        />
-        <Stack.Screen name="DebrisMain" component={DebrisMainScreen} />
-        <Stack.Screen name="DetectScreen" component={DetectScreen} />
+      <Stack.Navigator initialRouteName="AuthScreen">
+        {user ? (
+          <Stack.Screen
+            name="index"
+            component={MainDrawerNavigator}
+            options={{ headerShown: false }}
+          />
+        ) : (
+          <Stack.Screen
+            name="AuthScreen"
+            component={AuthScreen}
+            options={{ headerShown: false }} // You can choose to show or hide the header
+          />
+        )}
       </Stack.Navigator>
     </NavigationContainer>
   );
