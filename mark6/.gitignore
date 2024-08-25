@@ -34,5 +34,8 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 
+#firebaseConfig
+firebase/firebaseConfig.js
+
 # package-lock.json
 package-lock.json
