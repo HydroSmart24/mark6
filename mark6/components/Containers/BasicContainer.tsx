@@ -19,7 +19,7 @@ const BasicContainer: React.FC<ContainerProps> = ({ children, style, height }) =
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    paddingHorizontal: 50,
+    paddingHorizontal: 20,
     backgroundColor: '#fff', // Default background color
     borderWidth: 2, // Width of the border
     borderColor: '#ddd', // Color of the border

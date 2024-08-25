@@ -1,5 +1,5 @@
-
-
+import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
+import { db } from "../firebase/firebaseConfig";
 import { calcVolume } from './CalcVolume.js';
 
 export const fetchAverageDistance = async (printedAverage) => {
