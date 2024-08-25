@@ -1,7 +1,7 @@
 export const fetchPredictions = async () => {
     try {
       console.log('Fetching predictions...');
-      const response = await fetch('http://172.28.4.68:5000/predict'); // Replace with your local IP address
+      const response = await fetch('http://54.211.80.185:5000/predict'); 
       console.log('Response received', response);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
