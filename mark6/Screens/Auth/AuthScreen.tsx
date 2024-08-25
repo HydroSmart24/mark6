@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import { View, TextInput, Text, TouchableOpacity, Image, StyleSheet, Alert } from 'react-native';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../firebase/firebaseConfig'; // Adjust the path according to your project structure
+import { auth } from '../../firebase/firebaseConfig'; // Ensure this path is correct
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 
 // Define your navigation types
 type RootStackParamList = {
-  'Auth/AuthScreen': undefined;
-  '(tabs)': undefined;
+  'AuthScreen': undefined;
+  'index': undefined;
 };
 
-type AuthScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Auth/AuthScreen'>;
+type AuthScreenNavigationProp = StackNavigationProp<RootStackParamList, 'AuthScreen'>;
 
 export default function AuthScreen() {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -25,11 +25,10 @@ export default function AuthScreen() {
     if (isSignUp) {
       createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
-          const user = userCredential.user;
           Alert.alert('Success', 'Account created successfully!');
           navigation.reset({
             index: 0,
-            routes: [{ name: '(tabs)' }],
+            routes: [{ name: 'index' }], // Navigate to the main screen after signup
           });
         })
         .catch((error) => {
@@ -38,11 +37,10 @@ export default function AuthScreen() {
     } else {
       signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
-          const user = userCredential.user;
           Alert.alert('Success', 'Logged in successfully!');
           navigation.reset({
             index: 0,
-            routes: [{ name: '(tabs)' }],
+            routes: [{ name: 'index' }], // Navigate to the main screen after login
           });
         })
         .catch((error) => {
