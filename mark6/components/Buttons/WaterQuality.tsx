@@ -33,7 +33,7 @@ const WaterQuality: React.FC<ButtonProps> = ({ title, style }) => {
 const styles = StyleSheet.create({
   button: {
     backgroundColor: '#4299E1',
-    paddingVertical: 8,
+    paddingVertical: 5,
     paddingHorizontal: 16,
     borderRadius: 4,
     borderBottomWidth: 4,
