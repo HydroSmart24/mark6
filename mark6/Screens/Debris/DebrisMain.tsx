@@ -14,7 +14,7 @@ export default function DebrisMainScreen() {
   return (
     <ScrollView style={styles.scrollContainer}>
       <View style={styles.innerContainer}>
-        <HalfPremium size={200} value={2} marginTop={50} marginBottom={-50} />
+        <HalfPremium size={200} value={15} marginTop={50} marginBottom={-50} />
         <ReusableText text={`Estimated Filter Expiry Date: ${estimatedExpiryDate}`} color="#9B9A9A" size={15} opacity={20} />
         
         <View style={styles.gaugeContainer}>
