@@ -37,6 +37,7 @@ function MainTabNavigator() {
         name="Home"
         component={HomeScreen}
         options={{
+          headerShown: false,
           tabBarLabel: 'Home',
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="home" color={color} size={size} />
@@ -47,6 +48,7 @@ function MainTabNavigator() {
         name="DebrisMain"
         component={DebrisMainScreen}
         options={{
+          headerShown: false,
           tabBarLabel: 'Debris',
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="water" color={color} size={size} />
@@ -57,6 +59,7 @@ function MainTabNavigator() {
         name="DetectScreen"
         component={DetectScreen}
         options={{
+          headerShown: false,
           tabBarLabel: 'Detect',
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="magnify" color={color} size={size} />
@@ -82,7 +85,7 @@ function MainDrawerNavigator() {
   return (
     <Drawer.Navigator initialRouteName="index">
       <Drawer.Screen
-        name="HomeTabs"
+        name="Home Screen"
         component={MainTabNavigator}
         options={{
           drawerLabel: 'Home',
@@ -92,7 +95,7 @@ function MainDrawerNavigator() {
         }}
       />
       <Drawer.Screen
-        name="DebrisMain"
+        name="Debris Screen"
         component={DebrisMainScreen}
         options={{
           drawerLabel: 'Debris Main',
