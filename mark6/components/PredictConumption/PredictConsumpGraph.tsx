@@ -1,21 +1,32 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Dimensions, ScrollView } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
-import { fetchPredictions } from '../../utils/FetchPredictions'; // Make sure to adjust the import path
+import { calculateFutureTankVolumes } from '../../utils/FutureTankVolumes'; // Adjust the import path as necessary
 
 const { width } = Dimensions.get('window');
 
+// Define types for the fetched data
+interface VolumeData {
+  date: string;
+  volume: number;
+}
+
 export default function Prediction({ style = {} }) {
-  const [data, setData] = useState({ labels: [], values: [] });
-  const [days, setDays] = useState(0);
+  const [data, setData] = useState<{ labels: string[]; values: number[] }>({ labels: [], values: [] });
+  const [days, setDays] = useState<number>(0);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const loadPredictions = async () => {
+    const loadFutureVolumes = async () => {
       try {
-        const result = await fetchPredictions();
-        setData({ labels: result.labels, values: result.values });
-        setDays(result.days);
+        const futureVolumes: VolumeData[] | null = await calculateFutureTankVolumes();
+        
+        if (futureVolumes) {
+          const labels = futureVolumes.map(item => item.date);
+          const values = futureVolumes.map(item => item.volume);
+          setData({ labels, values });
+          setDays(futureVolumes.length);
+        }
       } catch (error) {
         if (error instanceof Error) {
           setError(error.message);
@@ -25,7 +36,7 @@ export default function Prediction({ style = {} }) {
       }
     };
 
-    loadPredictions();
+    loadFutureVolumes();
   }, []);
 
   return (
@@ -44,9 +55,9 @@ export default function Prediction({ style = {} }) {
               labels: data.labels,
               datasets: [
                 {
-                  data: data.values
-                }
-              ]
+                  data: data.values,
+                },
+              ],
             }}
             width={data.labels.length * 60} // Dynamic width based on number of labels
             height={180} // Height of the chart
