@@ -1,37 +1,52 @@
-import React, { useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, Animated, Easing } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { View, StyleSheet, Animated, Easing, Text } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
 
 interface HomeFilterHealthProps {
   size?: number;
-  value?: number; // The dynamic value to be passed, optional
+  value?: number;
 }
 
 const HomeFilterHealth: React.FC<HomeFilterHealthProps> = ({ size = 80, value = 0 }) => {
-  const adjustedSize = size / 2; // Adjust to scale the SVG correctly
-  const strokeWidth = 2; // Fixed stroke width since we're working within a fixed viewBox
-  const circleRadius = 16; // Radius is fixed according to the viewBox
-  const progressStrokeWidth = 2; // Define the progress stroke width
-  const circumference = 2 * Math.PI * circleRadius; // Calculate the circumference of the circle
+  const adjustedSize = size / 2;
+  const strokeWidth = 2;
+  const circleRadius = 16;
+  const progressStrokeWidth = 2;
+  const circumference = 2 * Math.PI * circleRadius;
 
-  // Initialize animated value with 0 to ensure animation starts from 0
   const animatedValue = useRef(new Animated.Value(0)).current;
+  const animatedTextValue = useRef(new Animated.Value(0)).current;
 
-  // Interpolating the animated value to get the strokeDashoffset
   const strokeDashoffset = animatedValue.interpolate({
     inputRange: [0, 100],
-    outputRange: [circumference,circumference/2],
+    outputRange: [circumference, circumference / 2],
   });
 
-  // Animation effect
+  const [formattedValue, setFormattedValue] = useState('0%');
+
   useEffect(() => {
-    animatedValue.setValue(0); // Reset the animation to start from 0
+    animatedValue.setValue(0);
+    animatedTextValue.setValue(0);
+
     Animated.timing(animatedValue, {
       toValue: value,
       duration: 2000,
       easing: Easing.ease,
-      useNativeDriver: false, // `false` because `strokeDashoffset` is not supported by native driver
+      useNativeDriver: false,
     }).start();
+
+    Animated.timing(animatedTextValue, {
+      toValue: value,
+      duration: 2000,
+      easing: Easing.ease,
+      useNativeDriver: false,
+    }).start();
+
+    animatedTextValue.addListener(({ value }) => {
+      setFormattedValue(`${Math.round(value)}%`);
+    });
+
+    return () => animatedTextValue.removeAllListeners();
   }, [value]);
 
   return (
@@ -40,27 +55,25 @@ const HomeFilterHealth: React.FC<HomeFilterHealthProps> = ({ size = 80, value = 
         width={size}
         height={size}
         viewBox="0 0 36 36"
-        style={{ transform: [{ rotate: '180deg' }] }} // Rotate the SVG
+        style={{ transform: [{ rotate: '180deg' }] }}
       >
-        {/* Background Circle (Gauge) */}
         <Circle
           cx="18"
           cy="18"
           r={circleRadius}
           fill="none"
-          stroke="#E0E7FF" // equivalent to blue-100
+          stroke="#E0E7FF"
           strokeWidth={strokeWidth}
           strokeDasharray={circumference}
-          strokeDashoffset={circumference / 2} // Half circle
+          strokeDashoffset={circumference / 2}
           strokeLinecap="round"
         />
-        {/* Gauge Progress */}
         <AnimatedCircle
           cx="18"
           cy="18"
           r={circleRadius}
           fill="none"
-          stroke="#2563EB" // equivalent to blue-600
+          stroke="#2563EB"
           strokeWidth={progressStrokeWidth}
           strokeDasharray={circumference}
           strokeDashoffset={strokeDashoffset}
@@ -68,27 +81,25 @@ const HomeFilterHealth: React.FC<HomeFilterHealthProps> = ({ size = 80, value = 
         />
       </Svg>
 
-      {/* Value Text */}
       <View
         style={{
           ...styles.valueContainer,
-          top: adjustedSize * 0.8, // Adjust based on size
+          top: adjustedSize * 0.8,
           left: '50%',
           transform: [
-            { translateX: -(adjustedSize * 0.35) },
-            { translateY: -(adjustedSize * 0.35) },
+            { translateX: -adjustedSize * 0.95 }, // Adjust horizontal centering
+            { translateY: -adjustedSize * 1.05 }, // Adjust vertical centering
           ],
         }}
       >
-        <Text style={{ ...styles.valueText, fontSize: adjustedSize * 0.4 }}>{value}%</Text>
-        
+        <Text style={{ ...styles.valueText, fontSize: adjustedSize * 0.4 }}>
+          {formattedValue}
+        </Text>
       </View>
-      
     </View>
   );
 };
 
-// Creating an Animated version of the Circle component
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 const styles = StyleSheet.create({
@@ -99,13 +110,13 @@ const styles = StyleSheet.create({
     position: 'absolute',
     alignItems: 'center',
     justifyContent: 'center',
+    width: '100%',
+    height: '100%',
   },
   valueText: {
     fontWeight: 'bold',
-    color: '#2563EB', // equivalent to text-blue-600
-  },
-  labelText: {
-    color: '#2563EB', // equivalent to text-blue-600
+    color: '#2563EB',
+    textAlign: 'center',
   },
 });
 
