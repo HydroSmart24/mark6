@@ -13,6 +13,7 @@ import { onAuthStateChanged, User } from 'firebase/auth';
 import { auth } from './firebase/firebaseConfig'; // Import your Firebase config
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
+import AvailableScreen from './Screens/Consumption/Available';
 
 // Define the types for your navigation stack
 type RootStackParamList = {
@@ -21,6 +22,7 @@ type RootStackParamList = {
   DebrisMain: undefined;
   DetectScreen: undefined;
   AuthScreen: undefined;
+  AvailableScreen: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -61,6 +63,16 @@ function MainTabNavigator() {
           ),
         }}
       />
+      <Tab.Screen
+        name="AvailableScreen"
+        component={AvailableScreen}
+        options={{
+          tabBarLabel: 'Available',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="water" color={color} size={size} />
+          ),
+        }}
+        />
     </Tab.Navigator>
   );
 }
