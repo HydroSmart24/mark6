@@ -22,6 +22,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "2c1fed33-46da-43d6-83e4-5bd4f6646c10"
+      }
+    },
+    "owner": "disarasandali"
   }
 }
