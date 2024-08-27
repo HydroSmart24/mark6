@@ -1,15 +1,6 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, ViewStyle } from 'react-native';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-// Define the type for the navigation prop
-type RootStackParamList = {
-  DetectScreen: undefined;
-};
-
-type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 interface ButtonProps {
   title: string;
@@ -18,17 +9,13 @@ interface ButtonProps {
 
 
 
-const DetectDebris: React.FC<ButtonProps> = ({ title, style }) => {
+const ResetFilter: React.FC<ButtonProps> = ({ title, style }) => {
 
-  const navigation = useNavigation<NavigationProp>();
-
-  const handlePress = () => {
-    navigation.navigate("DetectScreen"); // Navigate to the desired screen
-  };
+ 
 
   return (
     
-    <TouchableOpacity style={[styles.button, style]} onPress={handlePress}>
+    <TouchableOpacity style={[styles.button, style]}>
       <Text style={styles.buttonText}>{title}</Text>
     </TouchableOpacity>
     
@@ -53,5 +40,5 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DetectDebris;
+export default ResetFilter;
 

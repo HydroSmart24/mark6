@@ -17,41 +17,44 @@ const PhGauge: React.FC<PhGaugeProps> = ({ size = 80, value = 0 }) => {
   // Initialize animated value with 0 to ensure animation starts from 0
   const animatedValue = useRef(new Animated.Value(0)).current;
 
+  // Reverse value mapping: 0 -> 10, 1 -> 9, ..., 4 -> 6
+  const mappedValue = 10 - value; // Reverse mapping logic
+
   // Interpolating the animated value to get the strokeDashoffset
   const strokeDashoffset = animatedValue.interpolate({
-    inputRange: [0, 100],
-    outputRange: [circumference * 1, circumference * 0.25], // Adjusted for 3/4 circle
+    inputRange: [0, 10], // Adjusted range
+    outputRange: [circumference * 1, circumference * 0.25], // Reversed range
   });
 
   // Determine the color based on the value
-  let strokeColor = '#10B981'; // default to green
-  let innerStrokeColor = '#D1FAE5'; // default to green - 100
-  let centerText = 'Good'; // default to good
+  let strokeColor = '#10B981'; // default to red (Bad)
+  let innerStrokeColor = '#D1FAE5'; // default to red - 100 (Bad)
+  let centerText = 'Good'; // default to bad
 
-  if (value > 25 && value <= 50) {
-    strokeColor = '#FBBF24'; // yellow
+  if (mappedValue > 7.5 && mappedValue <= 5) {
+    strokeColor = '#FBBF24'; // orange
     innerStrokeColor = '#FEF3C7';
-    centerText = 'Good';
-  } else if (value > 50 && value <= 75) {
-    strokeColor = '#F97316'; // orange
+    centerText = 'Mid';
+  } else if (mappedValue > 5 && mappedValue <= 7.5) {
+    strokeColor = '#F97316'; // yellow
     innerStrokeColor = '#FFEDD5';
-    centerText = 'Bad';
-  } else if (value > 75) {
-    strokeColor = '#DC2626'; // red
+    centerText = 'Mid';
+  } else if (mappedValue > 2.5) {
+    strokeColor = '#DC2626'; // green
     innerStrokeColor = '#FEE2E2';
-    centerText = 'Bad';
+    centerText = 'Bad'; // Good
   }
 
   // Animation effect
   useEffect(() => {
     animatedValue.setValue(0); // Reset the animation to start from 0
     Animated.timing(animatedValue, {
-      toValue: value,
+      toValue: mappedValue,
       duration: 2000,
       easing: Easing.ease,
       useNativeDriver: false, // `false` because `strokeDashoffset` is not supported by native driver
     }).start();
-  }, [value]);
+  }, [mappedValue]);
 
   return (
     <View style={{ ...styles.container, width: size, height: size }}>

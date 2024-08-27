@@ -33,6 +33,11 @@ const HalfPremium: React.FC<HalfPremiumProps> = ({
 
   const [formattedValue, setFormattedValue] = useState('0%');
 
+  // Determine colors based on value
+  const circleStrokeColor = value <= 20 ? '#FEE2E2' : '#E0E7FF'; // red-100 or blue-100
+  const progressStrokeColor = value <= 20 ? '#DC2626' : '#2563EB'; // red-600 or blue-600
+  const textColor = value <= 20 ? '#DC2626' : '#2563EB'; // red-600 or blue-600
+
   useEffect(() => {
     animatedValue.setValue(0);
     animatedTextValue.setValue(0);
@@ -82,7 +87,7 @@ const HalfPremium: React.FC<HalfPremiumProps> = ({
           cy="18"
           r={circleRadius}
           fill="none"
-          stroke="#E0E7FF" // equivalent to blue-100
+          stroke={circleStrokeColor} // Conditionally set stroke color
           strokeWidth={strokeWidth}
           strokeDasharray={circumference}
           strokeDashoffset={circumference / 2} // Half circle
@@ -94,7 +99,7 @@ const HalfPremium: React.FC<HalfPremiumProps> = ({
           cy="18"
           r={circleRadius}
           fill="none"
-          stroke="#2563EB" // equivalent to blue-600
+          stroke={progressStrokeColor} // Conditionally set stroke color
           strokeWidth={progressStrokeWidth}
           strokeDasharray={circumference}
           strokeDashoffset={strokeDashoffset}
@@ -114,10 +119,10 @@ const HalfPremium: React.FC<HalfPremiumProps> = ({
           ],
         }}
       >
-        <Text style={{ ...styles.valueText, fontSize: adjustedSize * 0.4 }}>
+        <Text style={{ ...styles.valueText, fontSize: adjustedSize * 0.4, color: textColor }}>
           {formattedValue}
         </Text>
-        <Text style={{ ...styles.labelText, fontSize: adjustedSize * 0.2 }}>
+        <Text style={{ ...styles.labelText, fontSize: adjustedSize * 0.2, color: textColor }}>
           Filter Health
         </Text>
       </View>
@@ -141,11 +146,9 @@ const styles = StyleSheet.create({
   },
   valueText: {
     fontWeight: 'bold',
-    color: '#2563EB', // equivalent to text-blue-600
     textAlign: 'center',
   },
   labelText: {
-    color: '#2563EB', // equivalent to text-blue-600
     textAlign: 'center',
   },
 });
