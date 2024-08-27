@@ -1,16 +1,19 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import TankLevel from '../../components/AvailableTank/TankLevel'; // Adjust the path based on your file structure
+import { View, StyleSheet } from 'react-native';
+import TankLevel from '../../components/AvailableTank/TankLevel';
+import DailyConsumption from '../../components/Consumption/DaillyConsumption';
 
 export default function AvailableScreen() {
+ 
     return (
         <View style={styles.container}>
             <View style={styles.tankLevelContainer}>
                 <TankLevel />
             </View>
-            <View style={styles.infoContainer}>
-                <Text style={styles.infoText}>Water consumption for 26th Aug</Text>
+            <View style={styles.consumptionContainer}>
+                <DailyConsumption date="27th Aug" amount={12} />
             </View>
+            
         </View>
     );
 }
@@ -18,26 +21,19 @@ export default function AvailableScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'space-between', // Space between TankLevel and the info box
+        justifyContent: 'flex-start',
         alignItems: 'center',
-        backgroundColor: '#f5f5f5', // Optional: Set a background color for the screen
-        paddingVertical: 20, // Add some padding to top and bottom
+        backgroundColor: '#f5f5f5',
+        paddingVertical: 20,
     },
     tankLevelContainer: {
         width: '100%',
-        alignItems: 'center', // Center the TankLevel horizontally
-        marginBottom: 20, // Optional: Add some space below the TankLevel
+        alignItems: 'center',
+        marginBottom: 30,
     },
-    infoContainer: {
-        width: '85%', // Set width to 85% of the screen
-        backgroundColor: '#007BA7', // Background color for the rectangle
-        padding: 15, // Add some padding inside the rectangle
-        borderRadius: 10, // Optional: Add rounded corners
-        alignItems: 'center', // Center the text horizontally
+    consumptionContainer: {
+        width: '100%',
+        alignItems: 'center',
     },
-    infoText: {
-        color: 'white', // Text color
-        fontSize: 16, // Text size
-        fontWeight: 'bold', // Make the text bold
-    },
+    
 });

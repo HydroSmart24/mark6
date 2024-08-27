@@ -6,7 +6,7 @@ import WaterQuality from '../components/Buttons/WaterQuality';
 import RequestWaterButton from '../components/Buttons/RequestWaterButton';
 import IconButton from '../components/Buttons/IconButton';
 import BasicContainer from '../components/Containers/BasicContainer';
-import Prediction from '../components/PredictConumption/PredictConsumpGraph';
+import Prediction from '../components/Graph/PredictConsumpGraph';
 
 export default function TabOneScreen() {
   return (
