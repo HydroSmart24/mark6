@@ -1,7 +1,7 @@
-import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, ViewStyle } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import React from "react";
+import { TouchableOpacity, Text, StyleSheet, ViewStyle } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 // Define the type for the navigation prop
 type RootStackParamList = {
@@ -16,11 +16,10 @@ interface ButtonProps {
 }
 
 const WaterQuality: React.FC<ButtonProps> = ({ title, style }) => {
-  
   const navigation = useNavigation<NavigationProp>();
 
   const handlePress = () => {
-    navigation.navigate('DebrisMain'); // Navigate to the DebrisMain screen
+    navigation.navigate("DebrisMain"); // Navigate to the DebrisMain screen
   };
 
   return (
@@ -32,17 +31,17 @@ const WaterQuality: React.FC<ButtonProps> = ({ title, style }) => {
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: '#4299E1',
+    backgroundColor: "#4299E1",
     paddingVertical: 5,
     paddingHorizontal: 16,
     borderRadius: 4,
     borderBottomWidth: 4,
-    borderBottomColor: '#2B6CB0',
+    borderBottomColor: "#2B6CB0",
   },
   buttonText: {
-    color: '#FFF',
-    fontWeight: 'bold',
-    textAlign: 'center',
+    color: "#FFF",
+    fontWeight: "bold",
+    textAlign: "center",
   },
 });
 
