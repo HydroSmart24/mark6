@@ -20,7 +20,7 @@ export default function TabOneScreen() {
             <WaterQuality title="Water Quality" style={styles.waterQualityButton} />
           </View>
           <View style={styles.rightColumn}>
-            <TankLevel size={150} clickable={true} /> 
+            <TankLevel size={130} clickable={true} /> 
           </View>
         </View>
       </BasicContainer>
