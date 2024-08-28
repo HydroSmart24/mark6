@@ -14,9 +14,9 @@ export default function DebrisMainScreen() {
   const [isWarningVisible, setWarningVisible] = useState(false);
   const [isOnscreenAlertVisible, setOnscreenAlertVisible] = useState(false);
 
-  const halfPremiumValue = 90; // Change this value to test
+  const halfPremiumValue = 25; // Change this value to test
   const phValue = 2; // Example pH value
-  const turbidityValue = 2; // Example turbidity value
+  const turbidityValue = 7; // Example turbidity value
 
   const estimatedExpiryDate = '2024-12-31'; // Sample date
 
