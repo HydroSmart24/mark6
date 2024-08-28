@@ -9,10 +9,14 @@ import DetectScreen from './Screens/Debris/DetectScreen';
 import RequestWater from './Screens/RequestWater/RequestWater';
 import AuthScreen from './Screens/Auth/AuthScreen'; // Import AuthScreen
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import AntDesign from '@expo/vector-icons/AntDesign';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { auth } from './firebase/firebaseConfig'; // Import your Firebase config
 import AvailableScreen from './Screens/Consumption/Available';
+import ContactUs from './Screens/ContactUs';
+import AboutUs from './Screens/AboutUs';
 
 type RootStackParamList = {
   index: undefined;
@@ -20,6 +24,9 @@ type RootStackParamList = {
   DebrisMain: undefined;
   DetectScreen: undefined;
   AuthScreen: undefined;
+  AvailableScreen: undefined;
+  ContactUs: undefined;
+  AboutUs: undefined;
   RequestWater: undefined;
 };
 
@@ -71,9 +78,10 @@ function MainDrawerNavigator() {
         }}
       />
       <Drawer.Screen
-        name="Debris Screen"
+        name="DebrisScreen"
         component={DebrisMain}
         options={{
+          headerTitle: '',
           drawerLabel: 'FilterHealth',
           drawerIcon: ({ color, size }) => (
             <MaterialIcons name="health-and-safety" size={size} color={color} />
@@ -87,6 +95,28 @@ function MainDrawerNavigator() {
           drawerLabel: 'Debris Detection',
           drawerIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="smoke-detector-alert" size={size} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="ContactUs"
+        component={ContactUs}
+        options={{
+          headerTitle: '',
+          drawerLabel: 'Contact Us',
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name="call" size={size} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="AboutUs"
+        component={AboutUs}
+        options={{
+          headerTitle: '',
+          drawerLabel: 'About Us',
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name="people" size={size} color={color} />
           ),
         }}
       />
@@ -130,7 +160,10 @@ export default function App() {
             <Stack.Screen
               name="DebrisMain"
               component={DebrisMain}
-              options={{ headerShown: true }}
+              options={{ 
+                headerShown: true,
+                title: 'filter health'
+               }}
             />
             <Stack.Screen
               name="DetectScreen"

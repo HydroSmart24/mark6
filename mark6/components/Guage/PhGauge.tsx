@@ -30,19 +30,23 @@ const PhGauge: React.FC<PhGaugeProps> = ({ size = 80, value = 0 }) => {
   let strokeColor = '#10B981'; // default to red (Bad)
   let innerStrokeColor = '#D1FAE5'; // default to red - 100 (Bad)
   let centerText = 'Good'; // default to bad
-
-  if (mappedValue < 7.5 && mappedValue >= 5) {
-    strokeColor = '#FBBF24'; // orange
-    innerStrokeColor = '#FEF3C7';
-    centerText = 'Mid';
-  } else if (mappedValue < 5 && mappedValue >= 2.5) {
-    strokeColor = '#F97316'; // yellow
+  
+  if (mappedValue < 10 && mappedValue >= 7.5) {
+    strokeColor = '#10B981'; // default to red (Bad)
+    innerStrokeColor = '#D1FAE5'; // default to red - 100 (Bad)
+    centerText = 'Bad';
+  } else if (mappedValue < 7.5 && mappedValue >= 5) {
+    strokeColor = '#F97316'; // orange
     innerStrokeColor = '#FFEDD5';
     centerText = 'Mid';
-  } else if (mappedValue > 0) {
-    strokeColor = '#DC2626'; // green
-    innerStrokeColor = '#FEE2E2';
-    centerText = 'Bad'; // Good
+  } else if (mappedValue < 5 && mappedValue >= 2.5) {
+    strokeColor = '#FBBF24'; // yellow
+    innerStrokeColor = '#FEF3C7';
+    centerText = 'Mid';
+  } else if (mappedValue >= 0 && mappedValue < 2.5) {
+    strokeColor = '#10B981'; // green
+    innerStrokeColor = '#D1FAE5';
+    centerText = 'Good'; // Good
   }
 
   // Animation effect
