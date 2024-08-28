@@ -3,27 +3,27 @@ import { View, Text, StyleSheet, Animated, TouchableOpacity } from 'react-native
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { fetchAverageDistance } from '../../utils/FetchDistance';
-
+ 
 // Define the type for the navigation prop
 type RootStackParamList = {
   AvailableScreen: undefined;
 };
-
+ 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
-
+ 
 interface TankLevelProps {
   size?: number;
   style?: object;
   clickable?: boolean;
 }
-
+ 
 export default function TankLevel({ size = 200, style = {}, clickable = false }: TankLevelProps) {
   const [printedAverage, setPrintedAverage] = useState<number | null>(null);
   const [tankVolume, setTankVolume] = useState<number | null>(null);
   const animatedHeight = useRef(new Animated.Value(0)).current;
-
+ 
   const navigation = useNavigation<NavigationProp>();
-
+ 
   useEffect(() => {
     const updateData = async () => {
       const data = await fetchAverageDistance(printedAverage);
@@ -32,13 +32,13 @@ export default function TankLevel({ size = 200, style = {}, clickable = false }:
         setTankVolume(data.volume);
       }
     };
-
+ 
     updateData();
     const interval = setInterval(updateData, 180000); // 180000 ms = 3 minutes
-
+ 
     return () => clearInterval(interval); // Cleanup on unmount
   }, [printedAverage]);
-
+ 
   useEffect(() => {
     if (tankVolume !== null) {
       const fillHeight = (tankVolume / 5000) * 100;
@@ -49,13 +49,13 @@ export default function TankLevel({ size = 200, style = {}, clickable = false }:
       }).start();
     }
   }, [tankVolume]);
-
+ 
   const handlePress = () => {
     if (clickable) {
       navigation.navigate('AvailableScreen'); // Navigate to AvailableScreen if clickable
     }
   };
-
+ 
   return (
     <TouchableOpacity onPress={handlePress} disabled={!clickable}>
       <View style={[styles.circle, { width: size, height: size, borderRadius: size / 2 }, style]}>
@@ -80,7 +80,7 @@ export default function TankLevel({ size = 200, style = {}, clickable = false }:
     </TouchableOpacity>
   );
 }
-
+ 
 const styles = StyleSheet.create({
   circle: {
     borderWidth: 2,
