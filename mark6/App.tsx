@@ -6,6 +6,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import HomeScreen from './Screens/index';
 import DebrisMainScreen from './Screens/Debris/DebrisMain';
 import DetectScreen from './Screens/Debris/DetectScreen';
+import RequestWater from './Screens/RequestWater/RequestWater';
 import AuthScreen from './Screens/Auth/AuthScreen'; // Import AuthScreen
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { onAuthStateChanged, User } from 'firebase/auth';
@@ -17,6 +18,7 @@ type RootStackParamList = {
   DebrisMain: undefined;
   DetectScreen: undefined;
   AuthScreen: undefined;
+  RequestWater: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -122,11 +124,18 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="AuthScreen">
         {user ? (
-          <Stack.Screen
-            name="index"
-            component={MainDrawerNavigator}
-            options={{ headerShown: false }}
-          />
+          <>
+            <Stack.Screen
+              name="index"
+              component={MainDrawerNavigator}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="RequestWater"
+              component={RequestWater}
+              options={{ headerShown: false }}
+            />
+          </>
         ) : (
           <Stack.Screen
             name="AuthScreen"
