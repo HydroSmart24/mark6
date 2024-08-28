@@ -4,13 +4,15 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import HomeScreen from './Screens/index';
-import DebrisMainScreen from './Screens/Debris/DebrisMain';
+import DebrisMain from './Screens/Debris/DebrisMain';
 import DetectScreen from './Screens/Debris/DetectScreen';
 import RequestWater from './Screens/RequestWater/RequestWater';
 import AuthScreen from './Screens/Auth/AuthScreen'; // Import AuthScreen
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { auth } from './firebase/firebaseConfig'; // Import your Firebase config
+import AvailableScreen from './Screens/Consumption/Available';
 
 type RootStackParamList = {
   index: undefined;
@@ -39,28 +41,18 @@ function MainTabNavigator() {
           ),
         }}
       />
+      
       <Tab.Screen
-        name="DebrisMain"
-        component={DebrisMainScreen}
+        name="AvailableScreen"
+        component={AvailableScreen}
         options={{
-          headerShown: false,
-          tabBarLabel: 'Debris',
+          tabBarLabel: 'Available',
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="water" color={color} size={size} />
           ),
         }}
-      />
-      <Tab.Screen
-        name="DetectScreen"
-        component={DetectScreen}
-        options={{
-          headerShown: false,
-          tabBarLabel: 'Detect',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="magnify" color={color} size={size} />
-          ),
-        }}
-      />
+        />
+        
     </Tab.Navigator>
   );
 }
@@ -80,11 +72,11 @@ function MainDrawerNavigator() {
       />
       <Drawer.Screen
         name="Debris Screen"
-        component={DebrisMainScreen}
+        component={DebrisMain}
         options={{
-          drawerLabel: 'Debris Main',
+          drawerLabel: 'FilterHealth',
           drawerIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="water" color={color} size={size} />
+            <MaterialIcons name="health-and-safety" size={size} color={color} />
           ),
         }}
       />
@@ -92,9 +84,9 @@ function MainDrawerNavigator() {
         name="DetectScreen"
         component={DetectScreen}
         options={{
-          drawerLabel: 'Detect Screen',
+          drawerLabel: 'Debris Detection',
           drawerIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="magnify" color={color} size={size} />
+            <MaterialCommunityIcons name="smoke-detector-alert" size={size} color={color} />
           ),
         }}
       />
@@ -135,6 +127,16 @@ export default function App() {
               component={RequestWater}
               options={{ headerShown: false }}
             />
+            <Stack.Screen
+              name="DebrisMain"
+              component={DebrisMain}
+              options={{ headerShown: true }}
+            />
+            <Stack.Screen
+              name="DetectScreen"
+              component={DetectScreen}
+              options={{ headerShown: true }}
+            />
           </>
         ) : (
           <Stack.Screen
@@ -146,4 +148,5 @@ export default function App() {
       </Stack.Navigator>
     </NavigationContainer>
   );
+  
 }

@@ -1,12 +1,12 @@
 import React from 'react';
-import { StyleSheet, View, ScrollView, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, ScrollView } from 'react-native';
 import TankLevel from '../components/AvailableTank/TankLevel';
 import HomeFilterHealth from '../components/Guage/HomeFilterHealth';
 import WaterQuality from '../components/Buttons/WaterQuality';
 import RequestWaterButton from '../components/Buttons/RequestWaterButton';
 import IconButton from '../components/Buttons/IconButton';
 import BasicContainer from '../components/Containers/BasicContainer';
-import Prediction from '../components/PredictConumption/PredictConsumpGraph';
+import Prediction from '../components/Graph/PredictConsumpGraph';
 
 export default function TabOneScreen() {
   return (
@@ -15,12 +15,12 @@ export default function TabOneScreen() {
         <View style={styles.rowContainer}>
           <View style={styles.leftColumn}>
             <View style={styles.homeFilterHealthWrapper}>
-              <HomeFilterHealth size={113} value={30} />
+              <HomeFilterHealth size={113} value={10} />
             </View>
             <WaterQuality title="Water Quality" style={styles.waterQualityButton} />
           </View>
           <View style={styles.rightColumn}>
-            <TankLevel size={150} />
+            <TankLevel size={130} clickable={true} /> 
           </View>
         </View>
       </BasicContainer>
@@ -44,7 +44,8 @@ const styles = StyleSheet.create({
   },
   basicContainer: {
     width: '85%', 
-    marginBottom: 20, 
+    height: 200,
+    marginBottom: 10, 
   },
   rowContainer: {
     flexDirection: 'row',
@@ -60,21 +61,22 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'flex-end',
-    marginLeft: 20, // Adjust margin as needed
+    marginLeft: 20, 
   },
   homeFilterHealthWrapper: {
-    marginBottom: 2, // Reduced margin to bring HomeFilterHealth closer to WaterQuality
+    marginBottom: 10, // Increase or decrease to adjust the gap
+    marginLeft: 8, // Increase or decrease to adjust the gap
   },
   waterQualityButton: {
-    marginTop: 5, // Reduced space between HomeFilterHealth and WaterQuality
-    width: '100%', // Adjust width to fit the column
+    marginTop: -20, // Increase or decrease to adjust the gap
+    width: '100%', 
   },
   buttonRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     width: '100%',
-    paddingHorizontal: 45, 
+    paddingHorizontal: 40, 
     marginTop: 20, 
   },
   buttonSpacing: {

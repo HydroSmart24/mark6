@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, Animated, Easing } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { View, StyleSheet, Animated, Easing, Text } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
 
 interface HalfPremiumProps {
@@ -21,8 +21,9 @@ const HalfPremium: React.FC<HalfPremiumProps> = ({
   const progressStrokeWidth = 1; // Define the progress stroke width
   const circumference = 2 * Math.PI * circleRadius; // Calculate the circumference of the circle
 
-  // Initialize animated value with 0 to ensure animation starts from 0
+  // Initialize animated values
   const animatedValue = useRef(new Animated.Value(0)).current;
+  const animatedTextValue = useRef(new Animated.Value(0)).current;
 
   // Interpolating the animated value to get the strokeDashoffset
   const strokeDashoffset = animatedValue.interpolate({
@@ -30,15 +31,38 @@ const HalfPremium: React.FC<HalfPremiumProps> = ({
     outputRange: [circumference, circumference / 2],
   });
 
-  // Animation effect
+  const [formattedValue, setFormattedValue] = useState('0%');
+
+  // Determine colors based on value
+  const circleStrokeColor = value <= 20 ? '#FEE2E2' : '#E0E7FF'; // red-100 or blue-100
+  const progressStrokeColor = value <= 20 ? '#DC2626' : '#2563EB'; // red-600 or blue-600
+  const textColor = value <= 20 ? '#DC2626' : '#2563EB'; // red-600 or blue-600
+
   useEffect(() => {
-    animatedValue.setValue(0); // Reset the animation to start from 0
+    animatedValue.setValue(0);
+    animatedTextValue.setValue(0);
+
     Animated.timing(animatedValue, {
       toValue: value,
       duration: 2000,
       easing: Easing.ease,
-      useNativeDriver: false, // `false` because `strokeDashoffset` is not supported by native driver
+      useNativeDriver: false,
     }).start();
+
+    Animated.timing(animatedTextValue, {
+      toValue: value,
+      duration: 2000,
+      easing: Easing.ease,
+      useNativeDriver: false,
+    }).start();
+
+    // Update formattedValue whenever animatedTextValue changes
+    animatedTextValue.addListener(({ value }) => {
+      setFormattedValue(`${Math.round(value)}%`);
+    });
+
+    // Cleanup listener on unmount
+    return () => animatedTextValue.removeAllListeners();
   }, [value]);
 
   return (
@@ -63,7 +87,7 @@ const HalfPremium: React.FC<HalfPremiumProps> = ({
           cy="18"
           r={circleRadius}
           fill="none"
-          stroke="#E0E7FF" // equivalent to blue-100
+          stroke={circleStrokeColor} // Conditionally set stroke color
           strokeWidth={strokeWidth}
           strokeDasharray={circumference}
           strokeDashoffset={circumference / 2} // Half circle
@@ -75,7 +99,7 @@ const HalfPremium: React.FC<HalfPremiumProps> = ({
           cy="18"
           r={circleRadius}
           fill="none"
-          stroke="#2563EB" // equivalent to blue-600
+          stroke={progressStrokeColor} // Conditionally set stroke color
           strokeWidth={progressStrokeWidth}
           strokeDasharray={circumference}
           strokeDashoffset={strokeDashoffset}
@@ -90,13 +114,17 @@ const HalfPremium: React.FC<HalfPremiumProps> = ({
           top: adjustedSize * 0.8, // Adjust based on size
           left: '50%',
           transform: [
-            { translateX: -(adjustedSize * 0.52) },
-            { translateY: -(adjustedSize * 0.50) },
+            { translateX: -adjustedSize * 1 },
+            { translateY: -adjustedSize * 1 },
           ],
         }}
       >
-        <Text style={{ ...styles.valueText, fontSize: adjustedSize * 0.4 }}>{value}%</Text>
-        <Text style={{ ...styles.labelText, fontSize: adjustedSize * 0.2 }}>Filter Health</Text>
+        <Text style={{ ...styles.valueText, fontSize: adjustedSize * 0.4, color: textColor }}>
+          {formattedValue}
+        </Text>
+        <Text style={{ ...styles.labelText, fontSize: adjustedSize * 0.2, color: textColor }}>
+          Filter Health
+        </Text>
       </View>
     </View>
   );
@@ -113,13 +141,15 @@ const styles = StyleSheet.create({
     position: 'absolute',
     alignItems: 'center',
     justifyContent: 'center',
+    width: '100%',
+    height: '100%',
   },
   valueText: {
     fontWeight: 'bold',
-    color: '#2563EB', // equivalent to text-blue-600
+    textAlign: 'center',
   },
   labelText: {
-    color: '#2563EB', // equivalent to text-blue-600
+    textAlign: 'center',
   },
 });
 

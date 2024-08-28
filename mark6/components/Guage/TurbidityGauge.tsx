@@ -14,29 +14,32 @@ const TurbidityGauge: React.FC<TurbidityGaugeProps> = ({ size = 80, value = 0 })
   const progressStrokeWidth = 2; // Define the progress stroke width
   const circumference = 2 * Math.PI * circleRadius; // Calculate the circumference of the circle
 
+  // Limit the value to a maximum of 10
+  const limitedValue = Math.min(value, 10);
+
   // Initialize animated value with 0 to ensure animation starts from 0
   const animatedValue = useRef(new Animated.Value(0)).current;
 
   // Interpolating the animated value to get the strokeDashoffset
   const strokeDashoffset = animatedValue.interpolate({
-    inputRange: [0, 100],
+    inputRange: [0, 10],
     outputRange: [circumference * 1, circumference * 0.25], // Adjusted for 3/4 circle
   });
 
-  // Determine the color based on the value
+  // Determine the color based on the limited value
   let strokeColor = '#10B981'; // default to green
   let innerStrokeColor = '#D1FAE5'; // default to green - 100
   let centerText = 'Good'; // default to good
 
-  if (value > 25 && value <= 50) {
+  if (limitedValue > 2.5 && limitedValue <= 5) {
     strokeColor = '#FBBF24'; // yellow
     innerStrokeColor = '#FEF3C7';
-    centerText = 'Good';
-  } else if (value > 50 && value <= 75) {
+    centerText = 'Mid';
+  } else if (limitedValue > 5 && limitedValue <= 7.5) {
     strokeColor = '#F97316'; // orange
     innerStrokeColor = '#FFEDD5';
-    centerText = 'Bad';
-  } else if (value > 75) {
+    centerText = 'Mid';
+  } else if (limitedValue > 7.5) {
     strokeColor = '#DC2626'; // red
     innerStrokeColor = '#FEE2E2';
     centerText = 'Bad';
@@ -46,12 +49,12 @@ const TurbidityGauge: React.FC<TurbidityGaugeProps> = ({ size = 80, value = 0 })
   useEffect(() => {
     animatedValue.setValue(0); // Reset the animation to start from 0
     Animated.timing(animatedValue, {
-      toValue: value,
+      toValue: limitedValue,
       duration: 2000,
       easing: Easing.ease,
       useNativeDriver: false, // `false` because `strokeDashoffset` is not supported by native driver
     }).start();
-  }, [value]);
+  }, [limitedValue]);
 
   return (
     <View style={{ ...styles.container, width: size, height: size }}>
