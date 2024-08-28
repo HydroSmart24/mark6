@@ -18,6 +18,8 @@ import { auth } from './firebase/firebaseConfig'; // Import your Firebase config
 import AvailableScreen from './Screens/Consumption/Available';
 import ContactUs from './Screens/ContactUs';
 import AboutUs from './Screens/AboutUs';
+import OrderHistory from "./Screens/Crowdsourcing/OrderHistory";
+
 
 type RootStackParamList = {
   index: undefined;
@@ -26,6 +28,7 @@ type RootStackParamList = {
   DetectScreen: undefined;
   AuthScreen: undefined;
   AvailableScreen: undefined;
+  OrderHistory: undefined;
   ContactUs: undefined;
   AboutUs: undefined;
   RequestWater: undefined;
@@ -43,7 +46,7 @@ function MainTabNavigator() {
         component={HomeScreen}
         options={{
           headerShown: false,
-          tabBarLabel: 'Home',
+          tabBarLabel: "Home",
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="home" color={color} size={size} />
           ),
@@ -54,7 +57,7 @@ function MainTabNavigator() {
         name="AvailableScreen"
         component={AvailableScreen}
         options={{
-          tabBarLabel: 'Available',
+          tabBarLabel: "Available",
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="water" color={color} size={size} />
           ),
@@ -72,7 +75,7 @@ function MainDrawerNavigator() {
         name="Home Screen"
         component={MainTabNavigator}
         options={{
-          drawerLabel: 'Home',
+          drawerLabel: "Home",
           drawerIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="home" color={color} size={size} />
           ),
@@ -100,6 +103,17 @@ function MainDrawerNavigator() {
         }}
       />
       <Drawer.Screen
+        name="OrderHistory"
+        component={OrderHistory}
+        options={{
+          headerTitle: 'Order History',
+          drawerLabel: 'Order History',
+          drawerIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="tanker-truck" size={size} color={color}  />
+          ),
+        }}
+      />
+      <Drawer.Screen
         name="RequestWater"
         component={RequestWater}
         options={{
@@ -110,6 +124,7 @@ function MainDrawerNavigator() {
           ),
         }}
       />
+      
       <Drawer.Screen
         name="ContactUs"
         component={ContactUs}
@@ -181,6 +196,14 @@ export default function App() {
               name="DetectScreen"
               component={DetectScreen}
               options={{ headerShown: true }}
+            />
+            <Stack.Screen
+              name="OrderHistory"
+              component={OrderHistory}
+              options={{ 
+                headerShown: true,
+                title: 'Order History'
+               }}
             />
           </>
         ) : (
