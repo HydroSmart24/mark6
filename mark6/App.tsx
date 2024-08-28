@@ -12,6 +12,7 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { auth } from './firebase/firebaseConfig'; // Import your Firebase config
 import AvailableScreen from './Screens/Consumption/Available';
@@ -99,6 +100,17 @@ function MainDrawerNavigator() {
         }}
       />
       <Drawer.Screen
+        name="RequestWater"
+        component={RequestWater}
+        options={{
+          headerTitle: 'Request Water',
+          drawerLabel: 'Request Water',
+          drawerIcon: ({ color, size }) => (
+            <FontAwesome6 name="code-pull-request" size={size} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
         name="ContactUs"
         component={ContactUs}
         options={{
@@ -155,7 +167,7 @@ export default function App() {
             <Stack.Screen
               name="RequestWater"
               component={RequestWater}
-              options={{ headerShown: false }}
+              options={{ headerShown: true }}
             />
             <Stack.Screen
               name="DebrisMain"
