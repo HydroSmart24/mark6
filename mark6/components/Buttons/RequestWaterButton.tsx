@@ -1,15 +1,31 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, View, ViewStyle } from 'react-native';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useNavigation } from '@react-navigation/native';
+
+
+type RootStackParamList = {
+  RequestWater: undefined;
+};
+
+type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 interface ButtonProps {
   title: string;
   style?: ViewStyle;
 }
 
-const Button3D: React.FC<ButtonProps> = ({ title, style }) => {
+const requestWaterbtn: React.FC<ButtonProps> = ({ title, style }) => {
+
+  const navigation = useNavigation<NavigationProp>();
+
+  const handleWaterRequestPress = () => {
+    navigation.navigate('RequestWater'); // Navigate to the DebrisMain screen
+  };
+
   return (
-    <TouchableOpacity style={[styles.button, style]}>
+    <TouchableOpacity style={[styles.button, style]} onPress={handleWaterRequestPress}>
       <View style={styles.buttonContent}>
       <FontAwesome6 name="code-pull-request" size={28} color="#FFF" />
         <View style={styles.textContent}>
@@ -49,4 +65,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Button3D;
+export default requestWaterbtn;

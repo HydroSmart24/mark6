@@ -1,18 +1,31 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, ViewStyle } from 'react-native';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import { Link, router } from 'expo-router';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+// Define the type for the navigation prop
+type RootStackParamList = {
+  DetectScreen: undefined;
+};
+
+type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 interface ButtonProps {
   title: string;
   style?: ViewStyle;
 }
 
-const handlePress = () => {
-  router.push('/Debris/DebrisMain'); // Navigate to the desired screen
-};
+
 
 const DetectDebris: React.FC<ButtonProps> = ({ title, style }) => {
+
+  const navigation = useNavigation<NavigationProp>();
+
+  const handlePress = () => {
+    navigation.navigate("DetectScreen"); // Navigate to the desired screen
+  };
+
   return (
     
     <TouchableOpacity style={[styles.button, style]} onPress={handlePress}>
