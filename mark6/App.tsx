@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { View, ActivityIndicator, Platform } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -20,6 +21,8 @@ import AboutUs from './Screens/AboutUs';
 import OrderHistory from "./Screens/Crowdsourcing/OrderHistory";
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from './firebase/firebaseConfig'; // Import your Firestore config
+import * as Notifications from 'expo-notifications';
+import Constants from 'expo-constants';
 
 type RootStackParamList = {
   index: undefined;
@@ -151,6 +154,49 @@ function MainDrawerNavigator({ userName }: { userName: string }) {
   );
 }
 
+// Register for push notifications
+async function registerForPushNotificationsAsync(): Promise<string | undefined> { 
+  let token;
+
+  if (Platform.OS === 'android') {
+    await Notifications.setNotificationChannelAsync('default', {
+      name: 'default',
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: '#FF231F7C',
+    });
+  }
+
+  const { status } = await Notifications.requestPermissionsAsync();
+  if (status !== 'granted') {
+    console.log('Failed to get push token for push notification!');
+    return undefined;
+  }
+
+  try {
+    // Specify the projectId explicitly
+    token = (await Notifications.getExpoPushTokenAsync({
+      projectId: Constants.expoConfig?.extra?.eas?.projectId || '2c1fed33-46da-43d6-83e4-5bd4f6646c10',
+    })).data;
+    console.log('Expo Push Token:', token);
+  } catch (error) {
+    console.error('Error getting Expo push token:', error);
+    return undefined;
+  }
+
+  return token;
+}
+
+// Set up notification handler
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
+
+
 export default function App() {
   const [user, setUser] = React.useState<User | null>(null);
   const [loading, setLoading] = React.useState(true);
@@ -170,11 +216,29 @@ export default function App() {
       }
     });
 
-    return unsubscribe; // Cleanup the subscription on unmount
+    registerForPushNotificationsAsync().then(token => {
+      if (token) {
+      }
+    });
+
+    // Handle foreground notifications without showing an in-app alert
+    const foregroundSubscription = Notifications.addNotificationReceivedListener(notification => {
+      console.log('Notification received in foreground:', notification);
+      // No in-app Alert, allow the notification to show as a system notification
+    });
+
+    return () => {
+      unsubscribe(); // Cleanup the auth listener
+      foregroundSubscription.remove(); // Cleanup the notification listener
+    };
   }, []);
 
   if (loading) {
-    return null; // You can add a loading indicator here if needed
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color="#007BA7" />
+      </View>
+    );
   }
 
   return (
