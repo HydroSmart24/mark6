@@ -9,7 +9,6 @@ import DetectScreen from './Screens/Debris/DetectScreen';
 import RequestWater from './Screens/RequestWater/RequestWater';
 import AuthScreen from './Screens/Auth/AuthScreen'; // Import AuthScreen
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import AntDesign from '@expo/vector-icons/AntDesign';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
@@ -19,7 +18,8 @@ import AvailableScreen from './Screens/Consumption/Available';
 import ContactUs from './Screens/ContactUs';
 import AboutUs from './Screens/AboutUs';
 import OrderHistory from "./Screens/Crowdsourcing/OrderHistory";
-
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from './firebase/firebaseConfig'; // Import your Firestore config
 
 type RootStackParamList = {
   index: undefined;
@@ -38,12 +38,11 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
 
-function MainTabNavigator() {
+function MainTabNavigator({ userName }: { userName: string }) {
   return (
     <Tab.Navigator>
       <Tab.Screen
         name="Home"
-        component={HomeScreen}
         options={{
           headerShown: false,
           tabBarLabel: "Home",
@@ -51,7 +50,9 @@ function MainTabNavigator() {
             <MaterialCommunityIcons name="home" color={color} size={size} />
           ),
         }}
-      />
+      >
+        {(props) => <HomeScreen {...props} userName={userName} />}
+      </Tab.Screen>
       
       <Tab.Screen
         name="AvailableScreen"
@@ -62,25 +63,25 @@ function MainTabNavigator() {
             <MaterialCommunityIcons name="water" color={color} size={size} />
           ),
         }}
-        />
-        
+      />
     </Tab.Navigator>
   );
 }
 
-function MainDrawerNavigator() {
+function MainDrawerNavigator({ userName }: { userName: string }) {
   return (
     <Drawer.Navigator initialRouteName="index">
       <Drawer.Screen
         name="Home Screen"
-        component={MainTabNavigator}
         options={{
           drawerLabel: "Home",
           drawerIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="home" color={color} size={size} />
           ),
         }}
-      />
+      >
+        {(props) => <MainTabNavigator {...props} userName={userName} />}
+      </Drawer.Screen>
       <Drawer.Screen
         name="DebrisScreen"
         component={DebrisMain}
@@ -109,7 +110,7 @@ function MainDrawerNavigator() {
           headerTitle: 'Order History',
           drawerLabel: 'Order History',
           drawerIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="tanker-truck" size={size} color={color}  />
+            <MaterialCommunityIcons name="tanker-truck" size={size} color={color} />
           ),
         }}
       />
@@ -124,7 +125,6 @@ function MainDrawerNavigator() {
           ),
         }}
       />
-      
       <Drawer.Screen
         name="ContactUs"
         component={ContactUs}
@@ -154,19 +154,27 @@ function MainDrawerNavigator() {
 export default function App() {
   const [user, setUser] = React.useState<User | null>(null);
   const [loading, setLoading] = React.useState(true);
+  const [userName, setUserName] = React.useState<string | null>(null);
 
   React.useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setUser(user);
       setLoading(false);
+
+      if (user) {
+        const docRef = doc(db, "users", user.uid);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          setUserName(docSnap.data()?.name || null);
+        }
+      }
     });
 
     return unsubscribe; // Cleanup the subscription on unmount
   }, []);
 
   if (loading) {
-    // You can add a loading indicator here if needed
-    return null;
+    return null; // You can add a loading indicator here if needed
   }
 
   return (
@@ -174,11 +182,11 @@ export default function App() {
       <Stack.Navigator initialRouteName="AuthScreen">
         {user ? (
           <>
-            <Stack.Screen
-              name="index"
-              component={MainDrawerNavigator}
-              options={{ headerShown: false }}
-            />
+            <Stack.Screen name="index">
+              {(props) => (
+                <MainDrawerNavigator {...props} userName={userName || ''} />
+              )}
+            </Stack.Screen>
             <Stack.Screen
               name="RequestWater"
               component={RequestWater}
@@ -187,10 +195,10 @@ export default function App() {
             <Stack.Screen
               name="DebrisMain"
               component={DebrisMain}
-              options={{ 
+              options={{
                 headerShown: true,
-                title: 'filter health'
-               }}
+                title: 'filter health',
+              }}
             />
             <Stack.Screen
               name="DetectScreen"
@@ -200,21 +208,20 @@ export default function App() {
             <Stack.Screen
               name="OrderHistory"
               component={OrderHistory}
-              options={{ 
+              options={{
                 headerShown: true,
-                title: 'Order History'
-               }}
+                title: 'Order History',
+              }}
             />
           </>
         ) : (
           <Stack.Screen
             name="AuthScreen"
             component={AuthScreen}
-            options={{ headerShown: false }} // You can choose to show or hide the header
+            options={{ headerShown: false }}
           />
         )}
       </Stack.Navigator>
     </NavigationContainer>
   );
-  
 }
