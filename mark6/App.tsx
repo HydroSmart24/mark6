@@ -8,19 +8,19 @@ import HomeScreen from './Screens/index';
 import DebrisMain from './Screens/Debris/DebrisMain';
 import DetectScreen from './Screens/Debris/DetectScreen';
 import RequestWater from './Screens/RequestWater/RequestWater';
-import AuthScreen from './Screens/Auth/AuthScreen'; // Import AuthScreen
+import AuthScreen from './Screens/Auth/AuthScreen';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { onAuthStateChanged, User } from 'firebase/auth';
-import { auth } from './firebase/firebaseConfig'; // Import your Firebase config
+import { auth } from './firebase/firebaseConfig';
 import AvailableScreen from './Screens/Consumption/Available';
 import ContactUs from './Screens/ContactUs';
 import AboutUs from './Screens/AboutUs';
 import OrderHistory from "./Screens/Crowdsourcing/OrderHistory";
 import { doc, getDoc } from 'firebase/firestore';
-import { db } from './firebase/firebaseConfig'; // Import your Firestore config
+import { db } from './firebase/firebaseConfig';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 
@@ -47,7 +47,7 @@ function MainTabNavigator({ userName }: { userName: string }) {
       <Tab.Screen
         name="Home"
         options={{
-          headerShown: false,
+          headerShown: false, // Hide the default header
           tabBarLabel: "Home",
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="home" color={color} size={size} />
@@ -61,6 +61,7 @@ function MainTabNavigator({ userName }: { userName: string }) {
         name="AvailableScreen"
         component={AvailableScreen}
         options={{
+          headerShown: false, // Hide the default header
           tabBarLabel: "Available",
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="water" color={color} size={size} />
@@ -73,9 +74,13 @@ function MainTabNavigator({ userName }: { userName: string }) {
 
 function MainDrawerNavigator({ userName }: { userName: string }) {
   return (
-    <Drawer.Navigator initialRouteName="index">
+    <Drawer.Navigator
+      screenOptions={{
+        headerShown: false, // Hide default headers for all screens
+      }}
+    >
       <Drawer.Screen
-        name="Home Screen"
+        name="Home"
         options={{
           drawerLabel: "Home",
           drawerIcon: ({ color, size }) => (
@@ -89,7 +94,6 @@ function MainDrawerNavigator({ userName }: { userName: string }) {
         name="DebrisScreen"
         component={DebrisMain}
         options={{
-          headerTitle: '',
           drawerLabel: 'FilterHealth',
           drawerIcon: ({ color, size }) => (
             <MaterialIcons name="health-and-safety" size={size} color={color} />
@@ -110,7 +114,6 @@ function MainDrawerNavigator({ userName }: { userName: string }) {
         name="OrderHistory"
         component={OrderHistory}
         options={{
-          headerTitle: 'Order History',
           drawerLabel: 'Order History',
           drawerIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="tanker-truck" size={size} color={color} />
@@ -121,7 +124,6 @@ function MainDrawerNavigator({ userName }: { userName: string }) {
         name="RequestWater"
         component={RequestWater}
         options={{
-          headerTitle: 'Request Water',
           drawerLabel: 'Request Water',
           drawerIcon: ({ color, size }) => (
             <FontAwesome6 name="code-pull-request" size={size} color={color} />
@@ -132,7 +134,6 @@ function MainDrawerNavigator({ userName }: { userName: string }) {
         name="ContactUs"
         component={ContactUs}
         options={{
-          headerTitle: '',
           drawerLabel: 'Contact Us',
           drawerIcon: ({ color, size }) => (
             <Ionicons name="call" size={size} color={color} />
@@ -143,7 +144,6 @@ function MainDrawerNavigator({ userName }: { userName: string }) {
         name="AboutUs"
         component={AboutUs}
         options={{
-          headerTitle: '',
           drawerLabel: 'About Us',
           drawerIcon: ({ color, size }) => (
             <Ionicons name="people" size={size} color={color} />
@@ -246,7 +246,10 @@ export default function App() {
       <Stack.Navigator initialRouteName="AuthScreen">
         {user ? (
           <>
-            <Stack.Screen name="index">
+            <Stack.Screen 
+              name="index"
+              options={{ headerShown: false }} // Set headerShown to false
+              >
               {(props) => (
                 <MainDrawerNavigator {...props} userName={userName || ''} />
               )}
