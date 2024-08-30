@@ -11,7 +11,7 @@ export default function CustomHeader({ userName }: { userName: string }) {
 
   return (
     <View style={styles.headerContainer}>
-      {/* Left Section: Drawer Icon and Tank Connection Status */}
+   
       <View style={styles.leftSection}>
         <TouchableOpacity onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}>
           <MaterialCommunityIcons name="menu" size={24} color="black" />
@@ -21,13 +21,13 @@ export default function CustomHeader({ userName }: { userName: string }) {
         </View>
       </View>
 
-      {/* Right Section: Icons and User Avatar */}
+      
       <View style={styles.rightSection}>
         <TouchableOpacity>
           <Ionicons name="notifications-outline" size={24} color="black" />
         </TouchableOpacity>
         <TouchableOpacity style={styles.avatarContainer}>
-          {/* Placeholder for Avatar */}
+        
           <View style={styles.avatar} />
         </TouchableOpacity>
       </View>
@@ -41,8 +41,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 35, // Increased padding on both left and right sides
-    paddingVertical: 10,
+    paddingHorizontal: 25, // Increased padding on both left and right sides
+    paddingVertical: 20,
     backgroundColor: '#fff',
   },
   leftSection: {

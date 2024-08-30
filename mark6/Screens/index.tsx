@@ -7,7 +7,7 @@ import RequestWaterButton from '../components/Buttons/RequestWaterButton';
 import IconButton from '../components/Buttons/IconButton';
 import BasicContainer from '../components/Containers/BasicContainer';
 import Prediction from '../components/Graph/PredictConsumpGraph';
-import CustomHeader from '../components/CustomerHeader/indexHeader';
+import CustomHeader from '../components/CustomerHeader/IndexHeader';
 
 interface TabOneScreenProps {
   userName: string | null; // Make sure to pass userName as a prop
