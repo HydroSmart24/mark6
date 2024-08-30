@@ -22,7 +22,7 @@ export default function AvailableScreen() {
                 <TankLevel />
             </View>
             <View style={styles.consumptionContainer}>
-                <DailyConsumption date="27th Aug" />
+                <DailyConsumption />
             </View>
             <View style={styles.pastConsumptionContainer}>
                 <PastConsumption data={testData} />

@@ -1,15 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { currentConsumption } from '../../utils/FetchCurrentConsumption'; // Adjust the path as necessary
+import { currentConsumption } from '../../utils/FetchCurrentConsumption';
 
-interface DailyConsumptionProps {
-    date: string;
-}
+interface DailyConsumptionProps {}
 
-export default function DailyConsumption({ date }: DailyConsumptionProps) {
+export default function DailyConsumption() {
     const [totalConsumption, setTotalConsumption] = useState<number>(0);
+    const [currentDate, setCurrentDate] = useState<string>('');
 
     useEffect(() => {
+        // Get the current date
+        const date = new Date();
+        const formattedDate = date.toLocaleDateString('en-GB', {
+            day: 'numeric',
+            month: 'short',
+        });
+        setCurrentDate(formattedDate);
+
+        // Fetch current consumption
         const unsubscribe = currentConsumption((total: number) => {
             setTotalConsumption(total);
         });
@@ -21,7 +29,7 @@ export default function DailyConsumption({ date }: DailyConsumptionProps) {
         <View style={styles.container}>
             <View style={styles.leftContainer}>
                 <Text style={styles.titleText}>Water Consumption</Text>
-                <Text style={styles.dateText}>{date}</Text>
+                <Text style={styles.dateText}>{currentDate}</Text>
             </View>
             <View style={styles.rightContainer}>
                 <Text style={styles.amountText}>{totalConsumption}</Text>
