@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, ScrollView } from 'react-native';
+import { StyleSheet, View, ScrollView, Text, Dimensions } from 'react-native';
 import TankLevel from '../components/AvailableTank/TankLevel';
 import HomeFilterHealth from '../components/Guage/HomeFilterHealth';
 import WaterQuality from '../components/Buttons/WaterQuality';
@@ -7,10 +7,26 @@ import RequestWaterButton from '../components/Buttons/RequestWaterButton';
 import IconButton from '../components/Buttons/IconButton';
 import BasicContainer from '../components/Containers/BasicContainer';
 import Prediction from '../components/Graph/PredictConsumpGraph';
+import CustomHeader from '../components/CustomerHeader/IndexHeader';
 
-export default function TabOneScreen() {
+interface TabOneScreenProps {
+  userName: string | null; // Make sure to pass userName as a prop
+}
+
+export default function TabOneScreen({ userName }: TabOneScreenProps) {
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
+
+      {/* Ensure the CustomHeader takes up the full width of the screen */}
+      <View style={styles.headerContainer}>
+        <CustomHeader userName={userName || ''} />
+      </View>
+      
+      <View style={styles.header}>
+        <Text style={styles.greeting}>Hi {userName}</Text>
+        <Text style={styles.subtitle}>Check status of tank</Text>
+      </View>
+      
       <BasicContainer style={styles.basicContainer} height={230}> 
         <View style={styles.rowContainer}>
           <View style={styles.leftColumn}>
@@ -40,11 +56,32 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 100,
+    paddingTop: 25,
+    paddingBottom: 35,
+  },
+  headerContainer: {
+    width: Dimensions.get('window').width, 
+    marginBottom: 35,
+  },
+  header: {
+    width: '85%', 
+    marginBottom: 25, 
+    alignItems: 'flex-start', 
+  },
+  greeting: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#3283C7',
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#7E7E7E',
+    marginTop: 5, 
+    fontWeight: 'bold',
   },
   basicContainer: {
     width: '85%', 
-    height: 200,
+    height: 230,
     marginBottom: 10, 
   },
   rowContainer: {
@@ -64,11 +101,11 @@ const styles = StyleSheet.create({
     marginLeft: 20, 
   },
   homeFilterHealthWrapper: {
-    marginBottom: 10, // Increase or decrease to adjust the gap
-    marginLeft: 8, // Increase or decrease to adjust the gap
+    marginBottom: 10,
+    marginLeft: 8,
   },
   waterQualityButton: {
-    marginTop: -20, // Increase or decrease to adjust the gap
+    marginTop: -20,
     width: '100%', 
   },
   buttonRow: {

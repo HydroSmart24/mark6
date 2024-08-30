@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView, Text } from 'react-native';
 import TankLevel from '../../components/AvailableTank/TankLevel';
 import DailyConsumption from '../../components/Consumption/DaillyConsumption';
 import PastConsumption from '../../components/Graph/PastConsumption';
@@ -17,6 +17,7 @@ const testData = [
 export default function AvailableScreen() {
     return (
         <ScrollView contentContainerStyle={styles.scrollContainer}>
+            <Text style={styles.heading}>Consumption and Availability Status</Text>
             <View style={styles.tankLevelContainer}>
                 <TankLevel />
             </View>
@@ -36,7 +37,14 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start', 
         alignItems: 'center',
         backgroundColor: '#f5f5f5',
-        paddingVertical: 20,
+        paddingTop: 55,
+        paddingBottom: 40,
+    },
+    heading:{
+        fontSize: 18,
+        marginBottom: 42,
+        color: '#007BA7',
+        fontWeight: '500',
     },
     tankLevelContainer: {
         width: '100%',
