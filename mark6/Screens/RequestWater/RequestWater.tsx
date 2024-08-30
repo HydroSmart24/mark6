@@ -13,7 +13,7 @@ export default function RequestWater() {
             <ScrollView>
                 <CardView 
                     title="Tank 01"
-                    description="Request water supply for your area."
+                    availableLiters={300}
                     onRequestPress={handleRequestPress}
                 />
             </ScrollView>
