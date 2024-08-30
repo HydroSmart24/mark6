@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, ScrollView, Text } from 'react-native';
+import { StyleSheet, View, ScrollView, Text, Dimensions } from 'react-native';
 import TankLevel from '../components/AvailableTank/TankLevel';
 import HomeFilterHealth from '../components/Guage/HomeFilterHealth';
 import WaterQuality from '../components/Buttons/WaterQuality';
@@ -7,6 +7,7 @@ import RequestWaterButton from '../components/Buttons/RequestWaterButton';
 import IconButton from '../components/Buttons/IconButton';
 import BasicContainer from '../components/Containers/BasicContainer';
 import Prediction from '../components/Graph/PredictConsumpGraph';
+import CustomHeader from '../components/CustomerHeader/IndexHeader';
 
 interface TabOneScreenProps {
   userName: string | null; // Make sure to pass userName as a prop
@@ -15,6 +16,12 @@ interface TabOneScreenProps {
 export default function TabOneScreen({ userName }: TabOneScreenProps) {
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
+
+      {/* Ensure the CustomHeader takes up the full width of the screen */}
+      <View style={styles.headerContainer}>
+        <CustomHeader userName={userName || ''} />
+      </View>
+      
       <View style={styles.header}>
         <Text style={styles.greeting}>Hi {userName}</Text>
         <Text style={styles.subtitle}>Check status of tank</Text>
@@ -50,12 +57,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingTop: 25,
-    paddingBottom:35,
+    paddingBottom: 35,
+  },
+  headerContainer: {
+    width: Dimensions.get('window').width, 
+    marginBottom: 35,
   },
   header: {
     width: '85%', 
-    marginBottom: 25, // Space between the header and the BasicContainer
-    alignItems: 'flex-start', // Align content to the left
+    marginBottom: 25, 
+    alignItems: 'flex-start', 
   },
   greeting: {
     fontSize: 32,

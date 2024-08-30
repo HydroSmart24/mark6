@@ -11,30 +11,30 @@ export const fetchAverageDistance = async (printedAverage) => {
         let totalDistance = 0;
         let count = 0;
 
-        console.log('Latest 3 distance values:');
+        // console.log('Latest 3 distance values:');
         querySnapshot.forEach((doc) => {
             const { time, distance } = doc.data();
-            console.log('Time:', time, 'Distance:', distance);
+            // console.log('Time:', time, 'Distance:', distance);
             totalDistance += distance;
             count++;
         });
 
         if (count > 0) {
             const avg = totalDistance / count;
-            console.log('Average distance:', Math.floor(avg));
+            // console.log('Average distance:', Math.floor(avg));
             if (printedAverage === null || Math.abs(avg - printedAverage) > 10) {
                 const newAverage = Math.floor(avg);
-                console.log('Significant change in average distance. New printed average:', newAverage);
+                // console.log('Significant change in average distance. New printed average:', newAverage);
                 const volume = calcVolume(newAverage);
                 return { average: newAverage, volume };
             } else {
-                console.log('No significant change in average distance');
+                // console.log('No significant change in average distance');
                 const volume = calcVolume(printedAverage);
                 return { average: printedAverage, volume };
             }
         }
     } catch (error) {
-        console.error('Error fetching average distances:', error);
+        // console.error('Error fetching average distances:', error);
         return null;
     }
 };
