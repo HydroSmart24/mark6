@@ -52,14 +52,14 @@ export default function TankLevel({ size = 200, style = {}, clickable = false }:
 
   const handlePress = () => {
     if (clickable) {
-      navigation.navigate('AvailableScreen'); // Navigate to AvailableScreen if clickable
+      navigation.navigate('AvailableScreen'); 
     }
   };
 
   const interpolatedColor = animatedHeight.interpolate({
     inputRange: [0, 50, 100],
-    outputRange: ['black', 'black', 'white'], // Ensure the text color is black below 50 and white above 50
-    extrapolate: 'clamp', // Ensure that the color doesn't go beyond black or white
+    outputRange: ['black', 'black', 'white'], 
+    extrapolate: 'clamp', 
   });
 
   return (

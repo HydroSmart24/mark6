@@ -1,12 +1,22 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { currentConsumption } from '../../utils/FetchCurrentConsumption'; // Adjust the path as necessary
 
 interface DailyConsumptionProps {
     date: string;
-    amount: number;
 }
 
-export default function DailyConsumption({ date, amount }: DailyConsumptionProps) {
+export default function DailyConsumption({ date }: DailyConsumptionProps) {
+    const [totalConsumption, setTotalConsumption] = useState<number>(0);
+
+    useEffect(() => {
+        const unsubscribe = currentConsumption((total: number) => {
+            setTotalConsumption(total);
+        });
+
+        return () => unsubscribe(); // Clean up the subscription on unmount
+    }, []);
+
     return (
         <View style={styles.container}>
             <View style={styles.leftContainer}>
@@ -14,7 +24,7 @@ export default function DailyConsumption({ date, amount }: DailyConsumptionProps
                 <Text style={styles.dateText}>{date}</Text>
             </View>
             <View style={styles.rightContainer}>
-                <Text style={styles.amountText}>{amount}</Text>
+                <Text style={styles.amountText}>{totalConsumption}</Text>
                 <Text style={styles.unitText}>Liters</Text>
             </View>
         </View>
@@ -56,7 +66,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     amountText: {
-        fontSize: 42,
+        fontSize: 32,
         color: '#007BA7',
         fontWeight: 'bold',
     },

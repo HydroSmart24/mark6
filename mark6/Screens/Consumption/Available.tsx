@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, ScrollView, Text } from 'react-native';
 import TankLevel from '../../components/AvailableTank/TankLevel';
-import DailyConsumption from '../../components/Consumption/DaillyConsumption';
+import DailyConsumption from '../../components/Consumption/DaillyConsumption';  // Make sure this import path is correct
 import PastConsumption from '../../components/Graph/PastConsumption';
 
 const testData = [
@@ -22,7 +22,7 @@ export default function AvailableScreen() {
                 <TankLevel />
             </View>
             <View style={styles.consumptionContainer}>
-                <DailyConsumption date="27th Aug" amount={12} />
+                <DailyConsumption date="27th Aug" />
             </View>
             <View style={styles.pastConsumptionContainer}>
                 <PastConsumption data={testData} />
@@ -34,7 +34,7 @@ export default function AvailableScreen() {
 const styles = StyleSheet.create({
     scrollContainer: {
         flexGrow: 1,
-        justifyContent: 'flex-start', 
+        justifyContent: 'flex-start',
         alignItems: 'center',
         backgroundColor: '#f5f5f5',
         paddingTop: 55,
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     },
     consumptionContainer: {
         width: '100%', 
-        alignItems: 'center', 
+        alignItems: 'center',
     },
     pastConsumptionContainer: {
         width: '100%', 

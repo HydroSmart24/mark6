@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, Dimensions } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import { DrawerActions, useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -11,23 +11,21 @@ export default function CustomHeader({ userName }: { userName: string }) {
 
   return (
     <View style={styles.headerContainer}>
-   
       <View style={styles.leftSection}>
         <TouchableOpacity onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}>
           <MaterialCommunityIcons name="menu" size={24} color="black" />
         </TouchableOpacity>
-        <View style={styles.connectionStatus}>
+        <View style={styles.connectionStatusContainer}>
+          <View style={styles.statusDot} />
           <Text style={styles.connectionText}>Connected to Tank</Text>
         </View>
       </View>
 
-      
       <View style={styles.rightSection}>
         <TouchableOpacity>
           <Ionicons name="notifications-outline" size={24} color="black" />
         </TouchableOpacity>
         <TouchableOpacity style={styles.avatarContainer}>
-        
           <View style={styles.avatar} />
         </TouchableOpacity>
       </View>
@@ -49,12 +47,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  connectionStatus: {
+  connectionStatusContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginLeft: 10,
     paddingHorizontal: 10,
     paddingVertical: 5,
     backgroundColor: '#E0E0E0',
     borderRadius: 5,
+  },
+  statusDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 5,
+    backgroundColor: '#25B34F', 
+    marginRight: 8,
   },
   connectionText: {
     color: 'black',
