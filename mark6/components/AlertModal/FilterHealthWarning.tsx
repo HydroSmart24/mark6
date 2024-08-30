@@ -23,7 +23,7 @@ const IconTextModal: React.FC<IconTextModalProps> = ({
       Animated.sequence([
         Animated.timing(blinkAnim, {
           toValue: 0,
-          duration: 500,
+          duration: 700,
           useNativeDriver: true,
         }),
         Animated.timing(blinkAnim, {

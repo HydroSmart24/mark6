@@ -32,8 +32,8 @@ const PhGauge: React.FC<PhGaugeProps> = ({ size = 80, value = 0 }) => {
   let centerText = 'Good'; // default to bad
   
   if (mappedValue < 10 && mappedValue >= 7.5) {
-    strokeColor = '#10B981'; // default to red (Bad)
-    innerStrokeColor = '#D1FAE5'; // default to red - 100 (Bad)
+    strokeColor = '#DC2626'; // default to red (Bad)
+    innerStrokeColor = '#FEE2E2'; // default to red - 100 (Bad)
     centerText = 'Bad';
   } else if (mappedValue < 7.5 && mappedValue >= 5) {
     strokeColor = '#F97316'; // orange
