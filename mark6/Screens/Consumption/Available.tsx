@@ -58,6 +58,6 @@ const styles = StyleSheet.create({
     pastConsumptionContainer: {
         width: '100%', 
         alignItems: 'center', 
-        marginTop: 20, // Add some space between DailyConsumption and PastConsumption
+        marginTop: 20, 
     },
 });
