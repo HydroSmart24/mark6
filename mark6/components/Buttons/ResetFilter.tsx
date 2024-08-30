@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
-import { TouchableOpacity, Text, StyleSheet, View, Modal, ViewStyle, Pressable } from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import React, { useState, useEffect, useRef } from 'react';
+import { TouchableOpacity, Text, StyleSheet, View, Modal, ViewStyle, Pressable, Animated } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 
 interface ButtonProps {
   title: string;
@@ -11,6 +10,25 @@ interface ButtonProps {
 const ResetFilter: React.FC<ButtonProps> = ({ title, style }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [step, setStep] = useState(1);
+  const [animationCompleted, setAnimationCompleted] = useState(false);
+
+  const backgroundAnimation = useRef(new Animated.Value(0)).current; // Initial opacity value: 0
+
+  useEffect(() => {
+    if (modalVisible) {
+      Animated.timing(backgroundAnimation, {
+        toValue: 1,
+        duration: 350,
+        useNativeDriver: true,
+      }).start(() => setAnimationCompleted(true)); // Start animation when modal becomes visible
+    } else {
+      Animated.timing(backgroundAnimation, {
+        toValue: 0,
+        duration: 350,
+        useNativeDriver: true,
+      }).start(() => setAnimationCompleted(false)); // Animate out when modal is hidden
+    }
+  }, [modalVisible]);
 
   const openModal = () => {
     setModalVisible(true);
@@ -39,10 +57,10 @@ const ResetFilter: React.FC<ButtonProps> = ({ title, style }) => {
         <Text style={styles.buttonText}>{title}</Text>
       </TouchableOpacity>
 
-      <Modal transparent={true} visible={modalVisible} animationType="slide">
-        <View style={styles.modalBackground}>
+      <Modal transparent={true} visible={modalVisible} animationType="none">
+        <Animated.View style={[styles.modalBackground, { opacity: backgroundAnimation }]}>
           <View style={styles.modalContainer}>
-          <MaterialIcons name="dangerous" size={50} color="red" />
+            <MaterialIcons name="dangerous" size={50} color="red" />
             {step === 1 ? (
               <Text style={styles.modalText}>Did you renew the filter and do you want to reset the filter health?</Text>
             ) : (
@@ -65,7 +83,7 @@ const ResetFilter: React.FC<ButtonProps> = ({ title, style }) => {
               )}
             </View>
           </View>
-        </View>
+        </Animated.View>
       </Modal>
     </>
   );
@@ -90,7 +108,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background
   },
   modalContainer: {
     width: 300,
