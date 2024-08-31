@@ -47,8 +47,8 @@ export const calculateFutureTankVolumes = async () => {
                 // Format the new date as "MMM DD" (e.g., "Sep 15")
                 const newDateLabel = `${month} ${day}`;
 
-                // Log for debugging
-                console.log('Date Label:', newDateLabel);
+              
+                //console.log('Date Label:', newDateLabel);
 
                 futureVolumes.push({
                     date: newDateLabel,

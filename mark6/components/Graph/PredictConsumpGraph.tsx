@@ -23,16 +23,16 @@ export default function Prediction({ style = {} }) {
         
         if (futureVolumes) {
           const labels = futureVolumes.map(item => {
-            // Log each date to ensure proper formatting
-            console.log("Date Label:", item.date);
+           
+            //console.log("Date Label:", item.date);
             return item.date;
           });
           
           const values = futureVolumes.map(item => item.volume);
           
-          // Additional logging for the labels and values
-          console.log("Labels:", labels);
-          console.log("Values:", values);
+         
+          //console.log("Labels:", labels);
+          //.log("Values:", values);
 
           setData({ labels, values });
           setDays(futureVolumes.length);
