@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, ActivityIndicator, Platform } from 'react-native';
+import { View, ActivityIndicator } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -19,11 +19,11 @@ import AvailableScreen from './Screens/Consumption/Available';
 import ContactUs from './Screens/ContactUs';
 import AboutUs from './Screens/AboutUs';
 import OrderHistory from "./Screens/Crowdsourcing/OrderHistory";
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from './firebase/firebaseConfig';
-import * as Notifications from 'expo-notifications';
-import Constants from 'expo-constants';
 import UserProfile from './Screens/Auth/UserProfile';
+import { registerForPushNotificationsAsync, setupNotificationHandler } from './utils/Notification/PushNotification';  // Import utility functions
+import * as Notifications from 'expo-notifications';
 
 
 type RootStackParamList = {
@@ -49,7 +49,7 @@ function MainTabNavigator({ userName }: { userName: string }) {
       <Tab.Screen
         name="home"
         options={{
-          headerShown: false, // Hide the default header
+          headerShown: false,
           tabBarLabel: "Home",
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="home" color={color} size={size} />
@@ -63,7 +63,7 @@ function MainTabNavigator({ userName }: { userName: string }) {
         name="AvailableScreen"
         component={AvailableScreen}
         options={{
-          headerShown: true, // Hide the default header
+          headerShown: true,
           headerTitle: 'Available Water',
           tabBarLabel: "Available",
           tabBarIcon: ({ color, size }) => (
@@ -79,7 +79,7 @@ function MainDrawerNavigator({ userName }: { userName: string }) {
   return (
     <Drawer.Navigator
       screenOptions={{
-        headerShown: false, // Hide default headers for all screens
+        headerShown: false,
       }}
     >
       <Drawer.Screen
@@ -180,49 +180,6 @@ function MainDrawerNavigator({ userName }: { userName: string }) {
   );
 }
 
-// Register for push notifications
-async function registerForPushNotificationsAsync(): Promise<string | undefined> { 
-  let token;
-
-  if (Platform.OS === 'android') {
-    await Notifications.setNotificationChannelAsync('default', {
-      name: 'default',
-      importance: Notifications.AndroidImportance.MAX,
-      vibrationPattern: [0, 250, 250, 250],
-      lightColor: '#FF231F7C',
-    });
-  }
-
-  const { status } = await Notifications.requestPermissionsAsync();
-  if (status !== 'granted') {
-    console.log('Failed to get push token for push notification!');
-    return undefined;
-  }
-
-  try {
-    // Specify the projectId explicitly
-    token = (await Notifications.getExpoPushTokenAsync({
-      projectId: Constants.expoConfig?.extra?.eas?.projectId || '2c1fed33-46da-43d6-83e4-5bd4f6646c10',
-    })).data;
-    console.log('Expo Push Token:', token);
-  } catch (error) {
-    console.error('Error getting Expo push token:', error);
-    return undefined;
-  }
-
-  return token;
-}
-
-// Set up notification handler
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: false,
-  }),
-});
-
-
 export default function App() {
   const [user, setUser] = React.useState<User | null>(null);
   const [loading, setLoading] = React.useState(true);
@@ -239,13 +196,15 @@ export default function App() {
         if (docSnap.exists()) {
           setUserName(docSnap.data()?.name || null);
         }
+
+        const pushToken = await registerForPushNotificationsAsync();
+        if (pushToken) {
+          await setDoc(docRef, { pushtoken: pushToken }, { merge: true });
+        }
       }
     });
 
-    registerForPushNotificationsAsync().then(token => {
-      if (token) {
-      }
-    });
+    setupNotificationHandler(); // Setup the notification handler
 
     // Handle foreground notifications without showing an in-app alert
     const foregroundSubscription = Notifications.addNotificationReceivedListener(notification => {
