@@ -26,8 +26,15 @@ const TankRequestWaterModal: React.FC<ModalProps> = ({ visible, onClose, ownerNa
   };
 
   const handleConfirm = () => {
-    console.log("Confirmed amount:", requestedAmount);
-    onClose();
+    if (!requestedAmount) {
+      setError('Please enter an amount.');
+      return;
+    }
+
+    if (!error) {
+      console.log("Confirmed amount:", requestedAmount);
+      onClose();
+    }
   };
 
   return (
@@ -63,7 +70,7 @@ const TankRequestWaterModal: React.FC<ModalProps> = ({ visible, onClose, ownerNa
                   <TextInput
                     style={styles.input}
                     placeholder={`Max amount: ${availableLiters}`}
-                    placeholderTextColor="#A9A9A9" // Grey placeholder color
+                    placeholderTextColor="#A9A9A9"
                     keyboardType="numeric"
                     value={requestedAmount}
                     onChangeText={handleChange}
@@ -80,7 +87,7 @@ const TankRequestWaterModal: React.FC<ModalProps> = ({ visible, onClose, ownerNa
                   error ? styles.disabledButton : null,
                 ]}
                 onPress={handleConfirm}
-                disabled={!!error} 
+                disabled={!!error}
               >
                 <Text
                   style={[
@@ -136,7 +143,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   inputBackground: {
-    backgroundColor: '#D3D3D3', // Darker grey background
+    backgroundColor: '#D3D3D3',
     borderRadius: 4,
     padding: 5,
     marginTop: 20,
@@ -152,7 +159,7 @@ const styles = StyleSheet.create({
   },
   input: {
     width: '70%',
-    borderWidth: 0, // Removed border
+    borderWidth: 0,
     borderRadius: 4,
     padding: 10,
     fontSize: 16,
@@ -163,7 +170,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginLeft: 10,
-    color: '#696969', // Darker grey color for "Liters" text
+    color: '#696969',
   },
   errorText: {
     color: 'red',
@@ -179,11 +186,11 @@ const styles = StyleSheet.create({
     borderRadius: 15,
   },
   confirmButton: {
-    backgroundColor: '#4299E1', // Blue background color
+    backgroundColor: '#4299E1',
     borderRadius: 4,
     padding: 10,
     marginTop: 20,
-    width: '100%', // Span the width of the input container
+    width: '100%',
     alignItems: 'center',
   },
   confirmButtonText: {
@@ -192,9 +199,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   disabledButton: {
-    backgroundColor: '#A9A9A9', // Disabled button grey color
+    backgroundColor: '#A9A9A9',
   },
   disabledButtonText: {
-    color: '#808080', // Disabled text grey color
+    color: '#808080',
   },
 });
