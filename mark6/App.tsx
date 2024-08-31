@@ -45,7 +45,7 @@ function MainTabNavigator({ userName }: { userName: string }) {
   return (
     <Tab.Navigator>
       <Tab.Screen
-        name="Home"
+        name="home"
         options={{
           headerShown: false, // Hide the default header
           tabBarLabel: "Home",
@@ -61,7 +61,8 @@ function MainTabNavigator({ userName }: { userName: string }) {
         name="AvailableScreen"
         component={AvailableScreen}
         options={{
-          headerShown: false, // Hide the default header
+          headerShown: true, // Hide the default header
+          headerTitle: 'Available Water',
           tabBarLabel: "Available",
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="water" color={color} size={size} />
@@ -80,7 +81,7 @@ function MainDrawerNavigator({ userName }: { userName: string }) {
       }}
     >
       <Drawer.Screen
-        name="Home"
+        name="homeScreen"
         options={{
           drawerLabel: "Home",
           drawerIcon: ({ color, size }) => (
@@ -94,6 +95,8 @@ function MainDrawerNavigator({ userName }: { userName: string }) {
         name="DebrisScreen"
         component={DebrisMain}
         options={{
+          headerShown: true,
+          headerTitle: '',
           drawerLabel: 'FilterHealth',
           drawerIcon: ({ color, size }) => (
             <MaterialIcons name="health-and-safety" size={size} color={color} />
@@ -104,6 +107,8 @@ function MainDrawerNavigator({ userName }: { userName: string }) {
         name="DetectScreen"
         component={DetectScreen}
         options={{
+          headerShown: true,
+          headerTitle: 'Debris Detection',
           drawerLabel: 'Debris Detection',
           drawerIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="smoke-detector-alert" size={size} color={color} />
@@ -114,6 +119,8 @@ function MainDrawerNavigator({ userName }: { userName: string }) {
         name="OrderHistory"
         component={OrderHistory}
         options={{
+          headerShown: true,
+          headerTitle: '',
           drawerLabel: 'Order History',
           drawerIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="tanker-truck" size={size} color={color} />
@@ -124,6 +131,8 @@ function MainDrawerNavigator({ userName }: { userName: string }) {
         name="RequestWater"
         component={RequestWater}
         options={{
+          headerShown: true,
+          headerTitle: '',
           drawerLabel: 'Request Water',
           drawerIcon: ({ color, size }) => (
             <FontAwesome6 name="code-pull-request" size={size} color={color} />
@@ -134,6 +143,8 @@ function MainDrawerNavigator({ userName }: { userName: string }) {
         name="ContactUs"
         component={ContactUs}
         options={{
+          headerShown: true,
+          headerTitle: '',
           drawerLabel: 'Contact Us',
           drawerIcon: ({ color, size }) => (
             <Ionicons name="call" size={size} color={color} />
@@ -144,6 +155,8 @@ function MainDrawerNavigator({ userName }: { userName: string }) {
         name="AboutUs"
         component={AboutUs}
         options={{
+          headerShown: true,
+          headerTitle: '',
           drawerLabel: 'About Us',
           drawerIcon: ({ color, size }) => (
             <Ionicons name="people" size={size} color={color} />
