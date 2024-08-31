@@ -65,7 +65,7 @@ export default function Prediction({ style = {} }) {
               backgroundColor: 'white',
               backgroundGradientFrom: 'white',
               backgroundGradientTo: 'white',
-              decimalPlaces: 2,
+              decimalPlaces: 0, // No decimal places for the volume values
               color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
               style: {
                 borderRadius: 10,

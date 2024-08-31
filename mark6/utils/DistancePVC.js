@@ -1,3 +1,5 @@
+// DistancePVC.js
+
 import { db } from '../firebase/firebaseConfig'; 
 import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
 
@@ -19,7 +21,7 @@ export const calculateWaterVolume = (distance) => {
 };
 
 // Function to fetch the latest distance reading from Firestore
-const fetchLatestDistanceReading = async () => {
+export const fetchLatestDistanceReading = async () => {
   try {
     const avgDistanceRef = collection(db, 'avgDistance');
     const q = query(avgDistanceRef, orderBy('time', 'desc'), limit(1));

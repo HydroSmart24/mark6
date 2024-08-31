@@ -1,14 +1,14 @@
-import { fetchAverageDistance } from './FetchDistance';
+import { fetchLatestDistanceReading } from './DistancePVC'; 
 import { fetchPredictions } from './FetchPredictions';
-import { calcVolume } from './CalcVolume'; // Import the calcVolume function
 
 export const calculateFutureTankVolumes = async () => {
     try {
-        // Fetch the current average distance
-        const { average: avgHeight } = await fetchAverageDistance(null);
+        // Fetch the current tank volume directly using the distance reading
+        const currentVolume = await fetchLatestDistanceReading();
 
-        // Calculate the current tank volume using the avgHeight
-        const currentVolume = calcVolume(avgHeight);
+        if (currentVolume === null) {
+            throw new Error('Failed to fetch the current tank volume.');
+        }
 
         // Fetch the consumption predictions
         const { labels, values: consumptionPredictions } = await fetchPredictions();
