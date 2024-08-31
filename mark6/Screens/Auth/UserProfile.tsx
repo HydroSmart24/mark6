@@ -21,22 +21,22 @@ const UserProfile: React.FC<UserProfileProps> = ({ userName, userEmail }) => {
 
     return (
         <View style={styles.container}>
-            {/* Circle with the first letter of the user's name */}
+            
             <View style={styles.circle}>
                 <Text style={styles.circleText}>{firstLetter}</Text>
             </View>
 
-            {/* Rectangle for the user's name */}
+           
             <View style={styles.rectangle}>
                 <Text style={styles.rectangleText}>{userName}</Text>
             </View>
 
-            {/* Rectangle for the user's email */}
+           
             <View style={styles.rectangle}>
                 <Text style={styles.rectangleText}>{userEmail}</Text>
             </View>
 
-            {/* Logout button */}
+           
             <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
                 <Text style={styles.logoutButtonText}>Logout</Text>
             </TouchableOpacity>
