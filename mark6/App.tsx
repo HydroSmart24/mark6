@@ -23,6 +23,8 @@ import { doc, getDoc } from 'firebase/firestore';
 import { db } from './firebase/firebaseConfig';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
+import UserProfile from './Screens/Auth/UserProfile';
+
 
 type RootStackParamList = {
   index: undefined;
@@ -163,6 +165,17 @@ function MainDrawerNavigator({ userName }: { userName: string }) {
           ),
         }}
       />
+        <Drawer.Screen
+        name="UserProfile"
+        options={{
+          drawerLabel: "User Profile",
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name="person-circle-outline" size={size} color={color} />
+          ),
+        }}
+      >
+        {(props) => <UserProfile {...props} userName={userName} userEmail={auth.currentUser?.email || ''} />}
+      </Drawer.Screen>
     </Drawer.Navigator>
   );
 }

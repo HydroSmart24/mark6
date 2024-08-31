@@ -71,7 +71,7 @@ export default function TankLevel({ size = 200, style = {}, clickable = false }:
         />
         <View style={styles.textContainer}>
           <Animated.Text style={[styles.volume, { fontSize: size / 6, color: interpolatedColor }]}>
-            {tankVolume !== null ? tankVolume.toFixed(2) : 0} {/* Display volume with 2 decimal places */}
+            {tankVolume !== null ? tankVolume : 0} {/* Display volume as an integer */}
           </Animated.Text>
           <Animated.Text style={[styles.liters, { fontSize: size / 12, color: interpolatedColor }]}>
             liters

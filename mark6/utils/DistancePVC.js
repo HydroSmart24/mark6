@@ -12,14 +12,14 @@ export const calculateWaterVolume = (distance) => {
   } else if (distance <= MAX_DISTANCE) {
     return MAX_VOLUME; 
   } else {
-    // Calculate the volume using linear interpolation
-    const volume = ((MIN_DISTANCE - distance) / (MIN_DISTANCE - MAX_DISTANCE)) * MAX_VOLUME;
+    // Calculate the volume using linear interpolation and round it to the nearest integer
+    const volume = Math.round(((MIN_DISTANCE - distance) / (MIN_DISTANCE - MAX_DISTANCE)) * MAX_VOLUME);
     return volume;
   }
 };
 
 // Function to fetch the latest distance reading from Firestore
-const fetchLatestDistanceReading = async () => {
+export const fetchLatestDistanceReading = async () => {
   try {
     const avgDistanceRef = collection(db, 'avgDistance');
     const q = query(avgDistanceRef, orderBy('time', 'desc'), limit(1));
@@ -31,7 +31,7 @@ const fetchLatestDistanceReading = async () => {
       const distanceData = latestDoc.data();
       const distance = distanceData.distance;
 
-      // Calculate the volume based on the distance
+      // Calculate the volume based on the distance and round it to the nearest integer
       const volume = calculateWaterVolume(distance);
       return volume; // Return the calculated volume in liters
     } else {
@@ -44,13 +44,13 @@ const fetchLatestDistanceReading = async () => {
   }
 };
 
-// Function to fetch the latest reading every 5 minutes
+// Function to fetch the latest reading every 2 minutes
 export const startFetchingDistanceReadings = (callback) => {
   fetchLatestDistanceReading().then(callback);
 
   const intervalId = setInterval(() => {
     fetchLatestDistanceReading().then(callback);
-  }, 300000); // 5 minutes in milliseconds
+  }, 120000); // 2 minutes in milliseconds
 
   // Return a function to stop the interval when needed
   return () => clearInterval(intervalId);
