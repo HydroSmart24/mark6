@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, Animated, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { fetchAverageDistance } from '../../utils/FetchDistance';
+import { startFetchingDistanceReadings } from '../../utils/DistancePVC';
 
 // Define the type for the navigation prop
 type RootStackParamList = {
@@ -18,30 +18,23 @@ interface TankLevelProps {
 }
 
 export default function TankLevel({ size = 200, style = {}, clickable = false }: TankLevelProps) {
-  const [printedAverage, setPrintedAverage] = useState<number | null>(null);
   const [tankVolume, setTankVolume] = useState<number | null>(null);
   const animatedHeight = useRef(new Animated.Value(0)).current;
-
   const navigation = useNavigation<NavigationProp>();
 
   useEffect(() => {
-    const updateData = async () => {
-      const data = await fetchAverageDistance(printedAverage);
-      if (data) {
-        setPrintedAverage(data.average);
-        setTankVolume(data.volume);
-      }
-    };
+    // Start fetching distance readings and calculate volume
+    const stopFetching = startFetchingDistanceReadings((volume: number) => {
+      setTankVolume(volume);
+    });
 
-    updateData();
-    const interval = setInterval(updateData, 180000); // 180000 ms = 3 minutes
-
-    return () => clearInterval(interval); // Cleanup on unmount
-  }, [printedAverage]);
+    // Cleanup function to stop fetching when the component unmounts
+    return () => stopFetching();
+  }, []);
 
   useEffect(() => {
     if (tankVolume !== null) {
-      const fillHeight = (tankVolume / 5000) * 100;
+      const fillHeight = (tankVolume / 500) * 100; // Assuming 500 liters as the full tank volume
       Animated.timing(animatedHeight, {
         toValue: fillHeight,
         duration: 2000, // 2 seconds duration for the animation
@@ -52,14 +45,14 @@ export default function TankLevel({ size = 200, style = {}, clickable = false }:
 
   const handlePress = () => {
     if (clickable) {
-      navigation.navigate('AvailableScreen'); // Navigate to AvailableScreen if clickable
+      navigation.navigate('AvailableScreen');
     }
   };
 
   const interpolatedColor = animatedHeight.interpolate({
     inputRange: [0, 50, 100],
-    outputRange: ['black', 'black', 'white'], // Ensure the text color is black below 50 and white above 50
-    extrapolate: 'clamp', // Ensure that the color doesn't go beyond black or white
+    outputRange: ['black', 'black', 'white'],
+    extrapolate: 'clamp',
   });
 
   return (
@@ -78,7 +71,7 @@ export default function TankLevel({ size = 200, style = {}, clickable = false }:
         />
         <View style={styles.textContainer}>
           <Animated.Text style={[styles.volume, { fontSize: size / 6, color: interpolatedColor }]}>
-            {tankVolume !== null ? tankVolume : 0}
+            {tankVolume !== null ? tankVolume.toFixed(2) : 0} {/* Display volume with 2 decimal places */}
           </Animated.Text>
           <Animated.Text style={[styles.liters, { fontSize: size / 12, color: interpolatedColor }]}>
             liters
