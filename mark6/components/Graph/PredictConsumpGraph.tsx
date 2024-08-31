@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Dimensions, ScrollView } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
-import { calculateFutureTankVolumes } from '../../utils/FutureTankVolumes'; // Adjust the import path as necessary
+import { calculateFutureTankVolumes } from '../../utils/FutureTankVolumes';
 
 const { width } = Dimensions.get('window');
 
@@ -22,8 +22,18 @@ export default function Prediction({ style = {} }) {
         const futureVolumes: VolumeData[] | null = await calculateFutureTankVolumes();
         
         if (futureVolumes) {
-          const labels = futureVolumes.map(item => item.date);
+          const labels = futureVolumes.map(item => {
+            // Log each date to ensure proper formatting
+            console.log("Date Label:", item.date);
+            return item.date;
+          });
+          
           const values = futureVolumes.map(item => item.volume);
+          
+          // Additional logging for the labels and values
+          console.log("Labels:", labels);
+          console.log("Values:", values);
+
           setData({ labels, values });
           setDays(futureVolumes.length);
         }

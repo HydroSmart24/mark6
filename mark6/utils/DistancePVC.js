@@ -1,5 +1,3 @@
-// DistancePVC.js
-
 import { db } from '../firebase/firebaseConfig'; 
 import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
 
