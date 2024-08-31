@@ -277,13 +277,16 @@ export default function App() {
               component={DebrisMain}
               options={{
                 headerShown: true,
-                title: 'filter health',
+                title: 'Filter Health',
               }}
             />
             <Stack.Screen
               name="DetectScreen"
               component={DetectScreen}
-              options={{ headerShown: true }}
+              options={{ 
+                headerShown: true,
+                title: 'Debris Detection',
+               }}
             />
             <Stack.Screen
               name="OrderHistory"
