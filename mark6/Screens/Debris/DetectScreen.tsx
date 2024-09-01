@@ -6,8 +6,10 @@ import DebrisNumGauge from '../../components/Guage/DebrisNumGauge';
 import DetectInfo from '../../components/Buttons/DetectInfo';
 import { getStorage, ref, listAll, getDownloadURL, getMetadata } from "firebase/storage";
 import axios from "axios";
+import { format } from 'date-fns';
 import Svg, { Rect, Text as SvgText } from 'react-native-svg';
 import Loading from '../../components/Loading';
+import ReusableText from '../../components/Text/ReusableText';
 
 // Fetch the latest image from Firebase Storage based on timestamp metadata
 async function fetchLatestImage() {
@@ -31,9 +33,10 @@ async function fetchLatestImage() {
     itemsWithTimestamps.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 
     const latestItem = itemsWithTimestamps[0].item;
+    const timestamp = itemsWithTimestamps[0].timestamp;  // Extract the timestamp
 
     const url = await getDownloadURL(latestItem);
-    return url;
+    return { url, timestamp };  // Return both url and timestamp
   } catch (error) {
     console.error("Error fetching the latest image:", error);
     throw error;
@@ -64,24 +67,33 @@ async function sendImageToRoboflow(imageUrl: string) {
   }
 }
 
+function formatTimestamp(timestamp: string | null): string {
+  if (!timestamp) return "";
+
+  const date = new Date(timestamp);
+  return `Date: ${format(date, 'yyyy-MM-dd')}, Time: ${format(date, 'h:mm a')}`;
+}
+
 export default function DetectScreen() {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [inferenceResult, setInferenceResult] = useState<any>(null);
   const [imageDimensions, setImageDimensions] = useState<{ width: number, height: number } | null>(null);
   const [scaledDimensions, setScaledDimensions] = useState<{ width: number, height: number } | null>(null);
+  const [timestamp, setTimestamp] = useState<string | null>(null);
   const [severity, setSeverity] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchAndAnalyzeImage() {
       try {
-        const url = await fetchLatestImage();
+        const { url, timestamp } = await fetchLatestImage();  // Destructure the response
         setImageUrl(url);
-
+        setTimestamp(timestamp);  // Set the timestamp
+  
         Image.getSize(url, (width, height) => {
           setImageDimensions({ width, height });
         });
-
+  
         const result = await sendImageToRoboflow(url);
         setInferenceResult(result);
       } catch (error) {
@@ -90,9 +102,9 @@ export default function DetectScreen() {
         setLoading(false);
       }
     }
-
+  
     fetchAndAnalyzeImage();
-  }, []);
+  }, []);  
 
   useEffect(() => {
     if (imageDimensions) {
@@ -124,7 +136,7 @@ export default function DetectScreen() {
       const totalImageArea = scaledWidth * scaledHeight;
 
       const totalBoundingBoxArea = inferenceResult.predictions
-        .filter((prediction: any) => prediction.confidence > 0.7)
+        .filter((prediction: any) => prediction.confidence > 0.5)
         .reduce((totalArea: number, prediction: any) => {
           const boundingBoxArea = prediction.width * prediction.height;
           return totalArea + boundingBoxArea;
@@ -203,6 +215,8 @@ export default function DetectScreen() {
         )}
       </View>
 
+      <ReusableText text={formatTimestamp(timestamp)} color="#9B9A9A"/>
+
       <View style={styles.itemsContainer}>
         <View style={styles.item}>
           <SeverityGauge value={severity || 0} size={200} />
@@ -238,7 +252,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     alignItems: 'center',
     // Set a minimum height or adjust as needed
-    minHeight: 280,
+    minHeight: 273
     
   },
   imageWrapper: {
