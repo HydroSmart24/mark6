@@ -8,7 +8,7 @@ import { getStorage, ref, listAll, getDownloadURL, getMetadata } from "firebase/
 import axios from "axios";
 import { format } from 'date-fns';
 import Svg, { Rect, Text as SvgText } from 'react-native-svg';
-import Loading from '../../components/Loading';
+import Loading from '../../components/Loading/BasicLoading';
 import ReusableText from '../../components/Text/ReusableText';
 
 // Fetch the latest image from Firebase Storage based on timestamp metadata
@@ -72,6 +72,7 @@ function formatTimestamp(timestamp: string | null): string {
 
   const date = new Date(timestamp);
   return `Date: ${format(date, 'yyyy-MM-dd')}, Time: ${format(date, 'h:mm a')}`;
+
 }
 
 export default function DetectScreen() {
@@ -89,11 +90,11 @@ export default function DetectScreen() {
         const { url, timestamp } = await fetchLatestImage();  // Destructure the response
         setImageUrl(url);
         setTimestamp(timestamp);  // Set the timestamp
-  
+
         Image.getSize(url, (width, height) => {
           setImageDimensions({ width, height });
         });
-  
+
         const result = await sendImageToRoboflow(url);
         setInferenceResult(result);
       } catch (error) {
@@ -102,9 +103,9 @@ export default function DetectScreen() {
         setLoading(false);
       }
     }
-  
+
     fetchAndAnalyzeImage();
-  }, []);  
+  }, []);
 
   useEffect(() => {
     if (imageDimensions) {
@@ -215,7 +216,7 @@ export default function DetectScreen() {
         )}
       </View>
 
-      <ReusableText text={formatTimestamp(timestamp)} color="#9B9A9A"/>
+      <ReusableText text={formatTimestamp(timestamp)} color="#9B9A9A" />
 
       <View style={styles.itemsContainer}>
         <View style={styles.item}>
@@ -253,7 +254,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     // Set a minimum height or adjust as needed
     minHeight: 273
-    
+
   },
   imageWrapper: {
     position: 'relative',

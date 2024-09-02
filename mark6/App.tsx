@@ -168,6 +168,8 @@ function MainDrawerNavigator({ userName }: { userName: string }) {
         <Drawer.Screen
         name="UserProfile"
         options={{
+          headerShown: true,
+          headerTitle: 'Profile',
           drawerLabel: "User Profile",
           drawerIcon: ({ color, size }) => (
             <Ionicons name="person-circle-outline" size={size} color={color} />

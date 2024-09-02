@@ -11,7 +11,7 @@ const Loading: React.FC<LoadingProps> = ({ visible }) => {
   return (
     <View style={styles.overlay}>
       <View style={styles.container}>
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color="#4299E1" />
         <Text style={styles.text}>Loading...</Text>
       </View>
     </View>

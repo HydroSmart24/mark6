@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Dimensions, ScrollView } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 import { calculateFutureTankVolumes } from '../../utils/FutureTankVolumes';
+import HomePredictionLoading from '../Loading/HomePredictionLoading';
 
 const { width } = Dimensions.get('window');
 
@@ -88,7 +89,7 @@ export default function Prediction({ style = {} }) {
           />
         </ScrollView>
       ) : (
-        <Text style={styles.loading}>Loading predictions...</Text>
+        <HomePredictionLoading visible={true} />
       )}
     </View>
   );
@@ -106,6 +107,7 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     elevation: 5,
     padding: 10,
+    marginTop: 20,
   },
   header: {
     flexDirection: 'row',
@@ -121,14 +123,14 @@ const styles = StyleSheet.create({
   box: {
     marginLeft: 50,
     padding: 10,
-    backgroundColor: 'lightblue',
+    backgroundColor: '#4299E1',
     borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',
   },
   boxText: {
     fontSize: 18,
-    color: 'black',
+    color: 'white',
   },
   scrollView: {
     flex: 1,
