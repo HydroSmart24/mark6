@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Animated, TouchableOpacity } from 'react-native
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { startFetchingDistanceReadings } from '../../utils/DistancePVC';
+import TankLoading from '../Loading/TankLoading';  // Import the loading spinner component
 
 // Define the type for the navigation prop
 type RootStackParamList = {
@@ -19,6 +20,7 @@ interface TankLevelProps {
 
 export default function TankLevel({ size = 200, style = {}, clickable = false }: TankLevelProps) {
   const [tankVolume, setTankVolume] = useState<number | null>(null);
+  const [loading, setLoading] = useState(true);
   const animatedHeight = useRef(new Animated.Value(0)).current;
   const navigation = useNavigation<NavigationProp>();
 
@@ -26,6 +28,7 @@ export default function TankLevel({ size = 200, style = {}, clickable = false }:
     // Start fetching distance readings and calculate volume
     const stopFetching = startFetchingDistanceReadings((volume: number) => {
       setTankVolume(volume);
+      setLoading(false); // Data is fetched, stop loading
     });
 
     // Cleanup function to stop fetching when the component unmounts
@@ -51,32 +54,43 @@ export default function TankLevel({ size = 200, style = {}, clickable = false }:
 
   const interpolatedColor = animatedHeight.interpolate({
     inputRange: [0, 50, 100],
-    outputRange: ['black', 'black', 'white'],
+    outputRange: ['black', 'white', 'white'],
     extrapolate: 'clamp',
   });
 
   return (
     <TouchableOpacity onPress={handlePress} disabled={!clickable}>
       <View style={[styles.circle, { width: size, height: size, borderRadius: size / 2 }, style]}>
-        <Animated.View
-          style={[
-            styles.fill,
-            {
-              height: animatedHeight.interpolate({
-                inputRange: [0, 100],
-                outputRange: ['0%', '100%'],
-              }),
-            },
-          ]}
-        />
-        <View style={styles.textContainer}>
-          <Animated.Text style={[styles.volume, { fontSize: size / 6, color: interpolatedColor }]}>
-            {tankVolume !== null ? tankVolume : 0} {/* Display volume as an integer */}
-          </Animated.Text>
-          <Animated.Text style={[styles.liters, { fontSize: size / 12, color: interpolatedColor }]}>
-            liters
-          </Animated.Text>
-        </View>
+        {loading ? (
+          // Display the loading spinner inside the circle
+          <TankLoading visible={true} />
+        ) : (
+          <>
+            <Animated.View
+              style={[
+                styles.fill,
+                {
+                  height: animatedHeight.interpolate({
+                    inputRange: [0, 100],
+                    outputRange: ['0%', '100%'],
+                  }),
+                },
+              ]}
+            />
+            <View style={styles.textContainer}>
+              <Animated.Text
+                style={[styles.volume, { fontSize: size / 6, color: interpolatedColor }]}
+              >
+                {tankVolume !== null ? tankVolume : 0} {/* Display volume as an integer */}
+              </Animated.Text>
+              <Animated.Text
+                style={[styles.liters, { fontSize: size / 12, color: interpolatedColor }]}
+              >
+                liters
+              </Animated.Text>
+            </View>
+          </>
+        )}
       </View>
     </TouchableOpacity>
   );

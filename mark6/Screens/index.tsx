@@ -64,8 +64,9 @@ const styles = StyleSheet.create({
     marginBottom: 35,
   },
   header: {
-    width: '85%', 
-    marginBottom: 25, 
+    width: '80%', 
+    marginTop: -20,
+    marginBottom: 15, 
     alignItems: 'flex-start', 
   },
   greeting: {
@@ -81,7 +82,7 @@ const styles = StyleSheet.create({
   },
   basicContainer: {
     width: '85%', 
-    height: 230,
+    height: 185,
     marginBottom: 10, 
   },
   rowContainer: {
@@ -114,7 +115,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     paddingHorizontal: 40, 
-    marginTop: 20, 
+    marginTop: 10, 
   },
   buttonSpacing: {
     marginLeft: 25, 
