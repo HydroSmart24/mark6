@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
     marginLeft: 25, 
   },
   prediction: {
-    marginTop: 50, 
-    width: '90%', 
+    marginTop: 35, 
+    width: '85%', 
   },
 });

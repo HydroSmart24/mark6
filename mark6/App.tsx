@@ -106,6 +106,18 @@ function MainDrawerNavigator({ userName }: { userName: string }) {
         }}
       />
       <Drawer.Screen
+        name="AvailabilityScreen"
+        component={AvailableScreen}
+        options={{
+          headerShown: true,
+          headerTitle: '',
+          drawerLabel: 'Availability',
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name="water" size={size} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
         name="DetectScreen"
         component={DetectScreen}
         options={{
