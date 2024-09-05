@@ -85,6 +85,7 @@ export default function Prediction({ style = {} }) {
             style={{
               marginVertical: 8,
               borderRadius: 10,
+              marginLeft: -20,
             }}
           />
         </ScrollView>
@@ -113,7 +114,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 20,
-    marginLeft: 20,
+    marginLeft: 10,
     marginTop: 20,
   },
   text: {
@@ -121,7 +122,7 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   box: {
-    marginLeft: 50,
+    marginLeft: 40,
     padding: 10,
     backgroundColor: '#4299E1',
     borderRadius: 5,
