@@ -6,8 +6,15 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 
 const { width } = Dimensions.get('window'); // Get the screen width
 
-export default function CustomHeader({ userName }: { userName: string }) {
+interface CustomHeaderProps {
+  userName: string;
+}
+
+export default function CustomHeader({ userName }: CustomHeaderProps) {
   const navigation = useNavigation();
+
+  // Extract the first letter of the user's name
+  const firstLetter = userName ? userName.charAt(0).toUpperCase() : '?';
 
   return (
     <View style={styles.headerContainer}>
@@ -26,7 +33,9 @@ export default function CustomHeader({ userName }: { userName: string }) {
           <Ionicons name="notifications-outline" size={24} color="black" />
         </TouchableOpacity>
         <TouchableOpacity style={styles.avatarContainer}>
-          <View style={styles.avatar} />
+          <View style={styles.avatar}>
+            <Text style={styles.avatarText}>{firstLetter}</Text>
+          </View>
         </TouchableOpacity>
       </View>
     </View>
@@ -40,7 +49,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 25, // Increased padding on both left and right sides
-    paddingVertical: 20,
+    paddingVertical: 15,
     backgroundColor: '#fff',
   },
   leftSection: {
@@ -75,9 +84,19 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   avatar: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    backgroundColor: '#C4C4C4', // Grey circle as placeholder avatar
+    width: 40, 
+    height: 40,
+    borderRadius: 20, 
+    backgroundColor: '#C4C4C4', 
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2, 
+    borderColor: '#4299E1', 
+  },
+  avatarText: {
+    fontSize: 18,
+    color: 'white', 
+    fontWeight: 'bold',
   },
 });
+
