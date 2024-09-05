@@ -17,7 +17,7 @@ const testData = [
 export default function AvailableScreen() {
     return (
         <ScrollView contentContainerStyle={styles.scrollContainer}>
-            <Text style={styles.heading}>Consumption and Availability Status</Text>
+            {/* <Text style={styles.heading}>Consumption and Availability Status</Text> */}
             <View style={styles.tankLevelContainer}>
                 <TankLevel />
             </View>

@@ -1,32 +1,21 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, ScrollView, StyleSheet } from 'react-native';
+import ContactInfoCard from '../components/InfoCards/Contact';
 
 const Information: React.FC = () => {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Information Screen</Text>
-      <Text style={styles.infoText}>This is a basic screen component.</Text>
-    </View>
+    <ScrollView style={styles.container}>
+     
+      <ContactInfoCard />
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#f5f5f5',
     padding: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: '#333',
-  },
-  infoText: {
-    fontSize: 16,
-    color: '#666',
   },
 });
 
