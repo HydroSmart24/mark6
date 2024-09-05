@@ -112,7 +112,7 @@ function MainDrawerNavigator({ userName }: { userName: string }) {
         component={AvailableScreen}
         options={{
           headerShown: true,
-          headerTitle: '',
+          headerTitle: 'Availability & Consumption',
           drawerLabel: 'Availability',
           drawerIcon: ({ color, size }) => (
             <Ionicons name="water" size={size} color={color} />
