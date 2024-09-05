@@ -18,6 +18,7 @@ import { auth } from './firebase/firebaseConfig';
 import AvailableScreen from './Screens/Consumption/Available';
 import ContactUs from './Screens/ContactUs';
 import AboutUs from './Screens/AboutUs';
+import Information from './Screens/Information';
 import OrderHistory from "./Screens/Crowdsourcing/OrderHistory";
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from './firebase/firebaseConfig';
@@ -36,6 +37,7 @@ type RootStackParamList = {
   OrderHistory: undefined;
   ContactUs: undefined;
   AboutUs: undefined;
+  Information: undefined;
   RequestWater: undefined;
 };
 
@@ -60,14 +62,14 @@ function MainTabNavigator({ userName }: { userName: string }) {
       </Tab.Screen>
       
       <Tab.Screen
-        name="AvailableScreen"
-        component={AvailableScreen}
+        name="Information"
+        component={Information}
         options={{
           headerShown: true,
-          headerTitle: 'Available Water',
-          tabBarLabel: "Available",
+          headerTitle: 'Information',
+          tabBarLabel: "Info",
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="water" color={color} size={size} />
+            <Ionicons name="information-circle-sharp" color={color} size={size} />
           ),
         }}
       />
