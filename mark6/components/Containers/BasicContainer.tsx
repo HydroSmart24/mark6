@@ -21,9 +21,13 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingHorizontal: 20,
     backgroundColor: '#fff', // Default background color
-    borderWidth: 2, // Width of the border
-    borderColor: '#ddd', // Color of the border
+    
     borderRadius: 12, // Rounded corners
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
   },
 });
 
