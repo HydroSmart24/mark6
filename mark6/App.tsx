@@ -27,9 +27,10 @@ import { registerForPushNotificationsAsync, setupNotificationHandler } from './u
 import * as Notifications from 'expo-notifications';
 import { listenForLeakageAndNotify } from './utils/Notification/LeakageDetectListen';
 import LeakageAlert from './components/AlertModal/LeakageAlert';
+import NotificationsScreen from './Screens/Notifications';
 
 
-type RootStackParamList = {
+export type RootStackParamList = {
   index: undefined;
   main: undefined;
   DebrisMain: undefined;
@@ -41,6 +42,7 @@ type RootStackParamList = {
   AboutUs: undefined;
   Information: undefined;
   RequestWater: undefined;
+  NotificationsScreen: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -304,6 +306,11 @@ export default function App() {
                 headerShown: true,
                 title: 'Order History',
               }}
+            />
+            <Stack.Screen
+              name="NotificationsScreen"
+              component={NotificationsScreen}
+              options={{ headerShown: true, title: 'Notifications' }}
             />
           </>
         ) : (
