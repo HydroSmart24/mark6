@@ -319,7 +319,8 @@ export default function App() {
         visible={alertVisible}
         title="Leakage Detected!"
         message={alertMessage}
-        onClose={() => setAlertVisible(false)} 
+        onClose={() => setAlertVisible(false)} // Close the alert when the user presses 'Close'
+        iconSize={50}
       />
     </NavigationContainer>
   );

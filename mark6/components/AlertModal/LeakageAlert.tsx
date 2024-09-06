@@ -1,66 +1,97 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, Modal, StyleSheet } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Animated } from 'react-native';
+import Modal from 'react-native-modal';
+import AntDesign from '@expo/vector-icons/AntDesign';
 
 interface LeakageAlertProps {
   visible: boolean;
   title: string;
   message: string;
   onClose: () => void;
+  iconSize?: number;
 }
 
-const LeakageAlert: React.FC<LeakageAlertProps> = ({ visible, title, message, onClose }) => {
+const LeakageAlert: React.FC<LeakageAlertProps> = ({
+  visible,
+  title,
+  message,
+  onClose,
+  iconSize = 50,
+}) => {
+  const blinkAnim = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    const blink = () => {
+      Animated.sequence([
+        Animated.timing(blinkAnim, {
+          toValue: 0,
+          duration: 700,
+          useNativeDriver: true,
+        }),
+        Animated.timing(blinkAnim, {
+          toValue: 1,
+          duration: 500,
+          useNativeDriver: true,
+        }),
+      ]).start(() => blink());
+    };
+
+    blink();
+
+    return () => blinkAnim.stopAnimation();
+  }, [blinkAnim]);
+
   return (
-    <Modal transparent={true} visible={visible} animationType="fade">
-      <View style={styles.overlay}>
-        <View style={styles.alertContainer}>
-          <Text style={styles.title}>{title}</Text>
-          <Text style={styles.message}>{message}</Text>
-          <TouchableOpacity style={styles.button} onPress={onClose}>
-            <Text style={styles.buttonText}>OK</Text>
-          </TouchableOpacity>
-        </View>
+    <Modal
+      isVisible={visible}
+      onBackdropPress={onClose}
+      onSwipeComplete={onClose}
+      swipeDirection="down"
+    >
+      <View style={styles.modalContent}>
+        <Animated.View style={{ opacity: blinkAnim }}>
+          <AntDesign name="warning" size={iconSize} color="red" style={styles.icon} />
+        </Animated.View>
+        <Text style={styles.title}>{title}</Text>
+        <Text style={styles.message}>{message}</Text>
+        <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+          <Text style={styles.closeButtonText}>OK</Text>
+        </TouchableOpacity>
       </View>
     </Modal>
   );
 };
 
 const styles = StyleSheet.create({
-  overlay: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  alertContainer: {
-    width: '80%',
+  modalContent: {
+    backgroundColor: 'white',
     padding: 20,
-    backgroundColor: '#fff',
     borderRadius: 10,
     alignItems: 'center',
-    elevation: 5,
+    justifyContent: 'center',
+  },
+  icon: {
+    marginBottom: 20,
   },
   title: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
+    textAlign: 'center',
     marginBottom: 10,
-    color: '#333',
   },
   message: {
     fontSize: 16,
     textAlign: 'center',
     marginBottom: 20,
-    color: '#666',
   },
-  button: {
-    backgroundColor: '#007BA7',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+  closeButton: {
+    backgroundColor: '#007BFF',
+    padding: 10,
     borderRadius: 5,
   },
-  buttonText: {
-    color: '#fff',
+  closeButtonText: {
+    color: 'white',
     fontSize: 16,
-    fontWeight: 'bold',
   },
 });
 
