@@ -1,29 +1,4 @@
-<<<<<<< HEAD
 import * as React from "react";
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { createDrawerNavigator } from "@react-navigation/drawer";
-import HomeScreen from "./Screens/index";
-import DebrisMain from "./Screens/Debris/DebrisMain";
-import DetectScreen from "./Screens/Debris/DetectScreen";
-import RequestWater from "./Screens/RequestWater/RequestWater";
-import AuthScreen from "./Screens/Auth/AuthScreen";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import AntDesign from "@expo/vector-icons/AntDesign";
-import Ionicons from "@expo/vector-icons/Ionicons";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import { onAuthStateChanged, User } from "firebase/auth";
-import { auth } from "./firebase/firebaseConfig";
-import AvailableScreen from "./Screens/Consumption/Available";
-import ContactUs from "./Screens/ContactUs";
-import AboutUs from "./Screens/AboutUs";
-import OrderHistory from "./Screens/Crowdsourcing/OrderHistory";
-import DistributorHome from "./Screens/Crowdsourcing/DistributorHome";
-import Map from "./Screens/Crowdsourcing/Map";
-=======
-import * as React from 'react';
 import { View, ActivityIndicator } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -50,8 +25,9 @@ import { db } from './firebase/firebaseConfig';
 import UserProfile from './Screens/Auth/UserProfile';
 import { registerForPushNotificationsAsync, setupNotificationHandler } from './utils/Notification/PushNotification';  // Import utility functions
 import * as Notifications from 'expo-notifications';
+import DistributorHome from "./Screens/Crowdsourcing/DistributorHome";
+import Map from "./Screens/Crowdsourcing/Map";
 
->>>>>>> origin/main
 
 type RootStackParamList = {
   index: undefined;
@@ -85,15 +61,10 @@ function MainTabNavigator({ userName }: { userName: string }) {
             <MaterialCommunityIcons name="home" color={color} size={size} />
           ),
         }}
-<<<<<<< HEAD
-      />
-
-=======
       >
         {(props) => <HomeScreen {...props} userName={userName} />}
       </Tab.Screen>
       
->>>>>>> origin/main
       <Tab.Screen
         name="Information"
         component={Information}
@@ -132,14 +103,9 @@ function MainDrawerNavigator({ userName }: { userName: string }) {
         name="DebrisScreen"
         component={DebrisMain}
         options={{
-<<<<<<< HEAD
-          headerTitle: "",
-          drawerLabel: "FilterHealth",
-=======
           headerShown: true,
           headerTitle: '',
           drawerLabel: 'FilterHealth',
->>>>>>> origin/main
           drawerIcon: ({ color, size }) => (
             <MaterialIcons name="health-and-safety" size={size} color={color} />
           ),
@@ -161,13 +127,9 @@ function MainDrawerNavigator({ userName }: { userName: string }) {
         name="DetectScreen"
         component={DetectScreen}
         options={{
-<<<<<<< HEAD
-          drawerLabel: "Debris Detection",
-=======
           headerShown: true,
           headerTitle: 'Debris Detection',
           drawerLabel: 'Debris Detection',
->>>>>>> origin/main
           drawerIcon: ({ color, size }) => (
             <MaterialCommunityIcons
               name="smoke-detector-alert"
@@ -181,7 +143,6 @@ function MainDrawerNavigator({ userName }: { userName: string }) {
         name="OrderHistory"
         component={OrderHistory}
         options={{
-<<<<<<< HEAD
           headerTitle: "Order History",
           drawerLabel: "Order History",
           drawerIcon: ({ color, size }) => (
@@ -190,13 +151,6 @@ function MainDrawerNavigator({ userName }: { userName: string }) {
               size={size}
               color={color}
             />
-=======
-          headerShown: true,
-          headerTitle: '',
-          drawerLabel: 'Order History',
-          drawerIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="tanker-truck" size={size} color={color} />
->>>>>>> origin/main
           ),
         }}
       />
@@ -204,35 +158,20 @@ function MainDrawerNavigator({ userName }: { userName: string }) {
         name="RequestWater"
         component={RequestWater}
         options={{
-<<<<<<< HEAD
           headerTitle: "Request Water",
           drawerLabel: "Request Water",
-=======
-          headerShown: true,
-          headerTitle: '',
-          drawerLabel: 'Request Water',
->>>>>>> origin/main
           drawerIcon: ({ color, size }) => (
             <FontAwesome6 name="code-pull-request" size={size} color={color} />
           ),
         }}
       />
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/main
       <Drawer.Screen
         name="ContactUs"
         component={ContactUs}
         options={{
-<<<<<<< HEAD
-          headerTitle: "",
-          drawerLabel: "Contact Us",
-=======
           headerShown: true,
           headerTitle: '',
           drawerLabel: 'Contact Us',
->>>>>>> origin/main
           drawerIcon: ({ color, size }) => (
             <Ionicons name="call" size={size} color={color} />
           ),
@@ -242,14 +181,9 @@ function MainDrawerNavigator({ userName }: { userName: string }) {
         name="AboutUs"
         component={AboutUs}
         options={{
-<<<<<<< HEAD
-          headerTitle: "",
-          drawerLabel: "About Us",
-=======
           headerShown: true,
           headerTitle: '',
           drawerLabel: 'About Us',
->>>>>>> origin/main
           drawerIcon: ({ color, size }) => (
             <Ionicons name="people" size={size} color={color} />
           ),
@@ -311,15 +245,11 @@ export default function App() {
   }, []);
 
   if (loading) {
-<<<<<<< HEAD
-    return null; // You can add a loading indicator here if needed
-=======
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <ActivityIndicator size="large" color="#007BA7" />
       </View>
     );
->>>>>>> origin/main
   }
 
   return (
@@ -327,7 +257,6 @@ export default function App() {
       <Stack.Navigator initialRouteName="AuthScreen">
         {user ? (
           <>
-<<<<<<< HEAD
             {user.email === "dis@gmail.com" ? (
               <>
                 <Stack.Screen
@@ -343,11 +272,14 @@ export default function App() {
               </>
             ) : (
               <>
-                <Stack.Screen
-                  name="index"
-                  component={MainDrawerNavigator}
-                  options={{ headerShown: false }}
-                />
+                <Stack.Screen 
+              name="index"
+              options={{ headerShown: false }} // Set headerShown to false
+              >
+              {(props) => (
+                <MainDrawerNavigator {...props} userName={userName || ''} />
+              )}
+            </Stack.Screen>
                 <Stack.Screen
                   name="RequestWater"
                   component={RequestWater}
@@ -376,45 +308,6 @@ export default function App() {
                 />
               </>
             )}
-=======
-            <Stack.Screen 
-              name="index"
-              options={{ headerShown: false }} // Set headerShown to false
-              >
-              {(props) => (
-                <MainDrawerNavigator {...props} userName={userName || ''} />
-              )}
-            </Stack.Screen>
-            <Stack.Screen
-              name="RequestWater"
-              component={RequestWater}
-              options={{ headerShown: true }}
-            />
-            <Stack.Screen
-              name="DebrisMain"
-              component={DebrisMain}
-              options={{
-                headerShown: true,
-                title: 'Filter Health',
-              }}
-            />
-            <Stack.Screen
-              name="DetectScreen"
-              component={DetectScreen}
-              options={{ 
-                headerShown: true,
-                title: 'Debris Detection',
-               }}
-            />
-            <Stack.Screen
-              name="OrderHistory"
-              component={OrderHistory}
-              options={{
-                headerShown: true,
-                title: 'Order History',
-              }}
-            />
->>>>>>> origin/main
           </>
         ) : (
           <Stack.Screen
