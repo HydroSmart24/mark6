@@ -232,6 +232,7 @@ export default function App() {
       setLoading(false);
 
       if (user) {
+        const uid = user.uid;
         const docRef = doc(db, "users", user.uid);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
@@ -244,7 +245,7 @@ export default function App() {
           await setDoc(docRef, { pushtoken: pushToken }, { merge: true });
 
         // Start listening for leakage detection and notify the logged-in user
-          unsubscribeLeakageListener = listenForLeakageAndNotify(pushToken, handleLeakageDetected);
+          unsubscribeLeakageListener = listenForLeakageAndNotify(pushToken, uid, handleLeakageDetected);
         }
       }
     });

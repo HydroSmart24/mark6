@@ -8,7 +8,7 @@ import { auth } from '../firebase/firebaseConfig'; // Assuming you have Firebase
 interface Notification {
   id: string;
   title: string;
-  message: string;
+  body: string; // Changed from message to body
   timestamp: {
     seconds: number;
     nanoseconds: number;
@@ -63,7 +63,7 @@ export default function NotificationsScreen() {
     <View style={styles.card}>
       <View style={styles.cardContent}>
         <Text style={styles.title}>{item.title}</Text>
-        <Text style={styles.message}>{item.message}</Text>
+        <Text style={styles.body}>{item.body}</Text> 
         <Text style={styles.timestamp}>
           {new Date(item.timestamp.seconds * 1000).toLocaleString()}
         </Text>
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
   },
-  message: {
+  body: { // Changed this style from message to body
     fontSize: 14,
     marginVertical: 5,
   },
