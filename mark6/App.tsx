@@ -25,6 +25,7 @@ import { db } from './firebase/firebaseConfig';
 import UserProfile from './Screens/Auth/UserProfile';
 import { registerForPushNotificationsAsync, setupNotificationHandler } from './utils/Notification/PushNotification';  // Import utility functions
 import * as Notifications from 'expo-notifications';
+import { listenForLeakageAndNotify } from './utils/Notification/LeakageDetectListen';
 
 
 type RootStackParamList = {
@@ -202,6 +203,8 @@ export default function App() {
   const [userName, setUserName] = React.useState<string | null>(null);
 
   React.useEffect(() => {
+    let unsubscribeLeakageListener: (() => void) | undefined; 
+
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setUser(user);
       setLoading(false);
@@ -213,9 +216,13 @@ export default function App() {
           setUserName(docSnap.data()?.name || null);
         }
 
+        // Register the push token
         const pushToken = await registerForPushNotificationsAsync();
         if (pushToken) {
           await setDoc(docRef, { pushtoken: pushToken }, { merge: true });
+
+          // Start listening for leakage detection and notify the logged-in user
+          unsubscribeLeakageListener = listenForLeakageAndNotify(pushToken);
         }
       }
     });
@@ -231,6 +238,10 @@ export default function App() {
     return () => {
       unsubscribe(); // Cleanup the auth listener
       foregroundSubscription.remove(); // Cleanup the notification listener
+
+      if (unsubscribeLeakageListener) {
+        unsubscribeLeakageListener(); // Stop listening to leakage detection
+      }
     };
   }, []);
 
