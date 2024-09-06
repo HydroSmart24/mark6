@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
   },
-  body: { // Changed this style from message to body
+  body: { 
     fontSize: 14,
     marginVertical: 5,
   },
@@ -121,12 +121,15 @@ const styles = StyleSheet.create({
     color: 'gray',
   },
   clearButton: {
-    backgroundColor: '#ff4d4d',
-    padding: 10,
-    borderRadius: 5,
+    backgroundColor: 'white', 
+    paddingVertical: 5,
+    paddingHorizontal: 15,
+    borderRadius: 15,
+    borderWidth: 2, 
+    borderColor: '#3283C7', 
   },
   clearButtonText: {
-    color: 'white',
+    color: '#646464',
     fontWeight: 'bold',
   },
 });
