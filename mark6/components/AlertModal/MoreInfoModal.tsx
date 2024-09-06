@@ -1,12 +1,30 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Animated } from 'react-native';
 
 interface MoreInfoModalProps {
-  onClose: () => void;
-}
+    onClose: () => void;
+  }
 
 const MoreInfoModal: React.FC<MoreInfoModalProps> = ({ onClose }) => {
   const [step, setStep] = useState(1); // State to track the current description step
+  const scaleAnim = useRef(new Animated.Value(0)).current; // Animated value for the scale
+  const backgroundOpacity = useRef(new Animated.Value(0)).current; // Animated value for background opacity
+
+  useEffect(() => {
+    // Run the background fade-in animation
+    Animated.timing(backgroundOpacity, {
+      toValue: 1, // Fade in to full opacity
+      duration: 250, // Duration of the animation
+      useNativeDriver: true, // Use native driver for better performance
+    }).start();
+
+    // Run the pop animation for the modal
+    Animated.timing(scaleAnim, {
+      toValue: 1, // Scale up to original size
+      duration: 350, // Duration of the animation
+      useNativeDriver: true, // Use native driver for better performance
+    }).start();
+  }, [backgroundOpacity, scaleAnim]);
 
   const handleNext = () => {
     if (step < 2) {
@@ -17,11 +35,11 @@ const MoreInfoModal: React.FC<MoreInfoModalProps> = ({ onClose }) => {
   };
 
   return (
-    <View style={styles.modalContainer}>
-      <View style={styles.modalContent}>
+    <Animated.View style={[styles.modalContainer, { opacity: backgroundOpacity }]}>
+      <Animated.View style={[styles.modalContent, { transform: [{ scale: scaleAnim }] }]}>
         {step === 1 && (
           <>
-            <Text style={styles.modalTitle}>What should i do?</Text>
+            <Text style={styles.modalTitle}>What should I do?</Text>
             <Text style={styles.modalText}>
               If the Severity levels are high, you should stop drinking water!
             </Text>
@@ -32,7 +50,7 @@ const MoreInfoModal: React.FC<MoreInfoModalProps> = ({ onClose }) => {
         )}
         {step === 2 && (
           <>
-            <Text style={styles.modalTitle}>What should i do?</Text>
+            <Text style={styles.modalTitle}>What should I do?</Text>
             <Text style={styles.modalText}>
               Clear out the debris and clean the water tank before drinking.
             </Text>
@@ -41,17 +59,17 @@ const MoreInfoModal: React.FC<MoreInfoModalProps> = ({ onClose }) => {
             </TouchableOpacity>
           </>
         )}
-      </View>
-    </View>
+      </Animated.View>
+    </Animated.View>
   );
 };
 
 const styles = StyleSheet.create({
   modalContainer: {
-    flex: 1,
+    ...StyleSheet.absoluteFillObject, // Cover the whole screen
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Transparent dark background
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Transparent dark background
   },
   modalContent: {
     width: '80%',
@@ -64,6 +82,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
     elevation: 5, // For Android shadow
+    transform: [{ scale: 0 }], // Start with scale 0 for the pop effect
   },
   modalTitle: {
     fontSize: 22,
