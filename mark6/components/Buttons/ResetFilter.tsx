@@ -1,13 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { TouchableOpacity, Text, StyleSheet, View, Modal, ViewStyle, Pressable, Animated } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
+import { resetExpirationDate } from '../../utils/FilterHealthCalc'; // Import the function
 
 interface ButtonProps {
   title: string;
   style?: ViewStyle;
+  onReset: () => void;
 }
 
-const ResetFilter: React.FC<ButtonProps> = ({ title, style }) => {
+const ResetFilter: React.FC<ButtonProps> = ({ title, style, onReset }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [step, setStep] = useState(1);
   const [animationCompleted, setAnimationCompleted] = useState(false);
@@ -43,7 +45,8 @@ const ResetFilter: React.FC<ButtonProps> = ({ title, style }) => {
     if (step === 1) {
       setStep(2);
     } else {
-      closeModal(); // Close modal after the second step
+      onReset(); // Call the passed onReset function
+      closeModal(); // Close modal after reset
     }
   };
 
@@ -91,17 +94,17 @@ const ResetFilter: React.FC<ButtonProps> = ({ title, style }) => {
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: '#4299E1', // bg-blue-500
-    paddingVertical: 8, // py-2
-    paddingHorizontal: 16, // px-4
-    borderRadius: 4, // rounded
-    borderBottomWidth: 4, // border-b-4
-    borderBottomColor: '#2B6CB0', // border-blue-700
-    marginTop: 20, // mt-5
+    backgroundColor: '#4299E1',
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 4,
+    borderBottomWidth: 4,
+    borderBottomColor: '#2B6CB0',
+    marginTop: 20,
   },
   buttonText: {
-    color: '#FFF', // text-white
-    fontWeight: 'bold', // font-bold
+    color: '#FFF',
+    fontWeight: 'bold',
     textAlign: 'center',
   },
   modalBackground: {
