@@ -1,11 +1,11 @@
-import { db } from '../../firebase/firebaseConfig'; // Adjust the path based on your project structure
+import { db } from '../../firebase/firebaseConfig';
 import { collection, onSnapshot } from 'firebase/firestore';
 import * as Notifications from 'expo-notifications';
 
 // Function to listen for leakage detection and notify the logged-in user
-export function listenForLeakageAndNotify(pushToken) {
+export function listenForLeakageAndNotify(pushToken, onLeakageDetected) {
   const leakageDetectRef = collection(db, 'leakageDetect');
-  
+
   // Capture the app load time
   const appLoadTime = new Date();
 
@@ -14,21 +14,26 @@ export function listenForLeakageAndNotify(pushToken) {
     snapshot.docChanges().forEach(async (change) => {
       if (change.type === 'added') {
         const leakageData = change.doc.data();
-        
+
         // Get the document's timestamp, assuming it exists
         const docTimestamp = leakageData.timestamp?.toDate();  // Assuming 'timestamp' is a Firestore Timestamp
 
         // Check if the document was added after the app loaded
         if (docTimestamp && docTimestamp > appLoadTime) {
+          const messageBody = `Possible Leakage in tank. Please take action.`;
+
           // Construct the notification content
           const notificationContent = {
             title: 'Leakage Detected!',
-            body: `Possible Leakage in tank. Please take action.`,
+            body: messageBody,
             data: { leakageId: change.doc.id },
           };
 
           // Send the notification to the logged-in user's push token
           await sendPushNotification(pushToken, notificationContent);
+
+          // Call the onLeakageDetected callback to trigger in-app alert
+          onLeakageDetected(messageBody);
         }
       }
     });

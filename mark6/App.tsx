@@ -26,6 +26,7 @@ import UserProfile from './Screens/Auth/UserProfile';
 import { registerForPushNotificationsAsync, setupNotificationHandler } from './utils/Notification/PushNotification';  // Import utility functions
 import * as Notifications from 'expo-notifications';
 import { listenForLeakageAndNotify } from './utils/Notification/LeakageDetectListen';
+import LeakageAlert from './components/AlertModal/LeakageAlert';
 
 
 type RootStackParamList = {
@@ -201,9 +202,18 @@ export default function App() {
   const [user, setUser] = React.useState<User | null>(null);
   const [loading, setLoading] = React.useState(true);
   const [userName, setUserName] = React.useState<string | null>(null);
+  const [alertVisible, setAlertVisible] = React.useState(false);
+  const [alertMessage, setAlertMessage] = React.useState<string>('');
+
+  // Function to handle leakage detection alert
+  const handleLeakageDetected = (message: string) => {
+    setAlertMessage(message);
+    setAlertVisible(true);
+  };
+
 
   React.useEffect(() => {
-    let unsubscribeLeakageListener: (() => void) | undefined; 
+    let unsubscribeLeakageListener: (() => void) | undefined;
 
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setUser(user);
@@ -216,23 +226,23 @@ export default function App() {
           setUserName(docSnap.data()?.name || null);
         }
 
-        // Register the push token
+      // Register the push token
         const pushToken = await registerForPushNotificationsAsync();
         if (pushToken) {
           await setDoc(docRef, { pushtoken: pushToken }, { merge: true });
 
-          // Start listening for leakage detection and notify the logged-in user
-          unsubscribeLeakageListener = listenForLeakageAndNotify(pushToken);
+        // Start listening for leakage detection and notify the logged-in user
+          unsubscribeLeakageListener = listenForLeakageAndNotify(pushToken, handleLeakageDetected);
         }
       }
     });
 
     setupNotificationHandler(); // Setup the notification handler
 
-    // Handle foreground notifications without showing an in-app alert
+  // Handle foreground notifications without showing an in-app alert
     const foregroundSubscription = Notifications.addNotificationReceivedListener(notification => {
       console.log('Notification received in foreground:', notification);
-      // No in-app Alert, allow the notification to show as a system notification
+    // No in-app Alert, allow the notification to show as a system notification
     });
 
     return () => {
@@ -304,6 +314,13 @@ export default function App() {
           />
         )}
       </Stack.Navigator>
+
+      <LeakageAlert
+        visible={alertVisible}
+        title="Leakage Detected!"
+        message={alertMessage}
+        onClose={() => setAlertVisible(false)} 
+      />
     </NavigationContainer>
   );
 }
