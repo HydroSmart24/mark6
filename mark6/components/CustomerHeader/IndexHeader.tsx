@@ -1,8 +1,9 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
-import { DrawerActions, useNavigation } from '@react-navigation/native';
+import { DrawerActions, useNavigation, NavigationProp } from '@react-navigation/native';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import {RootStackParamList} from '../../App'; 
 
 const { width } = Dimensions.get('window'); // Get the screen width
 
@@ -11,9 +12,9 @@ interface CustomHeaderProps {
 }
 
 export default function CustomHeader({ userName }: CustomHeaderProps) {
-  const navigation = useNavigation();
+  // Define the navigation prop with proper types
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
-  // Extract the first letter of the user's name
   const firstLetter = userName ? userName.charAt(0).toUpperCase() : '?';
 
   return (
@@ -29,7 +30,8 @@ export default function CustomHeader({ userName }: CustomHeaderProps) {
       </View>
 
       <View style={styles.rightSection}>
-        <TouchableOpacity>
+       
+        <TouchableOpacity onPress={() => navigation.navigate('NotificationsScreen')}>
           <Ionicons name="notifications-outline" size={24} color="black" />
         </TouchableOpacity>
         <TouchableOpacity style={styles.avatarContainer}>
@@ -99,4 +101,3 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
-
