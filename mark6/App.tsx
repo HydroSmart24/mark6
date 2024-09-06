@@ -184,11 +184,18 @@ export default function App() {
         {user ? (
           <>
             {user.email === "dis@gmail.com" ? (
-              <Stack.Screen
-                name="Map"
-                component={Map}
-                options={{ headerShown: true, title: "Distributor Home" }}
-              />
+              <>
+                <Stack.Screen
+                  name="DistributorHome"
+                  component={DistributorHome}
+                  options={{ headerShown: true, title: "Distributor Home" }}
+                />
+                <Stack.Screen
+                  name="Map"
+                  component={Map}
+                  options={{ headerShown: true, title: "Map" }}
+                />
+              </>
             ) : (
               <>
                 <Stack.Screen
