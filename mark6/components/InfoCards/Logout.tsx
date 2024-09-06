@@ -4,12 +4,12 @@ import Feather from '@expo/vector-icons/Feather';
 
 const { width } = Dimensions.get('window');
 
-export default function ContactInfoCard() {
+export default function LogoutCard() {
   return (
     <View style={styles.cardContainer}>
       {/* Header that pops out of the card */}
       <View style={styles.header}>
-        <Text style={styles.headerText}>Contact for support</Text>
+        <Text style={styles.headerText}>Log Out</Text>
       </View>
 
       {/* Content goes here */}
@@ -24,7 +24,7 @@ export default function ContactInfoCard() {
               <Text style={styles.bulletIcon}>•</Text>
             </View>
           </View>
-          <Text style={styles.bulletText}>Find the Contact-Us Screen on the top left drawer <Feather name="menu" size={14} color="black" /></Text>
+          <Text style={styles.bulletText}>Find the User Profile Screen on the top left drawer <Feather name="menu" size={14} color="black" /></Text>
         </View>
         {/* Image 1 */}
         <Image source={require('../../assets/Info/header.png')} style={styles.image1} />
@@ -36,7 +36,7 @@ export default function ContactInfoCard() {
               <Text style={styles.bulletIcon}>•</Text>
             </View>
           </View>
-          <Text style={styles.bulletText}>Click on 'Contact-Us' screen</Text>
+          <Text style={styles.bulletText}>Click on 'User Profile' screen</Text>
         </View>
         {/* Image 2 */}
         <Image source={require('../../assets/Info/contact2.png')} style={styles.image2} />
@@ -49,7 +49,7 @@ export default function ContactInfoCard() {
             </View>
           </View>
           <Text style={styles.bulletText}>
-            Enter the details and send us your concern. Our support team will reach you through the email.
+            Click the Logout button
           </Text>
         </View>
         {/* Image 3 */}
@@ -63,11 +63,11 @@ const styles = StyleSheet.create({
   cardContainer: {
     backgroundColor: '#fff',
     borderRadius: 10,
-    padding: 20,
+    padding: 15,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.8,
-    shadowRadius: 2,
+    shadowRadius: 10,
     elevation: 5,
     marginVertical: 20,
     width: width - 40, // Adjusting for padding

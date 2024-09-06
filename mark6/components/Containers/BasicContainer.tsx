@@ -21,7 +21,6 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingHorizontal: 20,
     backgroundColor: '#fff', // Default background color
-    
     borderRadius: 12, // Rounded corners
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
