@@ -7,23 +7,16 @@ import {
   TouchableOpacity,
 } from "react-native";
 
-interface OrderHistoryNavProps {
+interface DistributorNavNavProps {
   selectedOption: string;
   onSelectOption: (option: string) => void;
 }
 
-const OrderHistoryNav: React.FC<OrderHistoryNavProps> = ({
+const DistributorNav: React.FC<DistributorNavNavProps> = ({
   selectedOption,
   onSelectOption,
 }) => {
-  const options = [
-    "All",
-    "Pending",
-    "Accepted",
-    "Delivering",
-    "Delivered",
-    "Cancelled",
-  ];
+  const options = ["Pending", "Accepted", "Delivered", "Cancelled"];
 
   return (
     <View style={styles.container}>
@@ -57,6 +50,7 @@ const styles = StyleSheet.create({
     height: 50,
     backgroundColor: "#f8f8f8",
     borderRadius: 20,
+    marginBottom: 10,
   },
   option: {
     paddingHorizontal: 20,
@@ -76,4 +70,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default OrderHistoryNav;
+export default DistributorNav;
