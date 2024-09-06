@@ -56,7 +56,9 @@ export default function OrderHistory() {
       case "Pending":
         return request.status === "Pending";
       case "Accepted":
-        return request.status === "Accepted" || request.status === "Delivering";
+        return request.status === "Accepted";
+      case "Delivering":
+        return request.status === "Delivering";
       case "Delivered":
         return request.status === "Delivered";
       case "Cancelled":
