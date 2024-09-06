@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { View, TextInput, Text, TouchableOpacity, Image, StyleSheet, Alert } from 'react-native';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../firebase/firebaseConfig'; // Ensure this path is correct
+import { auth, db } from '../../firebase/firebaseConfig'; // Ensure this path is correct
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { doc, setDoc } from 'firebase/firestore'; // Firestore functions
 
 // Define your navigation types
 type RootStackParamList = {
@@ -21,31 +22,38 @@ export default function AuthScreen() {
 
   const navigation = useNavigation<AuthScreenNavigationProp>();
 
-  const handleAuth = () => {
-    if (isSignUp) {
-      createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          Alert.alert('Success', 'Account created successfully!');
-          navigation.reset({
-            index: 0,
-            routes: [{ name: 'index' }], // Navigate to the main screen after signup
-          });
-        })
-        .catch((error) => {
-          Alert.alert('Error', error.message);
+  const handleAuth = async () => {
+    try {
+      if (isSignUp) {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        // Save the user's name in Firestore under the 'users' collection
+        await setDoc(doc(db, 'users', user.uid), {
+          name: name,
+          uid: user.uid,
+          email: email,
         });
-    } else {
-      signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          Alert.alert('Success', 'Logged in successfully!');
-          navigation.reset({
-            index: 0,
-            routes: [{ name: 'index' }], // Navigate to the main screen after login
-          });
-        })
-        .catch((error) => {
-          Alert.alert('Error', error.message);
+
+        Alert.alert('Success', 'Account created successfully!');
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'index' }], // Navigate to the main screen after signup
         });
+      } else {
+        await signInWithEmailAndPassword(auth, email, password);
+        Alert.alert('Success', 'Logged in successfully!');
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'index' }], // Navigate to the main screen after login
+        });
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        Alert.alert('Error', error.message);
+      } else {
+        Alert.alert('Error', 'An unexpected error occurred.');
+      }
     }
   };
 
@@ -144,7 +152,7 @@ const styles = StyleSheet.create({
   },
   input: {
     width: '90%',
-    height: 50, // Same height as the button
+    height: 50,
     borderRadius: 5,
     backgroundColor: '#F0F0F0',
     paddingHorizontal: 10,
@@ -152,7 +160,7 @@ const styles = StyleSheet.create({
   },
   loginButton: {
     width: '90%',
-    height: 50, // Ensure the button height matches the input fields
+    height: 50,
     backgroundColor: '#007BA7',
     borderRadius: 5,
     justifyContent: 'center',

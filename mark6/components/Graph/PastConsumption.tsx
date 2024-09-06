@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, StyleSheet, Dimensions, ScrollView } from 'react-native';
+import { View, StyleSheet, Dimensions, ScrollView, Text } from 'react-native';
 import { BarChart } from 'react-native-gifted-charts';
+import { Picker } from '@react-native-picker/picker'; // Import Picker from the correct package
 
 const { width } = Dimensions.get('window');
 
@@ -22,30 +23,52 @@ const testData = [
 
 export default function PastConsumption({ data = testData }: PastConsumptionProps) {
     const barData = data.map(item => {
-        // Convert the date format to "Aug 20", "Aug 21"
         const [day, month] = item.date.split(' ');
         const formattedDate = `${month} ${day}`;
 
         return {
             label: formattedDate,
             value: item.consumption,
-            frontColor: '#007BA7', // Customize the bar color here
+            frontColor: '#007BA7',
         };
     });
 
+    const [selectedMonth, setSelectedMonth] = React.useState('August'); // State for selected month
+
     return (
         <View style={styles.container}>
+            <View style={styles.headerContainer}>
+                <Text style={styles.headerText}>Past Consumption</Text>
+                <Picker
+                    style={styles.picker}
+                    selectedValue={selectedMonth}
+                    onValueChange={(itemValue: string) => setSelectedMonth(itemValue)}
+                >
+                    <Picker.Item label="January" value="January" />
+                    <Picker.Item label="February" value="February" />
+                    <Picker.Item label="March" value="March" />
+                    <Picker.Item label="April" value="April" />
+                    <Picker.Item label="May" value="May" />
+                    <Picker.Item label="June" value="June" />
+                    <Picker.Item label="July" value="July" />
+                    <Picker.Item label="August" value="August" />
+                    <Picker.Item label="September" value="September" />
+                    <Picker.Item label="October" value="October" />
+                    <Picker.Item label="November" value="November" />
+                    <Picker.Item label="December" value="December" />
+                </Picker>
+            </View>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 <BarChart
                     data={barData}
                     barWidth={35}
                     barBorderRadius={4}
-                    width={barData.length * 60} // Adjust width based on the number of bars
+                    width={barData.length * 60}
                     noOfSections={5}
-                    maxValue={50} // Adjust this to your maximum expected value
-                    stepValue={10} // Interval steps for Y-axis
+                    maxValue={50}
+                    stepValue={10}
                     yAxisLabelTexts={['0', '10', '20', '30', '40', '50']}
-                    initialSpacing={20} // Adds some initial spacing on the left
+                    initialSpacing={20}
                 />
             </ScrollView>
         </View>
@@ -63,7 +86,25 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.1,
         shadowRadius: 5,
         elevation: 5,
-        width: width - 40, // Full screen width minus 20px margin on each side
-        marginVertical: 20, // Added margin for spacing from other components
+        width: width - 40,
+        marginVertical: 20,
+    },
+    headerContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: '100%',
+        marginBottom: 20,
+    },
+    headerText: {
+        fontSize: 16,
+        color: '#7E7E7E',
+    },
+    picker: {
+        height: 40,
+        width: 120,
+        color: 'black',
+        backgroundColor: '#EFEFEF',
+        borderRadius: 10,
     },
 });

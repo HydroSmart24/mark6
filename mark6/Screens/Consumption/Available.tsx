@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView, Text } from 'react-native';
 import TankLevel from '../../components/AvailableTank/TankLevel';
-import DailyConsumption from '../../components/Consumption/DaillyConsumption';
+import DailyConsumption from '../../components/Consumption/DaillyConsumption';  // Make sure this import path is correct
 import PastConsumption from '../../components/Graph/PastConsumption';
 
 const testData = [
@@ -17,11 +17,12 @@ const testData = [
 export default function AvailableScreen() {
     return (
         <ScrollView contentContainerStyle={styles.scrollContainer}>
+            {/* <Text style={styles.heading}>Consumption and Availability Status</Text> */}
             <View style={styles.tankLevelContainer}>
                 <TankLevel />
             </View>
             <View style={styles.consumptionContainer}>
-                <DailyConsumption date="27th Aug" amount={12} />
+                <DailyConsumption />
             </View>
             <View style={styles.pastConsumptionContainer}>
                 <PastConsumption data={testData} />
@@ -33,10 +34,17 @@ export default function AvailableScreen() {
 const styles = StyleSheet.create({
     scrollContainer: {
         flexGrow: 1,
-        justifyContent: 'flex-start', 
+        justifyContent: 'flex-start',
         alignItems: 'center',
         backgroundColor: '#f5f5f5',
-        paddingVertical: 20,
+        paddingTop: 55,
+        paddingBottom: 40,
+    },
+    heading:{
+        fontSize: 18,
+        marginBottom: 42,
+        color: '#007BA7',
+        fontWeight: '500',
     },
     tankLevelContainer: {
         width: '100%',
@@ -45,11 +53,11 @@ const styles = StyleSheet.create({
     },
     consumptionContainer: {
         width: '100%', 
-        alignItems: 'center', 
+        alignItems: 'center',
     },
     pastConsumptionContainer: {
         width: '100%', 
         alignItems: 'center', 
-        marginTop: 20, // Add some space between DailyConsumption and PastConsumption
+        marginTop: 20, 
     },
 });
