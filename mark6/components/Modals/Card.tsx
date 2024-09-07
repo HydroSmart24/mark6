@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
   line: {
     width: 2, // Width of the vertical line
     height: "100%", // Full height of the card
-    backgroundColor: "#909090", // Color of the vertical line
+    backgroundColor: "#4299E1", // Color of the vertical line
     marginLeft: 10, // Space between the line and the text
   },
   content: {
@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
   },
   statusContainer: {
     padding: 10, // Padding inside the rectangle
-    borderRadius: 20, // Rounded corners for the rectangle
+    borderRadius: 10, // Rounded corners for the rectangle
     alignItems: "center",
     justifyContent: "center",
     width: 100, // Adjust width if needed

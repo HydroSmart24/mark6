@@ -120,11 +120,18 @@ export default function DetectScreen() {
     if (imageDimensions) {
       const { width: originalWidth, height: originalHeight } = imageDimensions;
       const windowWidth = Dimensions.get('window').width - 20; // Adjust for padding if necessary
-
+  
       const calculatedHeight = calculateImageHeight(originalWidth, originalHeight, windowWidth);
       setScaledHeight(calculatedHeight); // Dynamically set the scaled height
+  
+      // Set both width and height in scaledDimensions
+      setScaledDimensions({
+        width: windowWidth,
+        height: calculatedHeight,
+      });
     }
   }, [imageDimensions]);
+  
 
   useEffect(() => {
     if (inferenceResult && imageDimensions) {

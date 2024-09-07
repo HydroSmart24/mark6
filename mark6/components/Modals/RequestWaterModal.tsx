@@ -12,6 +12,7 @@ import {
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Picker } from "@react-native-picker/picker";
 import { sendRequest } from "../../utils/SendRequest";
+import { Ionicons } from '@expo/vector-icons';
 
 interface RequestWaterModalProps {
   visible: boolean;
@@ -91,9 +92,9 @@ const RequestWaterModal: React.FC<RequestWaterModalProps> = ({
       <View style={styles.modalOverlay}>
         <View style={styles.modalContainer}>
           {/* Close button */}
-          <TouchableOpacity style={styles.closeButton} onPress={handleClose}>
-            <Text style={styles.closeButtonText}>x</Text>
-          </TouchableOpacity>
+            <TouchableOpacity style={styles.closeButton} onPress={handleClose}>
+              <Ionicons name="close" size={24} color="white" />
+            </TouchableOpacity>
 
           <Text style={styles.modalTitle}>Request Water</Text>
 
@@ -186,16 +187,19 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   closeButton: {
-    position: "absolute",
+    position: 'absolute',
     top: 10,
     right: 10,
-    zIndex: 1,
-    padding: 10, // Increase padding for a larger touchable area
+    backgroundColor: '#4299E1',
+    padding: 5,
+    borderRadius: 15,
   },
   closeButtonText: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#333",
+    color: "white",
+    top: -10,
+    borderColor: "red",
   },
   modalTitle: {
     fontSize: 20,
