@@ -9,9 +9,11 @@ interface ModalProps {
   onClose: () => void;
   ownerName: string;
   availableLiters: number;
+  ownerId: string;
+  currentUserName: string;
 }
 
-const TankRequestWaterModal: React.FC<ModalProps> = ({ visible, onClose, ownerName, availableLiters }) => {
+const TankRequestWaterModal: React.FC<ModalProps> = ({ visible, onClose, ownerName, availableLiters, ownerId, currentUserName }) => {
   const [requestedAmount, setRequestedAmount] = useState('');
   const [error, setError] = useState<string | null>(null);
 
@@ -38,7 +40,7 @@ const TankRequestWaterModal: React.FC<ModalProps> = ({ visible, onClose, ownerNa
         const pushToken = await getPushNotificationToken(ownerName); // Fetch the push token
         if (pushToken) {
           console.log('Push notification token:', pushToken);
-          await sendPushNotification(pushToken, "Kulanaka", requestedAmount); // Call the sendPushNotification function
+          await sendPushNotification(pushToken, ownerName, requestedAmount, ownerId, currentUserName); // Call the sendPushNotification function
         }
         onClose();
       } catch (err) {
