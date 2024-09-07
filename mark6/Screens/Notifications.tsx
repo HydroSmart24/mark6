@@ -21,6 +21,7 @@ export default function NotificationsScreen() {
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false); // Modal visibility state
   const [selectedNotificationDetails, setSelectedNotificationDetails] = useState<string>(''); // State to store selected notification details
+  const [selectedNotificationId, setSelectedNotificationId] = useState<string | null>(null); // Store the selected notification ID
 
   useEffect(() => {
     const userId = auth.currentUser?.uid;
@@ -48,12 +49,7 @@ export default function NotificationsScreen() {
 
     return unsubscribe;
   };
-
-  const handleViewRequest = (notificationDetails: string) => {
-    setSelectedNotificationDetails(notificationDetails); // Set selected notification details
-    setModalVisible(true); // Show the modal
-  };
-
+  
   const handleClearNotification = async (userId: string, notificationId: string) => {
     try {
       const notificationDocRef = doc(db, `users/${userId}/notifications`, notificationId);
@@ -62,6 +58,28 @@ export default function NotificationsScreen() {
     } catch (error) {
       console.error('Error deleting notification:', error);
       Alert.alert('Error', 'Failed to clear the notification.');
+    }
+  };
+
+
+  const handleViewRequest = (notificationDetails: string, notificationId: string) => {
+    setSelectedNotificationDetails(notificationDetails); // Set selected notification details
+    setSelectedNotificationId(notificationId); // Set the selected notification ID
+    setModalVisible(true); // Show the modal
+  };
+
+  const handleDeclineRequest = async () => {
+    const userId = auth.currentUser?.uid;
+    if (userId && selectedNotificationId) {
+      try {
+        const notificationDocRef = doc(db, `users/${userId}/notifications`, selectedNotificationId);
+        await deleteDoc(notificationDocRef);
+        Alert.alert('Notification declined', 'The notification has been removed.');
+        setModalVisible(false); // Close the modal after deletion
+      } catch (error) {
+        console.error('Error deleting notification:', error);
+        Alert.alert('Error', 'Failed to delete the notification.');
+      }
     }
   };
 
@@ -78,7 +96,7 @@ export default function NotificationsScreen() {
       {item.title === 'Water Request Notification' ? (
         <TouchableOpacity
           style={styles.viewButton}
-          onPress={() => handleViewRequest(item.body)} // Pass the notification body as details
+          onPress={() => handleViewRequest(item.body, item.id)} // Pass the notification ID and body
         >
           <Text style={styles.viewButtonText}>View</Text>
         </TouchableOpacity>
@@ -116,8 +134,8 @@ export default function NotificationsScreen() {
           setModalVisible(false); // Close the modal after accepting
           // Add any other logic for accepting the request
         }}
+        onDecline={handleDeclineRequest} // Handle decline request
       />
-
     </View>
   );
 }
@@ -175,3 +193,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
+
+
+
+
