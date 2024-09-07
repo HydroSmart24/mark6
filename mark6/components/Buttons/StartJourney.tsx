@@ -51,7 +51,8 @@ const styles = StyleSheet.create({
     borderBottomWidth: 4, // equivalent to border-b-4
     borderBottomColor: "#2B6CB0", // equivalent to border-blue-700
     alignItems: "center", // Center content horizontally
-    marginTop: 10, // Space between buttons
+    bottom: 80, // Space between buttons
+    left: 240, // Align button to the left
   },
   buttonContent: {
     flexDirection: "row", // Align icon and text horizontally
