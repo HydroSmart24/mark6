@@ -16,7 +16,13 @@ const DistributorNav: React.FC<DistributorNavNavProps> = ({
   selectedOption,
   onSelectOption,
 }) => {
-  const options = ["Pending", "Accepted", "Delivered", "Cancelled"];
+  const options = [
+    "Pending",
+    "Accepted",
+    "Delivering",
+    "Delivered",
+    "Cancelled",
+  ];
 
   return (
     <View style={styles.container}>

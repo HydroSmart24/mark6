@@ -55,6 +55,8 @@ const DistributorCard: React.FC<DistributorCardProps> = ({
       newStatus = "Cancelled";
     } else if (buttonType === "Add") {
       newStatus = "Delivering";
+    } else if (buttonType === "Deliver") {
+      newStatus = "Delivered";
     }
 
     try {
@@ -100,6 +102,14 @@ const DistributorCard: React.FC<DistributorCardProps> = ({
             onPress={() => handleButtonPress("Add")}
           >
             <Text style={styles.buttonText}>Add</Text>
+          </TouchableOpacity>
+        )}
+        {selectedOption === "Delivering" && (
+          <TouchableOpacity
+            style={[styles.button, styles.addButton]}
+            onPress={() => handleButtonPress("Deliver")}
+          >
+            <Text style={styles.buttonText}>Deliver</Text>
           </TouchableOpacity>
         )}
       </View>
