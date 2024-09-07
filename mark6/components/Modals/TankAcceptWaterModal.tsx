@@ -6,9 +6,10 @@ interface NotificationModalProps {
   onClose: () => void;
   notificationDetails: string;
   onAccept: () => void;
+  onDecline: () => void; // Add onDecline prop
 }
 
-const NotificationModal: React.FC<NotificationModalProps> = ({ visible, onClose, notificationDetails, onAccept }) => {
+const NotificationModal: React.FC<NotificationModalProps> = ({ visible, onClose, notificationDetails, onAccept, onDecline }) => {
   return (
     <Modal visible={visible} transparent={true} animationType="slide">
       <View style={styles.modalBackground}>
@@ -18,7 +19,7 @@ const NotificationModal: React.FC<NotificationModalProps> = ({ visible, onClose,
 
           {/* Accept and Decline Buttons */}
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.declineButton} onPress={onClose}>
+            <TouchableOpacity style={styles.declineButton} onPress={onDecline}>
               <Text style={styles.declineButtonText}>Decline</Text>
             </TouchableOpacity>
 
