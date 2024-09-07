@@ -44,6 +44,12 @@ async function fetchLatestImage() {
   }
 }
 
+// Function to calculate the scaled height based on the image's aspect ratio and screen width
+const calculateImageHeight = (imageWidth: number, imageHeight: number, containerWidth: number): number => {
+  const aspectRatio = imageWidth / imageHeight;
+  return containerWidth / aspectRatio;
+};
+
 // Send image URL to Roboflow for inference
 async function sendImageToRoboflow(imageUrl: string) {
   try {
@@ -77,6 +83,7 @@ function formatTimestamp(timestamp: string | null): string {
 }
 
 export default function DetectScreen() {
+  const [scaledHeight, setScaledHeight] = useState<number | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [inferenceResult, setInferenceResult] = useState<any>(null);
   const [imageDimensions, setImageDimensions] = useState<{ width: number, height: number } | null>(null);
@@ -111,23 +118,11 @@ export default function DetectScreen() {
 
   useEffect(() => {
     if (imageDimensions) {
-      const { width, height } = imageDimensions;
-      const windowWidth = Dimensions.get('window').width - 20; // Adjust padding as needed
-      const windowHeight = Dimensions.get('window').height - 20; // Adjust padding as needed
+      const { width: originalWidth, height: originalHeight } = imageDimensions;
+      const windowWidth = Dimensions.get('window').width - 20; // Adjust for padding if necessary
 
-      const aspectRatio = width / height;
-
-      if (windowWidth / windowHeight > aspectRatio) {
-        setScaledDimensions({
-          width: windowHeight * aspectRatio,
-          height: windowHeight,
-        });
-      } else {
-        setScaledDimensions({
-          width: windowWidth,
-          height: windowWidth / aspectRatio,
-        });
-      }
+      const calculatedHeight = calculateImageHeight(originalWidth, originalHeight, windowWidth);
+      setScaledHeight(calculatedHeight); // Dynamically set the scaled height
     }
   }, [imageDimensions]);
 
@@ -166,16 +161,17 @@ export default function DetectScreen() {
     if (!inferenceResult || !inferenceResult.predictions || !scaledDimensions || !imageDimensions) {
       return null;
     }
-
+  
     const { width: originalWidth, height: originalHeight } = imageDimensions;
     const { width: scaledWidth, height: scaledHeight } = scaledDimensions;
+  
+    // Check if scaledHeight and scaledWidth are not null before rendering the SVG
+    if (!scaledHeight || !scaledWidth) {
+      return null;
+    }
 
     return (
-      <Svg
-        height={scaledHeight}
-        width={scaledWidth}
-        style={styles.svg}
-      >
+      <Svg height={scaledHeight} width={scaledWidth} style={styles.svg}>
         {inferenceResult.predictions
           .filter((prediction: any) => prediction.confidence > 0.4)
           .map((prediction: any, index: number) => {
@@ -214,35 +210,35 @@ export default function DetectScreen() {
   return (
     <View style={styles.container}>
       <Loading visible={loading} />
-
-      <View style={styles.imageContainer}>
-        {imageUrl && scaledDimensions ? (
-          <View style={styles.imageWrapper}>
-            <Image
-              source={{ uri: imageUrl }}
-              style={[styles.image, { width: scaledDimensions.width, height: scaledDimensions.height }]}
-              resizeMode="contain"
-            />
-            {renderBoundingBoxes()}
-          </View>
-        ) : (
-          <Text>Loading Image...</Text>
-        )}
-      </View>
+      {/* Render Image and Bounding Boxes */}
+      {imageUrl && scaledHeight ? (
+        <View style={[styles.imageContainer, { height: scaledHeight }]}>
+          <Image
+            source={{ uri: imageUrl }}
+            style={[styles.image, { height: scaledHeight }]}
+            resizeMode="contain"
+          />
+          {renderBoundingBoxes()}
+        </View>
+      ) : (
+        <Text>Loading Image...</Text>
+      )}
 
       <ReusableText text={formatTimestamp(timestamp)} color="#9B9A9A" />
 
       <View style={styles.itemsContainer}>
-        <View style={styles.item}>
-          <SeverityGauge value={severity || 0} size={200} />
-        </View>
-        <View style={styles.item}>
-          <DebrisNumGauge value={inferenceResult ? inferenceResult.predictions.length : 0} size={200} />
-        </View>
+          <View style={styles.item}>
+              <SeverityGauge value={severity || 0} size={200} />
+            </View>
+              <View style={styles.item}>
+                <DebrisNumGauge value={inferenceResult ? inferenceResult.predictions.length : 0} size={200} />
+              </View>
+            </View>
+            {isWarningVisible && <DebrisWarningAlert isVisible={isWarningVisible} onClose={handleCloseWarning} message={'Water contamination is high!'} />}
+        <DetectInfo title="More Info" colorType={1} />
       </View>
-      {isWarningVisible && <DebrisWarningAlert isVisible={isWarningVisible} onClose={handleCloseWarning} message={'Water contamination is high!'} />}
-      <DetectInfo title="More Info" colorType={1} />
-    </View>
+
+    
   );
 }
 
@@ -257,31 +253,19 @@ const styles = StyleSheet.create({
   imageContainer: {
     width: '100%',
     borderRadius: 20,
-    marginTop: -50,
     backgroundColor: "#000",
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-    overflow: 'hidden',
     marginBottom: 10,
+    marginTop: -30,
     alignItems: 'center',
-    // Set a minimum height or adjust as needed
-    minHeight: 273
-
-  },
-  imageWrapper: {
-    position: 'relative',
-    width: '100%',
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-
+    overflow: 'hidden',
   },
   image: {
     width: '100%',
-    height: '100%',
     resizeMode: 'contain',
   },
   svg: {
