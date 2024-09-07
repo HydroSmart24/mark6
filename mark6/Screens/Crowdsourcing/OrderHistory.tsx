@@ -6,11 +6,13 @@ import RequestWaterModal from "../../components/Modals/RequestWaterModal";
 import Card from "../../components/Modals/Card";
 import { getRequests } from "../../utils/GetRequests";
 import OrderHistoryNav from "../../components/Navigator/OrderHistoryNav";
+import Loading from "../../components/Loading/BasicLoading"; // Import the Loading component
 import * as Location from "expo-location";
 
 export default function OrderHistory() {
   const [modalVisible, setModalVisible] = useState(false);
   const [requests, setRequests] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true); // Add loading state
   const [currentLatitude, setCurrentLatitude] = useState<number | null>(null);
   const [currentLongitude, setCurrentLongitude] = useState<number | null>(null);
   const navigation = useNavigation();
@@ -24,10 +26,13 @@ export default function OrderHistory() {
   useEffect(() => {
     const fetchRequests = async () => {
       try {
+        setIsLoading(true); // Set loading to true when fetching starts
         const fetchedRequests = await getRequests();
         setRequests(fetchedRequests);
       } catch (error) {
         console.error("Error fetching requests:", error);
+      } finally {
+        setIsLoading(false); // Set loading to false when fetching is done
       }
     };
 
@@ -83,20 +88,24 @@ export default function OrderHistory() {
         selectedOption={selectedOption}
         onSelectOption={setSelectedOption}
       />
-      <ScrollView
-        contentContainerStyle={styles.scrollContainer}
-        showsVerticalScrollIndicator={false}
-      >
-        <View style={styles.spacing}></View>
-        {filteredRequests.map((request) => (
-          <Card
-            key={request.id}
-            quantity={request.quantity}
-            status={request.status}
-            date={new Date(request.date.toDate())}
-          />
-        ))}
-      </ScrollView>
+      {isLoading ? ( // Show loading spinner if data is still being fetched
+        <Loading visible={true} />
+      ) : (
+        <ScrollView
+          contentContainerStyle={styles.scrollContainer}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.spacing}></View>
+          {filteredRequests.map((request) => (
+            <Card
+              key={request.id}
+              quantity={request.quantity}
+              status={request.status}
+              date={new Date(request.date.toDate())}
+            />
+          ))}
+        </ScrollView>
+      )}
       <NewWaterRequest
         style={styles.floatingButton}
         onPress={handleNewWaterRequestPress}
@@ -114,13 +123,16 @@ export default function OrderHistory() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 20,
+    width: '100%', // Ensure the container takes full width
+    paddingHorizontal: 15, // Add some horizontal padding
+    paddingTop: 10, // Add padding at the top to separate from the status bar
+    backgroundColor: '#f9f9f9', // Set a subtle background color
   },
   scrollContainer: {
     flexGrow: 1,
-    alignItems: "center",
+    width: '100%', // Ensure scroll view takes full width
+    paddingBottom: 20, // Add padding at the bottom
+    justifyContent: 'flex-start',
   },
   spacing: {
     height: 20,
@@ -129,5 +141,9 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 30,
     right: 20,
+    backgroundColor: "#4299E1", // Add color to the button for visibility
+    borderRadius: 50, // Make the button circular
+    padding: 15, // Increase padding for better touch target
+    elevation: 5, // Add shadow for depth
   },
 });
