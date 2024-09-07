@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { collection, query, orderBy, deleteDoc, doc, onSnapshot, QuerySnapshot } from 'firebase/firestore';
-import { db } from '../firebase/firebaseConfig'; // Adjust the import as needed
-import { auth } from '../firebase/firebaseConfig'; // Assuming you have Firebase authentication
-import Loading from '../components/Loading/BasicLoading'; // Assuming you have this loading component
+import { db } from '../firebase/firebaseConfig';
+import { auth } from '../firebase/firebaseConfig';
+import Loading from '../components/Loading/BasicLoading';
+import NotificationModal from '../components/Modals/TankAcceptWaterModal';
 
-// Define the structure of a notification document
 interface Notification {
   id: string;
   title: string;
-  body: string; // Changed from message to body
+  body: string;
   timestamp: {
     seconds: number;
     nanoseconds: number;
@@ -18,18 +18,18 @@ interface Notification {
 
 export default function NotificationsScreen() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [loading, setLoading] = useState(true); // Add loading state
+  const [loading, setLoading] = useState(true);
+  const [modalVisible, setModalVisible] = useState(false); // Modal visibility state
+  const [selectedNotificationDetails, setSelectedNotificationDetails] = useState<string>(''); // State to store selected notification details
 
   useEffect(() => {
-    const userId = auth.currentUser?.uid; // Get the current user's ID
+    const userId = auth.currentUser?.uid;
     if (userId) {
       const unsubscribe = fetchUserNotifications(userId, setNotifications);
-
-      return () => unsubscribe(); // Cleanup the listener
+      return () => unsubscribe();
     }
   }, []);
 
-  // Fetch user notifications from the Firestore collection
   const fetchUserNotifications = (
     userId: string,
     setNotifications: React.Dispatch<React.SetStateAction<Notification[]>>
@@ -43,13 +43,17 @@ export default function NotificationsScreen() {
         notificationsArray.push({ id: doc.id, ...doc.data() } as Notification);
       });
       setNotifications(notificationsArray);
-      setLoading(false); // Stop loading when data is fetched
+      setLoading(false);
     });
 
     return unsubscribe;
   };
 
-  // Function to delete a specific notification
+  const handleViewRequest = (notificationDetails: string) => {
+    setSelectedNotificationDetails(notificationDetails); // Set selected notification details
+    setModalVisible(true); // Show the modal
+  };
+
   const handleClearNotification = async (userId: string, notificationId: string) => {
     try {
       const notificationDocRef = doc(db, `users/${userId}/notifications`, notificationId);
@@ -61,7 +65,6 @@ export default function NotificationsScreen() {
     }
   };
 
-  // Render notification cards
   const renderNotification = ({ item }: { item: Notification }) => (
     <View style={styles.card}>
       <View style={styles.cardContent}>
@@ -71,18 +74,27 @@ export default function NotificationsScreen() {
           {new Date(item.timestamp.seconds * 1000).toLocaleString()}
         </Text>
       </View>
-      <TouchableOpacity
-        style={styles.clearButton}
-        onPress={() => handleClearNotification(auth.currentUser?.uid || '', item.id)}
-      >
-        <Text style={styles.clearButtonText}>Clear</Text>
-      </TouchableOpacity>
+
+      {item.title === 'Water Request Notification' ? (
+        <TouchableOpacity
+          style={styles.viewButton}
+          onPress={() => handleViewRequest(item.body)} // Pass the notification body as details
+        >
+          <Text style={styles.viewButtonText}>View</Text>
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity
+          style={styles.clearButton}
+          onPress={() => handleClearNotification(auth.currentUser?.uid || '', item.id)}
+        >
+          <Text style={styles.clearButtonText}>Clear</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 
-  // Show loading component while data is being fetched
   if (loading) {
-    return <Loading visible={true} />; // Assuming you have a BasicLoading component
+    return <Loading visible={true} />;
   }
 
   return (
@@ -93,11 +105,23 @@ export default function NotificationsScreen() {
         renderItem={renderNotification}
         ListEmptyComponent={<Text>No notifications found.</Text>}
       />
+
+      {/* Render the modal */}
+      <NotificationModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)} // Close the modal on decline
+        notificationDetails={selectedNotificationDetails}
+        onAccept={() => {
+          // Define what happens on Accept here
+          setModalVisible(false); // Close the modal after accepting
+          // Add any other logic for accepting the request
+        }}
+      />
+
     </View>
   );
 }
 
-// Styles for the Notifications Screen
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -127,6 +151,16 @@ const styles = StyleSheet.create({
   timestamp: {
     fontSize: 12,
     color: 'gray',
+  },
+  viewButton: {
+    backgroundColor: '#4299E1',
+    paddingVertical: 5,
+    paddingHorizontal: 15,
+    borderRadius: 15,
+  },
+  viewButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
   clearButton: {
     backgroundColor: 'white',
