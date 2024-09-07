@@ -163,6 +163,7 @@ function MainDrawerNavigator({ userName }: { userName: string }) {
         name="RequestWater"
         component={RequestWater}
         options={{
+          headerShown: true,
           headerTitle: "Request Water",
           drawerLabel: "Request Water",
           drawerIcon: ({ color, size }) => (
@@ -307,7 +308,10 @@ export default function App() {
                   <Stack.Screen
                     name="RequestWater"
                     component={RequestWater}
-                    options={{ headerShown: true }}
+                    options={{
+                      headerShown: true,
+                      title: 'Request Water',
+                    }}
                   />
                   <Stack.Screen
                     name="DebrisMain"
