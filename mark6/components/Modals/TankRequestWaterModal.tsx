@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Modal, View, Text, TextInput, TouchableOpacity, StyleSheet, TouchableWithoutFeedback } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { getPushNotificationToken } from '../../utils/GetTankOwnerPushNotificationToken';
+import { sendPushNotification } from '../../utils/Notification/TankWaterRequestNotification';
 
 interface ModalProps {
   visible: boolean;
@@ -25,15 +27,23 @@ const TankRequestWaterModal: React.FC<ModalProps> = ({ visible, onClose, ownerNa
     setRequestedAmount(text);
   };
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (!requestedAmount) {
       setError('Please enter an amount.');
       return;
     }
-
+  
     if (!error) {
-      console.log("Confirmed amount:", requestedAmount);
-      onClose();
+      try {
+        const pushToken = await getPushNotificationToken(ownerName); // Fetch the push token
+        if (pushToken) {
+          console.log('Push notification token:', pushToken);
+          await sendPushNotification(pushToken, "Kulanaka", requestedAmount); // Call the sendPushNotification function
+        }
+        onClose();
+      } catch (err) {
+        console.error('Error confirming request:', err);
+      }
     }
   };
 
