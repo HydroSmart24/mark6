@@ -30,6 +30,7 @@ import LeakageAlert from './components/AlertModal/LeakageAlert';
 import NotificationsScreen from './Screens/Notifications';
 import DistributorHome from "./Screens/Crowdsourcing/DistributorHome";
 import Map from "./Screens/Crowdsourcing/Map";
+import TestEsp from "./Screens/Test/TestEsp";
 
 
 export type RootStackParamList = {
@@ -47,6 +48,7 @@ export type RootStackParamList = {
   NotificationsScreen: undefined;
   DistributorHome: undefined; // Add DistributorHome to RootStackParamList
   Map: undefined;
+  TestEsp: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -190,6 +192,18 @@ function MainDrawerNavigator({ userName }: { userName: string }) {
           headerShown: true,
           headerTitle: '',
           drawerLabel: 'About Us',
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name="people" size={size} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="Test esp"
+        component={TestEsp}
+        options={{
+          headerShown: true,
+          headerTitle: '',
+          drawerLabel: 'Test ESP',
           drawerIcon: ({ color, size }) => (
             <Ionicons name="people" size={size} color={color} />
           ),
