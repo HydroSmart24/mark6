@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, ScrollView, Text, Dimensions } from 'react-native';
 import TankLevel from '../components/AvailableTank/TankLevel';
 import HomeFilterHealth from '../components/Guage/HomeFilterHealth';
@@ -8,12 +8,25 @@ import IconButton from '../components/Buttons/IconButton';
 import BasicContainer from '../components/Containers/BasicContainer';
 import Prediction from '../components/Graph/PredictConsumpGraph';
 import CustomHeader from '../components/CustomerHeader/IndexHeader';
+import { calculateFilterHealth, fetchSensorData } from '../utils/FilterHealthCalc';
 
 interface TabOneScreenProps {
   userName: string | null; // Make sure to pass userName as a prop
 }
 
 export default function TabOneScreen({ userName }: TabOneScreenProps) {
+  const [percentage, setPercentage] = useState<number | null>(null);
+
+  useEffect(() => {
+    const fetchDataAndCalculate = async () => {
+      const { ph, turbidity, expirationDate } = await fetchSensorData();
+      const currentDate = new Date();
+      const filterHealth = calculateFilterHealth(ph, turbidity, currentDate, expirationDate);
+      setPercentage(filterHealth);
+    };
+
+    fetchDataAndCalculate();
+  }, []);
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
 
@@ -31,7 +44,7 @@ export default function TabOneScreen({ userName }: TabOneScreenProps) {
         <View style={styles.rowContainer}>
           <View style={styles.leftColumn}>
             <View style={styles.homeFilterHealthWrapper}>
-              <HomeFilterHealth size={113} value={10} />
+              <HomeFilterHealth size={113} value={percentage ?? undefined} />
             </View>
             <WaterQuality title="Water Quality" style={styles.waterQualityButton} />
           </View>
@@ -106,7 +119,7 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   waterQualityButton: {
-    marginTop: -20,
+    marginTop: -35,
     width: '100%', 
   },
   buttonRow: {

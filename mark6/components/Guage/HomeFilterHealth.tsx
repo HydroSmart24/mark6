@@ -73,7 +73,7 @@ const HomeFilterHealth: React.FC<HomeFilterHealthProps> = ({ size = 80, value = 
           cy="18"
           r={circleRadius}
           fill="none"
-          stroke="#2563EB"
+          stroke="#4299E1"
           strokeWidth={progressStrokeWidth}
           strokeDasharray={circumference}
           strokeDashoffset={strokeDashoffset}
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
   },
   valueText: {
     fontWeight: 'bold',
-    color: '#2563EB',
+    color: '#4299E1',
     textAlign: 'center',
   },
 });
