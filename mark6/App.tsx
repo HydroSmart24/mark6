@@ -147,6 +147,7 @@ function MainDrawerNavigator({ userName }: { userName: string }) {
         name="OrderHistory"
         component={OrderHistory}
         options={{
+          headerShown: true,
           headerTitle: "Order History",
           drawerLabel: "Order History",
           drawerIcon: ({ color, size }) => (
