@@ -10,6 +10,7 @@ import { format } from 'date-fns';
 import Svg, { Rect, Text as SvgText } from 'react-native-svg';
 import Loading from '../../components/Loading/BasicLoading';
 import ReusableText from '../../components/Text/ReusableText';
+import DebrisWarningAlert from '../../components/AlertModal/DebrisWarningAlert';
 
 // Fetch the latest image from Firebase Storage based on timestamp metadata
 async function fetchLatestImage() {
@@ -83,6 +84,7 @@ export default function DetectScreen() {
   const [timestamp, setTimestamp] = useState<string | null>(null);
   const [severity, setSeverity] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isWarningVisible, setWarningVisible] = useState(false);
 
   useEffect(() => {
     async function fetchAndAnalyzeImage() {
@@ -147,6 +149,18 @@ export default function DetectScreen() {
       setSeverity(severityPercentage);
     }
   }, [inferenceResult, imageDimensions, scaledDimensions]);
+
+  useEffect(() => {
+    if (severity !== null && severity >= 50) {
+      setWarningVisible(true);
+    } else {
+      setWarningVisible(false); // Optionally hide warning if severity is below 50 or null
+    }
+  }, [severity]);
+
+  const handleCloseWarning = () => {
+    setWarningVisible(false);
+  };
 
   const renderBoundingBoxes = () => {
     if (!inferenceResult || !inferenceResult.predictions || !scaledDimensions || !imageDimensions) {
@@ -226,6 +240,7 @@ export default function DetectScreen() {
           <DebrisNumGauge value={inferenceResult ? inferenceResult.predictions.length : 0} size={200} />
         </View>
       </View>
+      {isWarningVisible && <DebrisWarningAlert isVisible={isWarningVisible} onClose={handleCloseWarning} message={'Water contamination is high!'} />}
       <DetectInfo title="More Info" colorType={1} />
     </View>
   );

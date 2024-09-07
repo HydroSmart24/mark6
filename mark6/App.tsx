@@ -20,6 +20,7 @@ import ContactUs from "./Screens/ContactUs";
 import AboutUs from "./Screens/AboutUs";
 import Information from "./Screens/Information";
 import OrderHistory from "./Screens/Crowdsourcing/OrderHistory";
+<<<<<<< HEAD
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "./firebase/firebaseConfig";
 import UserProfile from "./Screens/Auth/UserProfile";
@@ -32,6 +33,21 @@ import DistributorHome from "./Screens/Crowdsourcing/DistributorHome";
 import Map from "./Screens/Crowdsourcing/Map";
 
 type RootStackParamList = {
+=======
+import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { db } from './firebase/firebaseConfig';
+import UserProfile from './Screens/Auth/UserProfile';
+import { registerForPushNotificationsAsync, setupNotificationHandler } from './utils/Notification/PushNotification';  // Import utility functions
+import * as Notifications from 'expo-notifications';
+import { listenForLeakageAndNotify } from './utils/Notification/LeakageDetectListen';
+import LeakageAlert from './components/AlertModal/LeakageAlert';
+import NotificationsScreen from './Screens/Notifications';
+import DistributorHome from "./Screens/Crowdsourcing/DistributorHome";
+import Map from "./Screens/Crowdsourcing/Map";
+
+
+export type RootStackParamList = {
+>>>>>>> origin/main
   index: undefined;
   main: undefined;
   DebrisMain: undefined;
@@ -43,6 +59,7 @@ type RootStackParamList = {
   AboutUs: undefined;
   Information: undefined;
   RequestWater: undefined;
+  NotificationsScreen: undefined;
   DistributorHome: undefined; // Add DistributorHome to RootStackParamList
   Map: undefined;
 };
@@ -149,6 +166,7 @@ function MainDrawerNavigator({ userName }: { userName: string }) {
         name="OrderHistory"
         component={OrderHistory}
         options={{
+          headerShown: true,
           headerTitle: "Order History",
           drawerLabel: "Order History",
           drawerIcon: ({ color, size }) => (
@@ -222,8 +240,19 @@ export default function App() {
   const [user, setUser] = React.useState<User | null>(null);
   const [loading, setLoading] = React.useState(true);
   const [userName, setUserName] = React.useState<string | null>(null);
+  const [alertVisible, setAlertVisible] = React.useState(false);
+  const [alertMessage, setAlertMessage] = React.useState<string>('');
+
+  // Function to handle leakage detection alert
+  const handleLeakageDetected = (message: string) => {
+    setAlertMessage(message);
+    setAlertVisible(true);
+  };
+
 
   React.useEffect(() => {
+    let unsubscribeLeakageListener: (() => void) | undefined;
+
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setUser(user);
       setLoading(false);
@@ -235,25 +264,41 @@ export default function App() {
           setUserName(docSnap.data()?.name || null);
         }
 
+      // Register the push token
         const pushToken = await registerForPushNotificationsAsync();
         if (pushToken) {
           await setDoc(docRef, { pushtoken: pushToken }, { merge: true });
+
+        // Start listening for leakage detection and notify the logged-in user
+          unsubscribeLeakageListener = listenForLeakageAndNotify(pushToken, handleLeakageDetected);
         }
       }
     });
 
     setupNotificationHandler(); // Setup the notification handler
 
+<<<<<<< HEAD
     // Handle foreground notifications without showing an in-app alert
     const foregroundSubscription =
       Notifications.addNotificationReceivedListener((notification) => {
         console.log("Notification received in foreground:", notification);
         // No in-app Alert, allow the notification to show as a system notification
       });
+=======
+  // Handle foreground notifications without showing an in-app alert
+    const foregroundSubscription = Notifications.addNotificationReceivedListener(notification => {
+      console.log('Notification received in foreground:', notification);
+    // No in-app Alert, allow the notification to show as a system notification
+    });
+>>>>>>> origin/main
 
     return () => {
       unsubscribe(); // Cleanup the auth listener
       foregroundSubscription.remove(); // Cleanup the notification listener
+
+      if (unsubscribeLeakageListener) {
+        unsubscribeLeakageListener(); // Stop listening to leakage detection
+      }
     };
   }, []);
 
@@ -285,6 +330,7 @@ export default function App() {
               </>
             ) : (
               <>
+<<<<<<< HEAD
                 <Stack.Screen
                   name="index"
                   options={{ headerShown: false }} // Set headerShown to false
@@ -319,6 +365,51 @@ export default function App() {
                     title: "Order History",
                   }}
                 />
+=======
+                <Stack.Screen 
+                  name="index"
+                  options={{ headerShown: false }} // Set headerShown to false
+                  >
+                  {(props) => (
+                    <MainDrawerNavigator {...props} userName={userName || ''} />
+                  )}
+                </Stack.Screen>
+                  <Stack.Screen
+                    name="RequestWater"
+                    component={RequestWater}
+                    options={{ headerShown: true }}
+                  />
+                  <Stack.Screen
+                    name="DebrisMain"
+                    component={DebrisMain}
+                    options={{
+                      headerShown: true,
+                      title: 'Filter Health',
+                    }}
+                  />
+                  <Stack.Screen
+                    name="DetectScreen"
+                    component={DetectScreen}
+                    options={{ 
+                      headerShown: true,
+                      title: 'Debris Detection',
+                    }}
+                  />
+                  <Stack.Screen
+                    name="OrderHistory"
+                    component={OrderHistory}
+                    options={{
+                      headerShown: true,
+                      title: 'Order History',
+                    }}
+                  />
+                  <Stack.Screen
+                    name="NotificationsScreen"
+                    component={NotificationsScreen}
+                    options={{ headerShown: true, title: 'Notifications' }}
+                  />
+                 
+>>>>>>> origin/main
               </>
             )}
           </>
@@ -330,6 +421,14 @@ export default function App() {
           />
         )}
       </Stack.Navigator>
+
+      <LeakageAlert
+        visible={alertVisible}
+        title="Leakage Detected!"
+        message={alertMessage}
+        onClose={() => setAlertVisible(false)} // Close the alert when the user presses 'Close'
+        iconSize={50}
+      />
     </NavigationContainer>
   );
 }
