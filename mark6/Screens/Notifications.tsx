@@ -3,6 +3,7 @@ import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert } from 'react
 import { collection, query, orderBy, deleteDoc, doc, onSnapshot, QuerySnapshot } from 'firebase/firestore';
 import { db } from '../firebase/firebaseConfig'; // Adjust the import as needed
 import { auth } from '../firebase/firebaseConfig'; // Assuming you have Firebase authentication
+import Loading from '../components/Loading/BasicLoading'; // Assuming you have this loading component
 
 // Define the structure of a notification document
 interface Notification {
@@ -17,6 +18,7 @@ interface Notification {
 
 export default function NotificationsScreen() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [loading, setLoading] = useState(true); // Add loading state
 
   useEffect(() => {
     const userId = auth.currentUser?.uid; // Get the current user's ID
@@ -41,6 +43,7 @@ export default function NotificationsScreen() {
         notificationsArray.push({ id: doc.id, ...doc.data() } as Notification);
       });
       setNotifications(notificationsArray);
+      setLoading(false); // Stop loading when data is fetched
     });
 
     return unsubscribe;
@@ -63,7 +66,7 @@ export default function NotificationsScreen() {
     <View style={styles.card}>
       <View style={styles.cardContent}>
         <Text style={styles.title}>{item.title}</Text>
-        <Text style={styles.body}>{item.body}</Text> 
+        <Text style={styles.body}>{item.body}</Text>
         <Text style={styles.timestamp}>
           {new Date(item.timestamp.seconds * 1000).toLocaleString()}
         </Text>
@@ -76,6 +79,11 @@ export default function NotificationsScreen() {
       </TouchableOpacity>
     </View>
   );
+
+  // Show loading component while data is being fetched
+  if (loading) {
+    return <Loading visible={true} />; // Assuming you have a BasicLoading component
+  }
 
   return (
     <View style={styles.container}>
@@ -112,7 +120,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
   },
-  body: { 
+  body: {
     fontSize: 14,
     marginVertical: 5,
   },
@@ -121,12 +129,12 @@ const styles = StyleSheet.create({
     color: 'gray',
   },
   clearButton: {
-    backgroundColor: 'white', 
+    backgroundColor: 'white',
     paddingVertical: 5,
     paddingHorizontal: 15,
     borderRadius: 15,
-    borderWidth: 2, 
-    borderColor: '#3283C7', 
+    borderWidth: 2,
+    borderColor: '#3283C7',
   },
   clearButtonText: {
     color: '#646464',
