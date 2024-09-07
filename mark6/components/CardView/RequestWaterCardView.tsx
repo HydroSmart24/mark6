@@ -22,8 +22,6 @@ const CardView: React.FC<CardProps> = ({ title, availableLiters }) => {
 
   return (
     <View>
-      <Text style={styles.heading}>Tanks in your area</Text>
-
       <View style={styles.card}>
         <View style={styles.cardContent}>
           <View style={styles.textContainer}>
