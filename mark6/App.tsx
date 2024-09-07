@@ -1,33 +1,35 @@
 import * as React from "react";
-import { View, ActivityIndicator } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import HomeScreen from './Screens/index';
-import DebrisMain from './Screens/Debris/DebrisMain';
-import DetectScreen from './Screens/Debris/DetectScreen';
-import RequestWater from './Screens/RequestWater/RequestWater';
-import AuthScreen from './Screens/Auth/AuthScreen';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
-import { onAuthStateChanged, User } from 'firebase/auth';
-import { auth } from './firebase/firebaseConfig';
-import AvailableScreen from './Screens/Consumption/Available';
-import ContactUs from './Screens/ContactUs';
-import AboutUs from './Screens/AboutUs';
-import Information from './Screens/Information';
+import { View, ActivityIndicator } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createDrawerNavigator } from "@react-navigation/drawer";
+import HomeScreen from "./Screens/index";
+import DebrisMain from "./Screens/Debris/DebrisMain";
+import DetectScreen from "./Screens/Debris/DetectScreen";
+import RequestWater from "./Screens/RequestWater/RequestWater";
+import AuthScreen from "./Screens/Auth/AuthScreen";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
+import { onAuthStateChanged, User } from "firebase/auth";
+import { auth } from "./firebase/firebaseConfig";
+import AvailableScreen from "./Screens/Consumption/Available";
+import ContactUs from "./Screens/ContactUs";
+import AboutUs from "./Screens/AboutUs";
+import Information from "./Screens/Information";
 import OrderHistory from "./Screens/Crowdsourcing/OrderHistory";
-import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { db } from './firebase/firebaseConfig';
-import UserProfile from './Screens/Auth/UserProfile';
-import { registerForPushNotificationsAsync, setupNotificationHandler } from './utils/Notification/PushNotification';  // Import utility functions
-import * as Notifications from 'expo-notifications';
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { db } from "./firebase/firebaseConfig";
+import UserProfile from "./Screens/Auth/UserProfile";
+import {
+  registerForPushNotificationsAsync,
+  setupNotificationHandler,
+} from "./utils/Notification/PushNotification"; // Import utility functions
+import * as Notifications from "expo-notifications";
 import DistributorHome from "./Screens/Crowdsourcing/DistributorHome";
 import Map from "./Screens/Crowdsourcing/Map";
-
 
 type RootStackParamList = {
   index: undefined;
@@ -64,16 +66,20 @@ function MainTabNavigator({ userName }: { userName: string }) {
       >
         {(props) => <HomeScreen {...props} userName={userName} />}
       </Tab.Screen>
-      
+
       <Tab.Screen
         name="Information"
         component={Information}
         options={{
           headerShown: true,
-          headerTitle: 'Information',
+          headerTitle: "Information",
           tabBarLabel: "Info",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="information-circle-sharp" color={color} size={size} />
+            <Ionicons
+              name="information-circle-sharp"
+              color={color}
+              size={size}
+            />
           ),
         }}
       />
@@ -104,8 +110,8 @@ function MainDrawerNavigator({ userName }: { userName: string }) {
         component={DebrisMain}
         options={{
           headerShown: true,
-          headerTitle: '',
-          drawerLabel: 'FilterHealth',
+          headerTitle: "",
+          drawerLabel: "FilterHealth",
           drawerIcon: ({ color, size }) => (
             <MaterialIcons name="health-and-safety" size={size} color={color} />
           ),
@@ -116,8 +122,8 @@ function MainDrawerNavigator({ userName }: { userName: string }) {
         component={AvailableScreen}
         options={{
           headerShown: true,
-          headerTitle: 'Availability & Consumption',
-          drawerLabel: 'Availability',
+          headerTitle: "Availability & Consumption",
+          drawerLabel: "Availability",
           drawerIcon: ({ color, size }) => (
             <Ionicons name="water" size={size} color={color} />
           ),
@@ -128,8 +134,8 @@ function MainDrawerNavigator({ userName }: { userName: string }) {
         component={DetectScreen}
         options={{
           headerShown: true,
-          headerTitle: 'Debris Detection',
-          drawerLabel: 'Debris Detection',
+          headerTitle: "Debris Detection",
+          drawerLabel: "Debris Detection",
           drawerIcon: ({ color, size }) => (
             <MaterialCommunityIcons
               name="smoke-detector-alert"
@@ -170,8 +176,8 @@ function MainDrawerNavigator({ userName }: { userName: string }) {
         component={ContactUs}
         options={{
           headerShown: true,
-          headerTitle: '',
-          drawerLabel: 'Contact Us',
+          headerTitle: "",
+          drawerLabel: "Contact Us",
           drawerIcon: ({ color, size }) => (
             <Ionicons name="call" size={size} color={color} />
           ),
@@ -182,25 +188,31 @@ function MainDrawerNavigator({ userName }: { userName: string }) {
         component={AboutUs}
         options={{
           headerShown: true,
-          headerTitle: '',
-          drawerLabel: 'About Us',
+          headerTitle: "",
+          drawerLabel: "About Us",
           drawerIcon: ({ color, size }) => (
             <Ionicons name="people" size={size} color={color} />
           ),
         }}
       />
-        <Drawer.Screen
+      <Drawer.Screen
         name="UserProfile"
         options={{
           headerShown: true,
-          headerTitle: 'Profile',
+          headerTitle: "Profile",
           drawerLabel: "User Profile",
           drawerIcon: ({ color, size }) => (
             <Ionicons name="person-circle-outline" size={size} color={color} />
           ),
         }}
       >
-        {(props) => <UserProfile {...props} userName={userName} userEmail={auth.currentUser?.email || ''} />}
+        {(props) => (
+          <UserProfile
+            {...props}
+            userName={userName}
+            userEmail={auth.currentUser?.email || ""}
+          />
+        )}
       </Drawer.Screen>
     </Drawer.Navigator>
   );
@@ -233,10 +245,11 @@ export default function App() {
     setupNotificationHandler(); // Setup the notification handler
 
     // Handle foreground notifications without showing an in-app alert
-    const foregroundSubscription = Notifications.addNotificationReceivedListener(notification => {
-      console.log('Notification received in foreground:', notification);
-      // No in-app Alert, allow the notification to show as a system notification
-    });
+    const foregroundSubscription =
+      Notifications.addNotificationReceivedListener((notification) => {
+        console.log("Notification received in foreground:", notification);
+        // No in-app Alert, allow the notification to show as a system notification
+      });
 
     return () => {
       unsubscribe(); // Cleanup the auth listener
@@ -246,7 +259,7 @@ export default function App() {
 
   if (loading) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <ActivityIndicator size="large" color="#007BA7" />
       </View>
     );
@@ -262,7 +275,7 @@ export default function App() {
                 <Stack.Screen
                   name="DistributorHome"
                   component={DistributorHome}
-                  options={{ headerShown: true, title: "Distributor Home" }}
+                  options={{ headerShown: false, title: "Distributor Home" }}
                 />
                 <Stack.Screen
                   name="Map"
@@ -272,14 +285,14 @@ export default function App() {
               </>
             ) : (
               <>
-                <Stack.Screen 
-              name="index"
-              options={{ headerShown: false }} // Set headerShown to false
-              >
-              {(props) => (
-                <MainDrawerNavigator {...props} userName={userName || ''} />
-              )}
-            </Stack.Screen>
+                <Stack.Screen
+                  name="index"
+                  options={{ headerShown: false }} // Set headerShown to false
+                >
+                  {(props) => (
+                    <MainDrawerNavigator {...props} userName={userName || ""} />
+                  )}
+                </Stack.Screen>
                 <Stack.Screen
                   name="RequestWater"
                   component={RequestWater}
