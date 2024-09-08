@@ -190,6 +190,7 @@ export default function RequestWater() {
                                 title={user.name} // Pass the user's name as the title
                                 availableLiters={convertToLiters(user.waterLevel)} // Convert the user's water level to liters before passing
                                 onRequestPress={() => handleRequestPress(user)} // Handle the water request
+                                reqUserId={currentUserId || 'Unknown'} // Pass the current user's ID
                                 ownerId={user.id}
                                 currentUserName={currentUserName || 'Unknown'}  // Provide a fallback for null values
                             />

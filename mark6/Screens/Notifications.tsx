@@ -5,21 +5,30 @@ import { db } from '../firebase/firebaseConfig';
 import { auth } from '../firebase/firebaseConfig';
 import Loading from '../components/Loading/BasicLoading';
 import NotificationModal from '../components/Modals/TankAcceptWaterModal';
+import { set } from 'date-fns';
 
 interface Notification {
   id: string;
   title: string;
   body: string;
+  data: {
+    requestedAmount: number;
+    requesterName: string;
+  }
   timestamp: {
     seconds: number;
     nanoseconds: number;
   };
+  reqUserId: string;
 }
 
 export default function NotificationsScreen() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false); // Modal visibility state
+  const [requestedAmount, setRequestedAmount] = useState(0); // State to store requested amount
+  const [reqUserId, setReqUserId] = useState<string>(''); // State to store the current user ID
+  const [receiverUserId, setUserId] = useState<string>(''); // State to store the current user ID
   const [selectedNotificationDetails, setSelectedNotificationDetails] = useState<string>(''); // State to store selected notification details
   const [selectedNotificationId, setSelectedNotificationId] = useState<string | null>(null); // Store the selected notification ID
 
@@ -27,6 +36,7 @@ export default function NotificationsScreen() {
     const userId = auth.currentUser?.uid;
     if (userId) {
       const unsubscribe = fetchUserNotifications(userId, setNotifications);
+      setUserId(userId);
       return () => unsubscribe();
     }
   }, []);
@@ -62,9 +72,11 @@ export default function NotificationsScreen() {
   };
 
 
-  const handleViewRequest = (notificationDetails: string, notificationId: string) => {
+  const handleViewRequest = (notificationDetails: string, notificationId: string, requestedAmount: number, reqUserId: string) => {
     setSelectedNotificationDetails(notificationDetails); // Set selected notification details
     setSelectedNotificationId(notificationId); // Set the selected notification ID
+    setRequestedAmount(requestedAmount); // Set the requested
+    setReqUserId(reqUserId); // Set the user ID
     setModalVisible(true); // Show the modal
   };
 
@@ -96,7 +108,7 @@ export default function NotificationsScreen() {
       {item.title === 'Water Request Notification' ? (
         <TouchableOpacity
           style={styles.viewButton}
-          onPress={() => handleViewRequest(item.body, item.id)} // Pass the notification ID and body
+          onPress={() => handleViewRequest(item.body, item.id, item.data.requestedAmount, item.reqUserId)} // Pass the notification ID and body
         >
           <Text style={styles.viewButtonText}>View</Text>
         </TouchableOpacity>
@@ -132,10 +144,13 @@ export default function NotificationsScreen() {
         onAccept={() => {
           // Define what happens on Accept here
           setModalVisible(false); // Close the modal after accepting
+
           // Add any other logic for accepting the request
-        }}
+        } }
         onDecline={handleDeclineRequest} // Handle decline request
-      />
+        requestedAmount={requestedAmount}
+        reqUserId={reqUserId}
+        receiverUserId={receiverUserId}      />
     </View>
   );
 }

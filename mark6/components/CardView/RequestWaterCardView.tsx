@@ -8,10 +8,11 @@ interface CardProps {
   onRequestPress: () => void;
   availableLiters: number;
   ownerId: string;  // The userId of the tank owner
+  reqUserId: string;  // The userId of the current user
   currentUserName: string;
 }
 
-const CardView: React.FC<CardProps> = ({ title, availableLiters, ownerId, currentUserName }) => {
+const CardView: React.FC<CardProps> = ({ title, availableLiters, ownerId, currentUserName, reqUserId }) => {
   const [modalVisible, setModalVisible] = useState(false);
 
   // Handle Request button press and show the modal
@@ -45,6 +46,7 @@ const CardView: React.FC<CardProps> = ({ title, availableLiters, ownerId, curren
         availableLiters={availableLiters}
         ownerId={ownerId}
         currentUserName={currentUserName}
+        reqUserId={reqUserId}
       />
     </View>
   );
