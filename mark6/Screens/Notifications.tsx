@@ -5,28 +5,39 @@ import { db } from '../firebase/firebaseConfig';
 import { auth } from '../firebase/firebaseConfig';
 import Loading from '../components/Loading/BasicLoading';
 import NotificationModal from '../components/Modals/TankAcceptWaterModal';
+import BasicLoading from '../components/Loading/BasicLoading';
 
 interface Notification {
   id: string;
   title: string;
   body: string;
+  data: {
+    requestedAmount: number;
+    requesterName: string;
+  };
   timestamp: {
     seconds: number;
     nanoseconds: number;
   };
+  reqUserId: string;
 }
 
 export default function NotificationsScreen() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [modalVisible, setModalVisible] = useState(false); // Modal visibility state
-  const [selectedNotificationDetails, setSelectedNotificationDetails] = useState<string>(''); // State to store selected notification details
-  const [selectedNotificationId, setSelectedNotificationId] = useState<string | null>(null); // Store the selected notification ID
+  const [loading, setLoading] = useState(true); 
+  const [processLoading, setProcessLoading] = useState(false); 
+  const [modalVisible, setModalVisible] = useState(false); 
+  const [requestedAmount, setRequestedAmount] = useState(0); 
+  const [reqUserId, setReqUserId] = useState<string>(''); 
+  const [notificationId, setNotificationId] = useState<string | null>(null); 
+  const [receiverUserId, setUserId] = useState<string>(''); 
+  const [selectedNotificationDetails, setSelectedNotificationDetails] = useState<string>(''); 
 
   useEffect(() => {
     const userId = auth.currentUser?.uid;
     if (userId) {
       const unsubscribe = fetchUserNotifications(userId, setNotifications);
+      setUserId(userId);
       return () => unsubscribe();
     }
   }, []);
@@ -44,41 +55,44 @@ export default function NotificationsScreen() {
         notificationsArray.push({ id: doc.id, ...doc.data() } as Notification);
       });
       setNotifications(notificationsArray);
-      setLoading(false);
+      setLoading(false); 
     });
 
     return unsubscribe;
   };
-  
+
   const handleClearNotification = async (userId: string, notificationId: string) => {
+    setProcessLoading(true);
     try {
       const notificationDocRef = doc(db, `users/${userId}/notifications`, notificationId);
       await deleteDoc(notificationDocRef);
-      Alert.alert('Notification cleared', 'The notification has been removed.');
+      setProcessLoading(false); 
     } catch (error) {
       console.error('Error deleting notification:', error);
-      Alert.alert('Error', 'Failed to clear the notification.');
+      setProcessLoading(false); 
     }
   };
 
-
-  const handleViewRequest = (notificationDetails: string, notificationId: string) => {
-    setSelectedNotificationDetails(notificationDetails); // Set selected notification details
-    setSelectedNotificationId(notificationId); // Set the selected notification ID
-    setModalVisible(true); // Show the modal
+  const handleViewRequest = (notificationDetails: string, notificationId: string, requestedAmount: number, reqUserId: string) => {
+    setSelectedNotificationDetails(notificationDetails); 
+    setNotificationId(notificationId); 
+    setRequestedAmount(requestedAmount); 
+    setReqUserId(reqUserId); 
+    setModalVisible(true); 
   };
 
   const handleDeclineRequest = async () => {
     const userId = auth.currentUser?.uid;
-    if (userId && selectedNotificationId) {
+    setProcessLoading(true); 
+    if (userId && notificationId) {
       try {
-        const notificationDocRef = doc(db, `users/${userId}/notifications`, selectedNotificationId);
+        const notificationDocRef = doc(db, `users/${userId}/notifications`, notificationId);
         await deleteDoc(notificationDocRef);
-        Alert.alert('Notification declined', 'The notification has been removed.');
-        setModalVisible(false); // Close the modal after deletion
+        setModalVisible(false); 
+        setProcessLoading(false); 
       } catch (error) {
         console.error('Error deleting notification:', error);
-        Alert.alert('Error', 'Failed to delete the notification.');
+        setProcessLoading(false); 
       }
     }
   };
@@ -96,7 +110,7 @@ export default function NotificationsScreen() {
       {item.title === 'Water Request Notification' ? (
         <TouchableOpacity
           style={styles.viewButton}
-          onPress={() => handleViewRequest(item.body, item.id)} // Pass the notification ID and body
+          onPress={() => handleViewRequest(item.body, item.id, item.data.requestedAmount, item.reqUserId)} 
         >
           <Text style={styles.viewButtonText}>View</Text>
         </TouchableOpacity>
@@ -112,7 +126,7 @@ export default function NotificationsScreen() {
   );
 
   if (loading) {
-    return <Loading visible={true} />;
+    return <Loading visible={true} />; 
   }
 
   return (
@@ -121,20 +135,26 @@ export default function NotificationsScreen() {
         data={notifications}
         keyExtractor={(item) => item.id}
         renderItem={renderNotification}
-        ListEmptyComponent={<Text>No notifications found.</Text>}
+        ListEmptyComponent={
+          <View style={styles.emptyNotificationContainer}>
+            <Text style={styles.emptyNotificationText}>No notifications found.</Text>
+          </View>
+        }
       />
 
       {/* Render the modal */}
       <NotificationModal
         visible={modalVisible}
-        onClose={() => setModalVisible(false)} // Close the modal on decline
+        onClose={() => setModalVisible(false)} 
         notificationDetails={selectedNotificationDetails}
         onAccept={() => {
-          // Define what happens on Accept here
-          setModalVisible(false); // Close the modal after accepting
-          // Add any other logic for accepting the request
+          setModalVisible(false); 
         }}
-        onDecline={handleDeclineRequest} // Handle decline request
+        onDecline={handleDeclineRequest} 
+        requestedAmount={requestedAmount}
+        reqUserId={reqUserId}
+        receiverUserId={receiverUserId}
+        notificationId={notificationId || 'Unknown'}
       />
     </View>
   );
@@ -192,8 +212,22 @@ const styles = StyleSheet.create({
     color: '#646464',
     fontWeight: 'bold',
   },
+  emptyNotificationContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 200, 
+  },
+  emptyNotificationText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#696969',
+    textAlign: 'center',
+    paddingVertical: 20,
+    paddingHorizontal: 40,
+    backgroundColor: '#f2f2f2',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+  },
 });
-
-
-
-

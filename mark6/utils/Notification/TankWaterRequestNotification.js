@@ -13,22 +13,24 @@ async function addNotificationToFirestore(uid, notificationContent) {
       body: notificationContent.body,
       timestamp: serverTimestamp(),
       data: notificationContent.data,
+      reqUserId: notificationContent.reqUserId,
     });
 
     console.log('Notification successfully added to Firestore for user:', uid);
   } catch (error) {
-    console.error('Error adding notification to Firestore:', error);
+    console.error('Error adding notification to Firestore: ', {error});
   }
 }
 
 // Function to send the push notification and save it to Firestore
-export async function sendPushNotification(pushToken, ownerName, requestedAmount, ownerId, currentUserName) {
+export async function sendPushNotification(pushToken, ownerName, requestedAmount, ownerId, currentUserName, reqUserId) {
   const message = {
     to: pushToken,
     sound: 'default',
     title: 'Water Request Notification',
     body: `You have received a request from ${currentUserName} for ${requestedAmount} liters of water.`,
     data: { requesterName: ownerName, requestedAmount },
+    reqUserId: reqUserId,
   };
 
   try {
@@ -54,6 +56,7 @@ export async function sendPushNotification(pushToken, ownerName, requestedAmount
       title: message.title,
       body: message.body,
       data: message.data,
+      reqUserId: message.reqUserId
     });
 
   } catch (error) {
