@@ -32,7 +32,7 @@ export default function DailyConsumption() {
                 <Text style={styles.dateText}>{currentDate}</Text>
             </View>
             <View style={styles.rightContainer}>
-                <Text style={styles.amountText}>{totalConsumption}</Text>
+                <Text style={styles.amountText}>{totalConsumption.toFixed(2)}</Text>
                 <Text style={styles.unitText}>Liters</Text>
             </View>
         </View>
