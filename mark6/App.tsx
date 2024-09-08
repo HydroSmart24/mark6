@@ -339,6 +339,14 @@ export default function App() {
                     }}
                   />
                   <Stack.Screen
+                    name="AvailableScreen"
+                    component={AvailableScreen}
+                    options={{
+                      headerShown: true,
+                      title: 'Availability & Consumption',
+                    }}
+                  />
+                  <Stack.Screen
                     name="NotificationsScreen"
                     component={NotificationsScreen}
                     options={{ headerShown: true, title: 'Notifications' }}

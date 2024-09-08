@@ -1,28 +1,40 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, Modal, StyleSheet, TouchableOpacity, Alert } from 'react-native';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, deleteDoc } from 'firebase/firestore'; 
 import axios from 'axios';
 import { db } from '../../firebase/firebaseConfig';
+import BasicLoading from '../Loading/BasicLoading';
 
 interface NotificationModalProps {
   visible: boolean;
   onClose: () => void;
   notificationDetails: string;
   requestedAmount: number;
-  reqUserId: string; // The ID of the user making the request
-  receiverUserId: string; // The ID of the user receiving the water
+  reqUserId: string;
+  receiverUserId: string;
+  notificationId: string;
   onAccept: () => void;
   onDecline: () => void;
 }
 
-const NotificationModal: React.FC<NotificationModalProps> = ({ visible, onClose, notificationDetails, requestedAmount, reqUserId, receiverUserId, onAccept, onDecline }) => {
-  // Function to calculate motor activation time
+const NotificationModal: React.FC<NotificationModalProps> = ({
+  visible,
+  onClose,
+  notificationDetails,
+  requestedAmount,
+  reqUserId,
+  receiverUserId,
+  notificationId,
+  onAccept,
+  onDecline
+}) => {
+  const [processLoading, setProcessLoading] = useState(false); // State for loading
+
   const calculateMotorTime = (liters: number): number => {
-    const litersPerSecond = 100 / 5; // 100 liters in 5 seconds
-    return (liters / litersPerSecond); // Time in seconds
+    const litersPerSecond = 100 / 5;
+    return liters / litersPerSecond;
   };
 
-  // Function to fetch the IP address of a user from Firebase
   const fetchUserIp = async (userId: string) => {
     const userDocRef = doc(db, 'users', userId);
     const userDoc = await getDoc(userDocRef);
@@ -33,7 +45,6 @@ const NotificationModal: React.FC<NotificationModalProps> = ({ visible, onClose,
     }
   };
 
-  // Function to send a request to ESP to start the motor
   const startMotor = async (ip: string, duration: number) => {
     try {
       await axios.post(`http://${ip}/send-water`, { duration });
@@ -44,7 +55,6 @@ const NotificationModal: React.FC<NotificationModalProps> = ({ visible, onClose,
     }
   };
 
-  // Function to send a request to ESP to receive water
   const receiveWater = async (ip: string) => {
     try {
       await axios.post(`http://${ip}/receive-water`);
@@ -55,7 +65,6 @@ const NotificationModal: React.FC<NotificationModalProps> = ({ visible, onClose,
     }
   };
 
-  // Function to stop the pump
   const stopPump = async (ip: string) => {
     try {
       await axios.post(`http://${ip}/stop-water`);
@@ -66,43 +75,63 @@ const NotificationModal: React.FC<NotificationModalProps> = ({ visible, onClose,
     }
   };
 
-  const handleAccept = async () => {
+  const deleteNotification = async () => {
+    const userId = receiverUserId;
     try {
-      // Fetch the IP of the user who requested water (reqUserId)
+      const notificationDocRef = doc(db, `users/${userId}/notifications`, notificationId);
+      await deleteDoc(notificationDocRef);
+      console.log('Notification deleted');
+    } catch (error) {
+      console.error('Error deleting notification:', error);
+      Alert.alert('Error', 'Failed to delete the notification.');
+    }
+  };
+
+  // Handle Accept Request
+  const handleAccept = async () => {
+    setProcessLoading(true); // Start loading for Accept
+    console.log("Loading set to true for Accept");
+    try {
       const requesterIp = await fetchUserIp(reqUserId);
-  
-      // Fetch the IP of the receiver (receiverUserId)
       const receiverIp = await fetchUserIp(receiverUserId);
-  
-      // Calculate the duration for motor activation
       const motorTime = calculateMotorTime(requestedAmount);
-  
-      // Start the motor on the receiver's ESP (receiverUserId)
+
       await startMotor(receiverIp, motorTime);
-  
-      // Activate the receive-water function on the requester's ESP (reqUserId)
-      await receiveWater(requesterIp); // Use the requester's IP here
-  
-      // Stop the pump and stop receiving water after the motor has run for the calculated time
+      await receiveWater(requesterIp);
+
       setTimeout(async () => {
-        // Stop the pump on the receiver ESP (receiverUserId)
         await stopPump(receiverIp);
-  
-        // Stop the water reception on the requester's ESP (reqUserId)
-        await axios.post(`http://${requesterIp}/stop-receive-water`); // Use requester's IP here
+        await axios.post(`http://${requesterIp}/stop-receive-water`);
         console.log('Stopped receiving water');
-  
+
+        await deleteNotification();
         Alert.alert('Success', 'Water request completed and pump stopped.');
-      }, motorTime * 1000); // Convert motorTime to milliseconds
-  
-      // Call the parent onAccept handler
-      onAccept();
+        setProcessLoading(false); // Stop loading after success
+        console.log("Loading set to false");
+        onAccept(); // Call parent accept handler
+      }, motorTime * 1000);
     } catch (error) {
       console.error('Error handling accept:', error);
       Alert.alert('Error', 'An error occurred while processing the request.');
+      setProcessLoading(false); // Stop loading in case of error
     }
   };
-  
+
+  // Handle Decline Request
+  const handleDecline = async () => {
+    setProcessLoading(true); // Start loading for Decline
+    console.log("Loading set to true for Decline");
+    try {
+      await deleteNotification(); // Call function to delete the notification
+      setProcessLoading(false); // Stop loading after success
+      onDecline(); // Call parent decline handler
+      console.log("Loading set to false after decline");
+    } catch (error) {
+      console.error('Error handling decline:', error);
+      Alert.alert('Error', 'An error occurred while processing the decline.');
+      setProcessLoading(false); // Stop loading in case of error
+    }
+  };
 
   return (
     <Modal visible={visible} transparent={true} animationType="slide">
@@ -110,18 +139,21 @@ const NotificationModal: React.FC<NotificationModalProps> = ({ visible, onClose,
         <View style={styles.modalContainer}>
           <Text style={styles.modalTitle}>Water Request</Text>
           <Text style={styles.modalBody}>{notificationDetails}</Text>
-          
+
           {/* Accept and Decline Buttons */}
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.declineButton} onPress={onDecline}>
+            <TouchableOpacity style={styles.declineButton} onPress={handleDecline} disabled={processLoading}>
               <Text style={styles.declineButtonText}>Decline</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.acceptButton} onPress={handleAccept}>
+            <TouchableOpacity style={styles.acceptButton} onPress={handleAccept} disabled={processLoading}>
               <Text style={styles.acceptButtonText}>Accept</Text>
             </TouchableOpacity>
           </View>
         </View>
+
+        {/* Show the loading indicator */}
+        {processLoading && <BasicLoading visible={processLoading} />}
       </View>
     </Modal>
   );

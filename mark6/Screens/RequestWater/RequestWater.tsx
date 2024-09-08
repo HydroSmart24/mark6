@@ -8,7 +8,7 @@ import axios from 'axios';
 import { db } from '../../firebase/firebaseConfig';
 import { useFocusEffect } from '@react-navigation/native'; // Import useFocusEffect
 
-const POLLING_INTERVAL = 30000; // Poll every 60 seconds
+const POLLING_INTERVAL = 10000; // Poll every 60 seconds
 
 export default function RequestWater() {
     const [users, setUsers] = useState<any[]>([]);
