@@ -1,6 +1,6 @@
 import * as Notifications from 'expo-notifications';
 import { db } from '../../firebase/firebaseConfig'; // Ensure the correct path to your Firebase config file
-import { collection, getDocs, query, where, doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, doc, setDoc, serverTimestamp } from 'firebase/firestore';
 
 // Function to store the notification in Firestore
 async function addNotificationToFirestore(uid, notificationContent) {
@@ -13,22 +13,24 @@ async function addNotificationToFirestore(uid, notificationContent) {
       body: notificationContent.body,
       timestamp: serverTimestamp(),
       data: notificationContent.data,
+      reqUserId: notificationContent.reqUserId,
     });
 
-    console.log('Notification successfully added to Firestore');
+    console.log('Notification successfully added to Firestore for user:', uid);
   } catch (error) {
-    console.error('Error adding notification to Firestore:', error);
+    console.error('Error adding notification to Firestore: ', {error});
   }
 }
 
 // Function to send the push notification and save it to Firestore
-export async function sendPushNotification(pushToken, requesterName, requestedAmount) {
+export async function sendPushNotification(pushToken, ownerName, requestedAmount, ownerId, currentUserName, reqUserId) {
   const message = {
     to: pushToken,
     sound: 'default',
     title: 'Water Request Notification',
-    body: `You have received a request from ${requesterName} for ${requestedAmount} liters of water.`,
-    data: { requesterName, requestedAmount },
+    body: `You have received a request from ${currentUserName} for ${requestedAmount} liters of water.`,
+    data: { requesterName: ownerName, requestedAmount },
+    reqUserId: reqUserId,
   };
 
   try {
@@ -49,20 +51,13 @@ export async function sendPushNotification(pushToken, requesterName, requestedAm
       console.log('Push notification sent successfully');
     }
 
-    // Query Firestore to find the user document by the given pushToken
-    const usersCollection = collection(db, 'users');
-    const q = query(usersCollection, where('pushtoken', '==', pushToken));
-    const querySnapshot = await getDocs(q);
-
-    if (!querySnapshot.empty) {
-      const userDoc = querySnapshot.docs[0];
-      const uid = userDoc.id; // Get the user's UID
-      
-      // Save the notification to Firestore under the user's notifications subcollection
-      await addNotificationToFirestore(uid, message);
-    } else {
-      console.error('No user found with the given push token:', pushToken);
-    }
+    // Save the notification to Firestore for the notification receiver using ownerId
+    await addNotificationToFirestore(ownerId, {
+      title: message.title,
+      body: message.body,
+      data: message.data,
+      reqUserId: message.reqUserId
+    });
 
   } catch (error) {
     console.error('Error sending push notification:', error);
