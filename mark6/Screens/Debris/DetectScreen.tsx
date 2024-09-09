@@ -11,6 +11,11 @@ import Svg, { Rect, Text as SvgText } from 'react-native-svg';
 import Loading from '../../components/Loading/BasicLoading';
 import ReusableText from '../../components/Text/ReusableText';
 import DebrisWarningAlert from '../../components/AlertModal/DebrisWarningAlert';
+import { HighDebris } from '../../utils/Notification/HighDebris';
+import { getAuth } from 'firebase/auth'; // Import Firebase Auth for v9+
+import { getFirestore, doc, getDoc } from 'firebase/firestore'; // Firestore v9+ functions
+import { app } from '../../firebase/firebaseConfig'; // Import your Firebase config
+
 
 // Fetch the latest image from Firebase Storage based on timestamp metadata (full date and time)
 async function fetchLatestImage() {
@@ -98,6 +103,38 @@ export default function DetectScreen() {
   const [severity, setSeverity] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
   const [isWarningVisible, setWarningVisible] = useState(false);
+  const [uid, setUid] = useState<string | null>(null);
+  const [pushToken, setPushToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Function to fetch user data from Firestore
+    async function fetchUserData() {
+      try {
+        const auth = getAuth(app); // Get Auth instance
+        const currentUser = auth.currentUser;
+        if (currentUser) {
+          const userUid = currentUser.uid;
+          setUid(userUid);
+
+          // Fetch the user's pushToken from the 'users' collection in Firestore
+          const db = getFirestore(app); // Get Firestore instance
+          const userDocRef = doc(db, 'users', userUid); // Create reference to the user's document
+          const userDocSnap = await getDoc(userDocRef); // Fetch document snapshot
+
+          if (userDocSnap.exists()) {
+            const userData = userDocSnap.data();
+            setPushToken(userData?.pushtoken); // Assuming pushToken is stored in userDoc
+          } else {
+            console.error("No user document found in Firestore.");
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    }
+
+    fetchUserData();
+  }, []);
 
   useEffect(() => {
     // Fetch the latest image and analyze it on component mount
@@ -146,17 +183,23 @@ export default function DetectScreen() {
 
       const totalImageArea = (scaledDimensions?.width || 0) * (scaledDimensions?.height || 0);
       const severityPercentage = (totalBoundingBoxArea / totalImageArea) * 100;
-      setSeverity(severityPercentage);
+      setSeverity(51);
     }
   }, [inferenceResult, imageDimensions, scaledDimensions]);
 
   useEffect(() => {
-    if (severity !== null && severity >= 50) {
+    if (severity !== null && severity >= 50 && pushToken && uid) {
       setWarningVisible(true);
+
+      // Call the HighDebris function when the condition is met
+      HighDebris(pushToken, uid)
+        .then(() => console.log('Notification sent and added to Firestore'))
+        .catch(error => console.error('Error sending notification:', error));
+
     } else {
       setWarningVisible(false);
     }
-  }, [severity]);
+  }, [severity, , pushToken, uid]);
 
   const handleCloseWarning = () => {
     setWarningVisible(false);
