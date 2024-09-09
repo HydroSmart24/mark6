@@ -53,6 +53,8 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
 
+
+
 function MainTabNavigator({ userName }: { userName: string }) {
   return (
     <Tab.Navigator>
@@ -228,6 +230,8 @@ export default function App() {
 
   React.useEffect(() => {
     let unsubscribeLeakageListener: (() => void) | undefined;
+
+    
 
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setUser(user);
