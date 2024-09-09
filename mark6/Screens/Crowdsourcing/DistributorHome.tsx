@@ -22,7 +22,6 @@ export default function DistributorHome() {
         // Fetch other requests by status
         fetchedRequests = await getRequestsByStatus(selectedOption);
       }
-
       setRequests(fetchedRequests);
     } catch (error) {
       console.error(
@@ -31,7 +30,6 @@ export default function DistributorHome() {
       );
     }
   };
-
   useEffect(() => {
     fetchRequests();
   }, [selectedOption]);

@@ -56,11 +56,15 @@ const Map: React.FC = () => {
     try {
       const requests = await getOptimisedDeliveringRequests(); // Use optimized function
       setDeliveringRequests(requests);
-      console.log("Sorted Delivering Requests Locations:");
+      console.log("Sorted Delivering Requests Locations with User IDs:");
+
       requests.forEach(
-        (request: { id: any; latitude: any; longitude: any }, index: any) => {
+        (
+          request: { id: any; latitude: any; longitude: any; uid: any },
+          index: any
+        ) => {
           console.log(
-            `ID: ${request.id}, Latitude: ${request.latitude}, Longitude: ${request.longitude}`
+            `ID: ${request.id}, UID: ${request.uid}, Latitude: ${request.latitude}, Longitude: ${request.longitude}`
           );
         }
       );
