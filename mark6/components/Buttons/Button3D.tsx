@@ -5,11 +5,12 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 interface ButtonProps {
   title: string;
   style?: ViewStyle;
+  onPress?: () => void;
 }
 
-const Button3D: React.FC<ButtonProps> = ({ title, style }) => {
+const Button3D: React.FC<ButtonProps> = ({ title, style, onPress }) => {
   return (
-    <TouchableOpacity style={[styles.button, style]}>
+    <TouchableOpacity style={[styles.button, style]} onPress={onPress}>
       <Text style={styles.buttonText}>{title}</Text>
     </TouchableOpacity>
   );

@@ -1,7 +1,6 @@
 import React from "react";
 import {
   TouchableOpacity,
-  Text,
   StyleSheet,
   View,
   ViewStyle,
@@ -17,11 +16,10 @@ type RootStackParamList = {
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 interface ButtonProps {
-  title: string;
   style?: ViewStyle;
 }
 
-const StartJourney: React.FC<ButtonProps> = ({ title, style }) => {
+const StartJourney: React.FC<ButtonProps> = ({ style }) => {
   const navigation = useNavigation<NavigationProp>();
 
   const handlePress = () => {
@@ -31,12 +29,7 @@ const StartJourney: React.FC<ButtonProps> = ({ title, style }) => {
   return (
     <TouchableOpacity style={[styles.button, style]} onPress={handlePress}>
       <View style={styles.buttonContent}>
-        <MaterialCommunityIcons name="tanker-truck" size={28} color="#FFF" />
-        <View style={styles.textContent}>
-          {/* Split the title into two lines */}
-          <Text style={styles.buttonText}>{title.split(" ")[0]}</Text>
-          <Text style={styles.buttonText}>{title.split(" ")[1]}</Text>
-        </View>
+        <MaterialCommunityIcons name="truck-delivery" size={28} color="white" />
       </View>
     </TouchableOpacity>
   );
@@ -45,28 +38,22 @@ const StartJourney: React.FC<ButtonProps> = ({ title, style }) => {
 const styles = StyleSheet.create({
   button: {
     backgroundColor: "#4299E1", // equivalent to bg-blue-500
-    paddingVertical: 15, // equivalent to py-2
-    paddingHorizontal: 20, // equivalent to px-4
-    borderRadius: 4, // equivalent to rounded
-    borderBottomWidth: 4, // equivalent to border-b-4
-    borderBottomColor: "#2B6CB0", // equivalent to border-blue-700
-    alignItems: "center", // Center content horizontally
-    bottom: 80, // Space between buttons
-    left: 240, // Align button to the left
+    width: 80, // Set the width and height to make it round
+    height: 80,
+    borderRadius: 40, // Half of the width/height to make it a circle
+    justifyContent: "center", // Center the icon inside the button
+    alignItems: "center",
+    position: "absolute", // Make the button float
+    bottom: 60, // Position from the bottom
+    right: 20, // Position from the right
+    elevation: 5, // Add some shadow for a floating effect
+    shadowColor: "#000", // Shadow for Android
+    shadowOffset: { width: 0, height: 2 }, // Shadow offset for iOS
+    shadowOpacity: 0.3, // Shadow opacity for iOS
+    shadowRadius: 3, // Shadow blur radius for iOS
   },
   buttonContent: {
-    flexDirection: "row", // Align icon and text horizontally
-    alignItems: "center", // Center content vertically
-  },
-  textContent: {
-    flexDirection: "column", // Stack text vertically
-    alignItems: "flex-start", // Center text horizontally
-    marginLeft: 10, // Space between icon and text
-  },
-  buttonText: {
-    color: "#FFF", // equivalent to text-white
-    fontWeight: "bold", // equivalent to font-bold
-    textAlign: "center",
+    alignItems: "center", // Center icon horizontally and vertically
   },
 });
 

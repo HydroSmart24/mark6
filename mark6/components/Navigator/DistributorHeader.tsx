@@ -20,7 +20,7 @@ const DistributorHeader: React.FC<DistributorNavNavProps> = ({
 }) => {
   const [isPopupVisible, setPopupVisible] = useState(false);
 
-  const options = ["Hi"];
+  const options = ["Hi Distributor"];
 
   const togglePopup = () => {
     setPopupVisible(!isPopupVisible);
