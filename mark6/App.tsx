@@ -61,6 +61,8 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
 
+
+
 function MainTabNavigator({ userName }: { userName: string }) {
   return (
     <Tab.Navigator>
@@ -361,6 +363,14 @@ React.useEffect(() => {
                     options={{
                       headerShown: true,
                       title: 'Order History',
+                    }}
+                  />
+                  <Stack.Screen
+                    name="AvailableScreen"
+                    component={AvailableScreen}
+                    options={{
+                      headerShown: true,
+                      title: 'Availability & Consumption',
                     }}
                   />
                   <Stack.Screen

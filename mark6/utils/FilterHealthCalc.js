@@ -4,7 +4,7 @@ import moment from "moment";
 // Constants
 const INITIAL_PERCENTAGE = 100;
 const MONTHS = 1;
-const DAYS = MONTHS * 30; // Approximation for 6 months
+const DAYS = MONTHS * 5; // Approximation for 6 months
 const PH_THRESHOLD = 7.5;
 const TURBIDITY_THRESHOLD = 5.0;
 const ALPHA = 0.1; // pH sensitivity
@@ -70,8 +70,8 @@ function calculateFilterHealth(ph, turbidity, currentDate, expirationDate) {
   
     // Calculate daily impact
     let k = 0;
-    if (ph > PH_THRESHOLD) {
-      k += ALPHA * (ph - PH_THRESHOLD);
+    if (ph < PH_THRESHOLD) {
+      k += ALPHA * (PH_THRESHOLD - ph);
     }
     if (turbidity > TURBIDITY_THRESHOLD) {
       k += BETA * (turbidity - TURBIDITY_THRESHOLD);

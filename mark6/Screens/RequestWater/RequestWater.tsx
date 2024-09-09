@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { SafeAreaView, ScrollView, ActivityIndicator, StyleSheet, Text, View, Alert } from 'react-native';
 import CardView from '../../components/CardView/RequestWaterCardView';
 import { getAllUsers } from '../../utils/FetchAllUsers';
@@ -6,6 +6,9 @@ import { doc, updateDoc, getDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import axios from 'axios';
 import { db } from '../../firebase/firebaseConfig';
+import { useFocusEffect } from '@react-navigation/native'; // Import useFocusEffect
+
+const POLLING_INTERVAL = 10000; // Poll every 60 seconds
 
 export default function RequestWater() {
     const [users, setUsers] = useState<any[]>([]);
@@ -19,6 +22,91 @@ export default function RequestWater() {
         if (distance < 10) return 1000; // Maximum liters (full tank at 10 cm)
         if (distance > 30) return 0;    // Minimum liters (empty tank at 30 cm)
         return (30 - distance) * 50;    // Conversion formula for intermediate levels
+    };
+
+    // Function to fetch the water level from the ESP32
+    const fetchWaterLevel = async (espIp: string) => {
+        try {
+            const response = await axios.get(`http://${espIp}/get-water-level`);
+            const distance = parseInt(response.data, 10);
+
+            if (isNaN(distance)) {
+                Alert.alert('Error', 'Invalid water level reading.');
+                return null;
+            }
+
+            return distance;
+        } catch (error) {
+            console.error('Error fetching water level:', error);
+            return null;
+        }
+    };
+
+    // Function to update the water level in Firebase
+    const updateWaterLevelInFirebase = async (userId: string, level: number) => {
+        try {
+            const userDocRef = doc(db, 'users', userId);
+            await updateDoc(userDocRef, { waterLevel: level });
+            console.log(`Data uploaded to Firebase for user ${userId}: ${level} cm`);
+        } catch (error) {
+            console.error('Error updating water level in Firebase:', error);
+            Alert.alert('Error', 'Failed to update water level in Firebase.');
+        }
+    };
+
+    // Fetch and update the water level from ESP32 to Firebase and then fetch from Firebase for display
+    const updateAndFetchWaterLevels = async () => {
+        try {
+            // Fetch and update water level for current user
+            if (currentUserId) {
+                const userDocRef = doc(db, 'users', currentUserId);
+                const userDoc = await getDoc(userDocRef);
+                const espIp = userDoc.exists() ? userDoc.data().ip : null;
+
+                if (espIp) {
+                    const distance = await fetchWaterLevel(espIp);
+                    if (distance !== null) {
+                        setCurrentUserWaterLevel(convertToLiters(distance));
+                        console.log(`Data fetched from ESP32 for current user (${currentUserName}): ${distance} cm`);
+                        await updateWaterLevelInFirebase(currentUserId, distance); // Update Firebase
+                    }
+                }
+            }
+
+            // Fetch and update water levels for other users from ESP32
+            for (const user of users) {
+                if (user.id !== currentUserId && user.ip) {
+                    const distance = await fetchWaterLevel(user.ip);
+                    if (distance !== null) {
+                        const liters = convertToLiters(distance);
+                        setUsers((prevUsers) =>
+                            prevUsers.map((u) =>
+                                u.id === user.id ? { ...u, waterLevel: liters } : u
+                            )
+                        );
+                        console.log(`Data fetched from ESP32 for user (${user.name}): ${distance} cm`);
+                        await updateWaterLevelInFirebase(user.id, distance); // Update Firebase
+                    }
+                }
+            }
+
+            // Fetch updated water levels from Firebase for all users (including current user)
+            const usersData = await getAllUsers();
+            setUsers(usersData);
+
+            if (currentUserId) {
+                const currentUserDocRef = doc(db, 'users', currentUserId);
+                const currentUserDoc = await getDoc(currentUserDocRef);
+                if (currentUserDoc.exists()) {
+                    const currentUserData = currentUserDoc.data();
+                    const currentDistance = currentUserData?.waterLevel || 30;
+                    setCurrentUserWaterLevel(convertToLiters(currentDistance));
+                    console.log(`Data fetched from Firebase for current user (${currentUserName}): ${currentDistance} cm`);
+                }
+            }
+        } catch (error) {
+            console.error('Error polling and fetching water levels:', error);
+        }
     };
 
     // Fetch users and current user's water level and name from Firebase when component mounts
@@ -42,6 +130,7 @@ export default function RequestWater() {
 
                         setCurrentUserWaterLevel(convertToLiters(distance)); // Convert to liters and set the water level
                         setCurrentUserName(name); // Set the current user's name
+                        console.log(`Data fetched from Firebase for current user: ${name}, Water Level: ${distance} cm`);
                     }
                 }
 
@@ -55,68 +144,19 @@ export default function RequestWater() {
         };
 
         fetchUsersAndCurrentUserData();
-    }, []);
+    }, [currentUserId]);
 
-    // Function to fetch the water level from the ESP32
-    const fetchWaterLevel = async (espIp: string) => {
-        try {
-            const response = await axios.get(`http://${espIp}/get-water-level`);
-            const distance = parseInt(response.data, 10);
+    // Use focus effect to only start polling when the screen is in focus
+    useFocusEffect(
+        useCallback(() => {
+            const intervalId = setInterval(() => {
+                updateAndFetchWaterLevels();
+            }, POLLING_INTERVAL);
 
-            if (isNaN(distance)) {
-                Alert.alert('Error', 'Invalid water level reading.');
-                return null;
-            }
-
-            return distance;
-        } catch (error) {
-            Alert.alert('Error', 'Failed to get water level.');
-            console.error(error);
-            return null;
-        }
-    };
-
-    // Function to update the water level in Firebase
-    const updateWaterLevelInFirebase = async (userId: string, level: number) => {
-        try {
-            const userDocRef = doc(db, 'users', userId);
-            await updateDoc(userDocRef, { waterLevel: level });
-        } catch (error) {
-            Alert.alert('Error', 'Failed to update water level in Firebase.');
-            console.error(error);
-        }
-    };
-
-    // Function to handle requesting water and updating water level in both the UI and Firebase
-    const handleRequestPress = async (user: any) => {
-        if (!user.ip) {
-            Alert.alert('Error', 'No IP address found for this user.');
-            return;
-        }
-
-        try {
-            const espIp = user.ip;
-            const distance = await fetchWaterLevel(espIp);
-
-            if (distance !== null) {
-                const liters = convertToLiters(distance); // Convert the distance to liters
-
-                // Update the water level in the Firebase document
-                await updateWaterLevelInFirebase(user.id, distance);
-
-                // Update the user's water level in the UI (in liters)
-                setUsers((prevUsers) =>
-                    prevUsers.map((u) =>
-                        u.id === user.id ? { ...u, waterLevel: liters } : u
-                    )
-                );
-
-                Alert.alert('Success', `Water level updated to ${liters} liters.`);
-            }
-        } catch (error) {
-            console.error('Error handling water request:', error);
-        }
-    };
+            // Clean up the interval when the screen loses focus
+            return () => clearInterval(intervalId);
+        }, [currentUserId, users])
+    );
 
     if (loading) {
         return (
@@ -126,16 +166,18 @@ export default function RequestWater() {
         );
     }
 
+    function handleRequestPress(user: any): void {
+        throw new Error('Function not implemented.');
+    }
+
     return (
         <SafeAreaView style={{ flex: 1 }}>
-
             {/* Dashboard container to display current user's water level */}
             <View style={styles.dashboardContainer}>
                 <Text style={styles.dashboardHeading}>Your Water Level</Text>
                 <Text style={styles.dashboardText}>
                     {currentUserWaterLevel !== null ? `${currentUserWaterLevel} Liters` : 'Loading...'}
                 </Text>
-               
             </View>
 
             <ScrollView>
@@ -148,9 +190,10 @@ export default function RequestWater() {
                                 title={user.name} // Pass the user's name as the title
                                 availableLiters={convertToLiters(user.waterLevel)} // Convert the user's water level to liters before passing
                                 onRequestPress={() => handleRequestPress(user)} // Handle the water request
-                                ownerId={user.id}  
+                                reqUserId={currentUserId || 'Unknown'} // Pass the current user's ID
+                                ownerId={user.id}
                                 currentUserName={currentUserName || 'Unknown'}  // Provide a fallback for null values
-                                                        />
+                            />
                         ))
                 ) : (
                     <View style={{ padding: 20 }}>
