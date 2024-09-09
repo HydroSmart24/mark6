@@ -26,7 +26,7 @@ import UserProfile from "./Screens/Auth/UserProfile";
 import {
   registerForPushNotificationsAsync,
   setupNotificationHandler,
-} from "./utils/Notification/PushNotification"; // Import utility functions
+} from "./utils/Notification/PushNotification";
 import * as Notifications from "expo-notifications";
 import DistributorHome from "./Screens/Crowdsourcing/DistributorHome";
 import Map from "./Screens/Crowdsourcing/Map";
@@ -34,6 +34,7 @@ import { listenForLeakageAndNotify } from "./utils/Notification/LeakageDetectLis
 import LeakageAlert from "./components/AlertModal/LeakageAlert";
 import NotificationsScreen from "./Screens/Notifications";
 import { createNavigationContainerRef } from '@react-navigation/native';
+import { RainfallAPI } from './utils/RainfallAPI'; // Import the RainfallAPI function from the utils folder
 
 
 export const navigationRef = createNavigationContainerRef<RootStackParamList>();
@@ -268,7 +269,12 @@ React.useEffect(() => {
 
         // Start listening for leakage detection and notify the logged-in user
         unsubscribeLeakageListener = listenForLeakageAndNotify(pushToken, uid, handleLeakageDetected);
+
       }
+
+      // Call RainfallAPI after user authentication
+      await RainfallAPI(); // Call your rainfall API function here
+
     }
   });
 
