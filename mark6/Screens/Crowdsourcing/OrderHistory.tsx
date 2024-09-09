@@ -16,7 +16,6 @@ export default function OrderHistory() {
   const [currentLatitude, setCurrentLatitude] = useState<number | null>(null);
   const [currentLongitude, setCurrentLongitude] = useState<number | null>(null);
   const navigation = useNavigation();
-  const [refreshKey, setRefreshKey] = useState(0);
   const [selectedOption, setSelectedOption] = useState("All");
 
   useEffect(() => {
@@ -36,8 +35,11 @@ export default function OrderHistory() {
       }
     };
 
-    fetchRequests();
-  }, [refreshKey]);
+    fetchRequests(); // Initial fetch
+    const intervalId = setInterval(fetchRequests, 3000); // Fetch every 30 seconds
+
+    return () => clearInterval(intervalId); // Clean up interval on unmount
+  }, []);
 
   useEffect(() => {
     const getLocation = async () => {
@@ -79,7 +81,6 @@ export default function OrderHistory() {
 
   const handleCloseModal = () => {
     setModalVisible(false);
-    setRefreshKey((prevKey) => prevKey + 1);
   };
 
   return (

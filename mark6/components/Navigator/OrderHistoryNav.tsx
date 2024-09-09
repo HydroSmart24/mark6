@@ -57,6 +57,7 @@ const styles = StyleSheet.create({
     height: 50,
     backgroundColor: "#f8f8f8",
     borderRadius: 20,
+    marginTop: 35,
   },
   option: {
     paddingHorizontal: 20,

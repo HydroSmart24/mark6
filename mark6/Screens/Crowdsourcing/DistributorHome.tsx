@@ -4,7 +4,8 @@ import DistributorCard from "../../components/Modals/DistributorCard";
 import DistributorNav from "../../components/Navigator/DistributorNav";
 import { getRequestsByStatus } from "../../utils/GetPendingReq";
 import { getOptimisedAcceptedRequests } from "../../utils/OptimisedAccepted";
-import Accepted from "./Accepted"; // Import the Accepted component
+import Accepted from "./Accepted";
+import DistributorHeader from "../../components/Navigator/DistributorHeader";
 
 export default function DistributorHome() {
   const [selectedOption, setSelectedOption] = useState("Pending");
@@ -21,7 +22,6 @@ export default function DistributorHome() {
         // Fetch other requests by status
         fetchedRequests = await getRequestsByStatus(selectedOption);
       }
-
       setRequests(fetchedRequests);
     } catch (error) {
       console.error(
@@ -30,13 +30,17 @@ export default function DistributorHome() {
       );
     }
   };
-
   useEffect(() => {
     fetchRequests();
   }, [selectedOption]);
 
   return (
     <View style={styles.container}>
+      <DistributorHeader
+        selectedOption={selectedOption}
+        onSelectOption={setSelectedOption}
+      />
+
       <DistributorNav
         selectedOption={selectedOption}
         onSelectOption={setSelectedOption}
