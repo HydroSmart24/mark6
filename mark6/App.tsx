@@ -30,6 +30,14 @@ import LeakageAlert from './components/AlertModal/LeakageAlert';
 import NotificationsScreen from './Screens/Notifications';
 import DistributorHome from "./Screens/Crowdsourcing/DistributorHome";
 import Map from "./Screens/Crowdsourcing/Map";
+import { createNavigationContainerRef } from '@react-navigation/native';
+  // Import navigation-related types
+  import { NavigationContainerRef } from '@react-navigation/native';
+
+  
+
+
+export const navigationRef = createNavigationContainerRef<RootStackParamList>();
 
 
 export type RootStackParamList = {
@@ -226,49 +234,66 @@ export default function App() {
   };
 
 
-  React.useEffect(() => {
-    let unsubscribeLeakageListener: (() => void) | undefined;
 
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      setUser(user);
-      setLoading(false);
 
-      if (user) {
-        const uid = user.uid;
-        const docRef = doc(db, "users", user.uid);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          setUserName(docSnap.data()?.name || null);
-        }
+React.useEffect(() => {
+  let unsubscribeLeakageListener: (() => void) | undefined;
+
+  const unsubscribe = onAuthStateChanged(auth, async (user) => {
+    setUser(user);
+    setLoading(false);
+
+    if (user) {
+      const uid = user.uid;
+      const docRef = doc(db, "users", user.uid);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        setUserName(docSnap.data()?.name || null);
+      }
 
       // Register the push token
-        const pushToken = await registerForPushNotificationsAsync();
-        if (pushToken) {
-          await setDoc(docRef, { pushtoken: pushToken }, { merge: true });
+      const pushToken = await registerForPushNotificationsAsync();
+      if (pushToken) {
+        await setDoc(docRef, { pushtoken: pushToken }, { merge: true });
 
         // Start listening for leakage detection and notify the logged-in user
-          unsubscribeLeakageListener = listenForLeakageAndNotify(pushToken, uid, handleLeakageDetected);
-        }
+        unsubscribeLeakageListener = listenForLeakageAndNotify(pushToken, uid, handleLeakageDetected);
       }
-    });
+    }
+  });
 
-    setupNotificationHandler(); // Setup the notification handler
+  setupNotificationHandler(); // Setup the notification handler
 
   // Handle foreground notifications without showing an in-app alert
-    const foregroundSubscription = Notifications.addNotificationReceivedListener(notification => {
+  const foregroundSubscription = Notifications.addNotificationReceivedListener(notification => {
       console.log('Notification received in foreground:', notification);
-    // No in-app Alert, allow the notification to show as a system notification
     });
 
-    return () => {
-      unsubscribe(); // Cleanup the auth listener
-      foregroundSubscription.remove(); // Cleanup the notification listener
+  // Handle notification click/tap (navigate to NotificationsScreen)
+  const responseListener = Notifications.addNotificationResponseReceivedListener(response => {
+    console.log('Notification clicked:', response);
 
-      if (unsubscribeLeakageListener) {
-        unsubscribeLeakageListener(); // Stop listening to leakage detection
-      }
-    };
-  }, []);
+    if (navigationRef.isReady()) {
+      // Explicitly cast the type of the screen name
+      navigationRef.navigate('NotificationsScreen' as keyof RootStackParamList); // Correct type for navigate
+    }
+  });
+
+
+  return () => {
+    unsubscribe(); // Cleanup the auth listener
+    foregroundSubscription.remove(); // Cleanup the foreground notification listener
+    responseListener.remove(); // Cleanup the notification response listener
+
+    if (unsubscribeLeakageListener) {
+      unsubscribeLeakageListener(); // Stop listening to leakage detection
+    }
+  };
+}, []);
+
+  
+  
+
 
   if (loading) {
     return (
@@ -279,7 +304,7 @@ export default function App() {
   }
 
   return (
-    <NavigationContainer>
+    <NavigationContainer ref={navigationRef}>
       <Stack.Navigator initialRouteName="AuthScreen">
         {user ? (
           <>
@@ -341,7 +366,9 @@ export default function App() {
                   <Stack.Screen
                     name="NotificationsScreen"
                     component={NotificationsScreen}
-                    options={{ headerShown: true, title: 'Notifications' }}
+                    options={{ 
+                      headerShown: true, 
+                      title: 'Notifications' }}
                   />
                  
               </>
