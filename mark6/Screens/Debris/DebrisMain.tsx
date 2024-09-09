@@ -59,36 +59,45 @@ export default function DebrisMainScreen() {
     fetchUserData();
   }, []);
 
-  useEffect(() => {
-    async function loadData() {
-      try {
-        // Fetch pH, turbidity, expirationDate, and docId data
-        const { ph, turbidity, expirationDate } = await fetchSensorData();
+  // Define loadData outside to use in both useEffect and handleReset
+  async function loadData() {
+    try {
+      // Fetch pH, turbidity, expirationDate, and docId data
+      const { ph, turbidity, expirationDate } = await fetchSensorData();
 
-        // Calculate filter health
-        const currentDate = new Date();
-        const newPercentage = calculateFilterHealth([ph], [turbidity], currentDate, expirationDate);
+      // Calculate filter health
+      const currentDate = new Date();
+      const newPercentage = calculateFilterHealth([ph], [turbidity], currentDate, expirationDate);
 
-        // Set state
-        setPercentage(newPercentage);
-        setPh(ph);
-        setTurbidity(turbidity);
-        setExpirationDate(expirationDate);
-      } catch (error) {
-        console.error("Error loading data", error);
-      } finally {
-        setLoading(false);  // Hide loading once data is loaded
-      }
+      // Set state
+      setPercentage(newPercentage);
+      setPh(ph);
+      setTurbidity(turbidity);
+      setExpirationDate(expirationDate);
+    } catch (error) {
+      console.error("Error loading data", error);
+    } finally {
+      setLoading(false);  // Hide loading once data is loaded
     }
+  }
 
-    loadData();
+  useEffect(() => {
+    loadData(); // Initial data load when the component mounts
   }, []);
 
   // Handle resetting the expiration date
   const handleReset = async () => {
-    const newExpirationDate = await resetExpirationDate(); // Update expiration date
-    setExpirationDate(newExpirationDate);
-    setModalVisible(false); // Close modal after resetting
+    setLoading(true); // Show loading state while resetting
+    try {
+      const newExpirationDate = await resetExpirationDate(); // Update expiration date
+      setExpirationDate(newExpirationDate);
+      await loadData(); // Fetch the updated sensor data after resetting
+    } catch (error) {
+      console.error("Error resetting filter:", error);
+    } finally {
+      setModalVisible(false); // Close modal after resetting
+      setLoading(false); // Hide loading once everything is done
+    }
   };
 
   useEffect(() => {
@@ -121,32 +130,31 @@ export default function DebrisMainScreen() {
   return (
     <>
       {loading ? (
-          <BasicLoading visible={true} /> 
-        ) : (
-          <ScrollView style={styles.scrollContainer}>
-            <View style={styles.innerContainer}>
-              <>
-                <HalfPremium size={200} value={percentage} marginTop={50} marginBottom={-50} />
-                {expirationDate && (
-                  <ReusableText text={`Estimated Filter Expiry Date: ${moment(expirationDate).format('YYYY-MM-DD')}`} color="#9B9A9A" size={13} opacity={20} />
-                )}
-                <ResetFilter title="Reset Filter" onReset={handleReset} />
-                <View style={styles.gaugeContainer}>
-                  <PhGauge size={120} value={ph} />
-                  <TurbidityGauge size={120} value={turbidity} />
-                </View>
-                {isOnscreenAlertVisible && <OnscreenAlert isVisible={isOnscreenAlertVisible} onClose={handleCloseOnscreenAlert} message={'The Water quality is bad! Please replace the filter or check for debris!'} />}
-                <View style={styles.detectContainer}>
-                  <ReusableText text={"Click to detect debris in the tank*"} color="#DCDCDC" size={15} opacity={20} />
-                  <DetectDebris title="Detect Debris" />
-                </View>
-                {isWarningVisible && <FilterHealthWarning isVisible={isWarningVisible} onClose={handleCloseWarning} message={'The filter health is low!'} />}
-              </>
-            </View>
+        <BasicLoading visible={true} /> 
+      ) : (
+        <ScrollView style={styles.scrollContainer}>
+          <View style={styles.innerContainer}>
+            <>
+              <HalfPremium size={200} value={percentage} marginTop={50} marginBottom={-50} />
+              {expirationDate && (
+                <ReusableText text={`Estimated Filter Expiry Date: ${moment(expirationDate).format('YYYY-MM-DD')}`} color="#9B9A9A" size={13} opacity={20} />
+              )}
+              <ResetFilter title="Reset Filter" onReset={handleReset} />
+              <View style={styles.gaugeContainer}>
+                <PhGauge size={120} value={ph} />
+                <TurbidityGauge size={120} value={turbidity} />
+              </View>
+              {isOnscreenAlertVisible && <OnscreenAlert isVisible={isOnscreenAlertVisible} onClose={handleCloseOnscreenAlert} message={'The Water quality is bad! Please replace the filter or check for debris!'} />}
+              <View style={styles.detectContainer}>
+                <ReusableText text={"Click to detect debris in the tank*"} color="#DCDCDC" size={15} opacity={20} />
+                <DetectDebris title="Detect Debris" />
+              </View>
+              {isWarningVisible && <FilterHealthWarning isVisible={isWarningVisible} onClose={handleCloseWarning} message={'The filter health is low!'} />}
+            </>
+          </View>
         </ScrollView>
-        )}
-      </>
-    
+      )}
+    </>
   );
 }
 

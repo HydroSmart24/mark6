@@ -4,7 +4,7 @@ import moment from "moment";
 // Constants
 const INITIAL_PERCENTAGE = 100;
 const MONTHS = 1;
-const DAYS = MONTHS * 5; // Approximation for 6 months
+const DAYS = MONTHS * 5; // More accurate 30-day month for expiration calculation
 const PH_THRESHOLD = 7.5;
 const TURBIDITY_THRESHOLD = 5.0;
 const ALPHA = 30; // pH sensitivity
@@ -63,10 +63,13 @@ function calculateFilterHealth(ph, turbidity, currentDate, expirationDate) {
     return INITIAL_PERCENTAGE;
   }
 
-  const totalDays = Math.min(DAYS, moment(expirationDate).diff(currentDate, 'days')); // Total remaining days till expiration
-  const passedDays = (DAYS - totalDays) - 1; // Subtract 1 to exclude today
+  // Use startOf('day') to eliminate time zone issues and work only with dates
+  const today = moment(currentDate).startOf('day');
+  const expiryDate = moment(expirationDate).startOf('day');
+  const totalDays = Math.min(DAYS, expiryDate.diff(today, 'days')); // Remaining days till expiration
+  const passedDays = (DAYS - totalDays); // Days passed since reset
 
-  // If passedDays is negative (i.e., the reset happens on the same day), set it to 0
+  // If the expiration date is today, passedDays would be 0
   const adjustedPassedDays = Math.max(0, passedDays);
 
   const baselineDecayRate = INITIAL_PERCENTAGE / DAYS; // Decay rate per day based on full period
@@ -81,7 +84,6 @@ function calculateFilterHealth(ph, turbidity, currentDate, expirationDate) {
   if (turbidity > TURBIDITY_THRESHOLD) {
     k += BETA * (turbidity - TURBIDITY_THRESHOLD);
   }
-
 
   // Apply decay for passed days over total days
   let decay = (baselineDecayRate * adjustedPassedDays) + (k * adjustedPassedDays / DAYS);
@@ -100,13 +102,11 @@ function calculateFilterHealth(ph, turbidity, currentDate, expirationDate) {
   return percentage;
 }
 
-  
-  
 
 // Reset the filter expiration date to a specific number of days from today
 async function resetExpirationDate() {
   const db = getFirestore();
-  const newExpirationDate = moment().add(DAYS, 'days').toDate(); // Use DAYS instead of MONTHS
+  const newExpirationDate = moment().add(DAYS, 'days').startOf('day').toDate(); // Reset date to start of the day
 
   // Fetch the first document from the 'expiryDate' collection
   const expiryDateCollection = collection(db, 'expiryDate');
@@ -130,5 +130,5 @@ async function resetExpirationDate() {
   }
 }
 
-
 export { fetchSensorData, calculateFilterHealth, resetExpirationDate };
+
