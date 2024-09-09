@@ -36,9 +36,6 @@ import NotificationsScreen from "./Screens/Notifications";
 import { createNavigationContainerRef } from '@react-navigation/native';
 
 
-  
-
-
 export const navigationRef = createNavigationContainerRef<RootStackParamList>();
 
 

@@ -183,7 +183,7 @@ export default function DetectScreen() {
 
       const totalImageArea = (scaledDimensions?.width || 0) * (scaledDimensions?.height || 0);
       const severityPercentage = (totalBoundingBoxArea / totalImageArea) * 100;
-      setSeverity(51);
+      setSeverity(severityPercentage);
     }
   }, [inferenceResult, imageDimensions, scaledDimensions]);
 

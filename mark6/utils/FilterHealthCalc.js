@@ -7,8 +7,8 @@ const MONTHS = 1;
 const DAYS = MONTHS * 5; // Approximation for 6 months
 const PH_THRESHOLD = 7.5;
 const TURBIDITY_THRESHOLD = 5.0;
-const ALPHA = 0.1; // pH sensitivity
-const BETA = 0.2;  // Turbidity sensitivity
+const ALPHA = 1; // pH sensitivity
+const BETA = 1;  // Turbidity sensitivity
 
 async function fetchSensorData() {
   const db = getFirestore();
@@ -64,7 +64,7 @@ function calculateFilterHealth(ph, turbidity, currentDate, expirationDate) {
     }
   
     const totalDays = Math.min(DAYS, moment(expirationDate).diff(currentDate, 'days'));
-    const baselineDecayRate = 1 / DAYS; // Decay rate based on the total period
+    const baselineDecayRate = 10 / DAYS; // Decay rate based on the total period
   
     let percentage = INITIAL_PERCENTAGE;
   
@@ -85,6 +85,9 @@ function calculateFilterHealth(ph, turbidity, currentDate, expirationDate) {
     percentage = Math.max(0, percentage);
   
     console.log('Calculated Filter Health Percentage:', percentage);
+    console.log('total days:', totalDays);
+    console.log('Decay:', baselineDecayRate);
+    console.log('k:', k);
   
     return percentage;
   }

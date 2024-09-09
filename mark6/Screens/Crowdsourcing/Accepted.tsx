@@ -46,7 +46,7 @@ export default function Accepted() {
         ))}
       </ScrollView>
       <View style={styles.buttonRow}>
-        <StartJourney title="Start Journey" style={styles.buttonSpacing} />
+        <StartJourney style={styles.buttonSpacing} />
       </View>
     </View>
   );

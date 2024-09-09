@@ -138,8 +138,6 @@ export default function DebrisMainScreen() {
             {isOnscreenAlertVisible && <OnscreenAlert isVisible={isOnscreenAlertVisible} onClose={handleCloseOnscreenAlert} message={'The Water quality is bad! Please replace the filter or check for debris!'} />}
             <View style={styles.detectContainer}>
               <ReusableText text={"Click to detect debris in the tank*"} color="#DCDCDC" size={15} opacity={20} />
-              <Text>{uid}</Text>
-              <Text>{pushToken}</Text>
               <DetectDebris title="Detect Debris" />
             </View>
             {isWarningVisible && <FilterHealthWarning isVisible={isWarningVisible} onClose={handleCloseWarning} message={'The filter health is low!'} />}
