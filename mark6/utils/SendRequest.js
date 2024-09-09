@@ -1,5 +1,6 @@
 import { db } from "../firebase/firebaseConfig";
 import { collection, addDoc } from "firebase/firestore";
+import { getAuth } from "firebase/auth"; // Import Firebase Auth
 
 /**
  * Sends a water request to Firestore with the given details.
@@ -20,27 +21,37 @@ export const sendRequest = async (
   longitude
 ) => {
   try {
-    // Combine date and time into a single Date object
-    const combinedDateTime = new Date(
-      date.getFullYear(),
-      date.getMonth(),
-      date.getDate(),
-      time.getHours(),
-      time.getMinutes()
-    );
+    const auth = getAuth(); // Get the authenticated user
+    const user = auth.currentUser;
 
-    const requestData = {
-      date: combinedDateTime, // Store combined date and time
-      quantity,
-      urgency,
-      status: "Pending",
-      createdAt: new Date(),
-      latitude,
-      longitude,
-    };
+    if (user) {
+      const uid = user.uid; // Get the user's UID
 
-    const requestsCollection = collection(db, "waterRequests");
-    await addDoc(requestsCollection, requestData);
+      // Combine date and time into a single Date object
+      const combinedDateTime = new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+        time.getHours(),
+        time.getMinutes()
+      );
+
+      const requestData = {
+        date: combinedDateTime, // Store combined date and time
+        quantity,
+        urgency,
+        status: "Pending",
+        createdAt: new Date(),
+        latitude,
+        longitude,
+        uid, // Add the user's UID to the request data
+      };
+
+      const requestsCollection = collection(db, "waterRequests");
+      await addDoc(requestsCollection, requestData);
+    } else {
+      throw new Error("User is not logged in.");
+    }
   } catch (error) {
     console.error("Error adding request to Firestore:", error);
     throw error;

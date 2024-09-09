@@ -119,35 +119,34 @@ export default function DebrisMainScreen() {
   };
 
   return (
-    <ScrollView style={styles.scrollContainer}>
+    <>
       {loading ? (
           <BasicLoading visible={true} /> 
         ) : (
-      <View style={styles.innerContainer}>
-        
-          <>
-            <HalfPremium size={200} value={percentage} marginTop={50} marginBottom={-50} />
-            {expirationDate && (
-              <ReusableText text={`Estimated Filter Expiry Date: ${moment(expirationDate).format('YYYY-MM-DD')}`} color="#9B9A9A" size={13} opacity={20} />
-            )}
-            <ResetFilter title="Reset Filter" onReset={handleReset} />
-            <View style={styles.gaugeContainer}>
-              <PhGauge size={120} value={ph} />
-              <TurbidityGauge size={120} value={turbidity} />
+          <ScrollView style={styles.scrollContainer}>
+            <View style={styles.innerContainer}>
+              <>
+                <HalfPremium size={200} value={percentage} marginTop={50} marginBottom={-50} />
+                {expirationDate && (
+                  <ReusableText text={`Estimated Filter Expiry Date: ${moment(expirationDate).format('YYYY-MM-DD')}`} color="#9B9A9A" size={13} opacity={20} />
+                )}
+                <ResetFilter title="Reset Filter" onReset={handleReset} />
+                <View style={styles.gaugeContainer}>
+                  <PhGauge size={120} value={ph} />
+                  <TurbidityGauge size={120} value={turbidity} />
+                </View>
+                {isOnscreenAlertVisible && <OnscreenAlert isVisible={isOnscreenAlertVisible} onClose={handleCloseOnscreenAlert} message={'The Water quality is bad! Please replace the filter or check for debris!'} />}
+                <View style={styles.detectContainer}>
+                  <ReusableText text={"Click to detect debris in the tank*"} color="#DCDCDC" size={15} opacity={20} />
+                  <DetectDebris title="Detect Debris" />
+                </View>
+                {isWarningVisible && <FilterHealthWarning isVisible={isWarningVisible} onClose={handleCloseWarning} message={'The filter health is low!'} />}
+              </>
             </View>
-            {isOnscreenAlertVisible && <OnscreenAlert isVisible={isOnscreenAlertVisible} onClose={handleCloseOnscreenAlert} message={'The Water quality is bad! Please replace the filter or check for debris!'} />}
-            <View style={styles.detectContainer}>
-              <ReusableText text={"Click to detect debris in the tank*"} color="#DCDCDC" size={15} opacity={20} />
-              <Text>{uid}</Text>
-              <Text>{pushToken}</Text>
-              <DetectDebris title="Detect Debris" />
-            </View>
-            {isWarningVisible && <FilterHealthWarning isVisible={isWarningVisible} onClose={handleCloseWarning} message={'The filter health is low!'} />}
-          </>
-        
-      </View>
-      )}
-    </ScrollView>
+        </ScrollView>
+        )}
+      </>
+    
   );
 }
 

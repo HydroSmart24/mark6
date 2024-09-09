@@ -20,14 +20,14 @@ const compareRequests = (a, b) => {
   const timeA = dateA.getTime();
   const timeB = dateB.getTime();
 
-  if (timeA < timeB) return -1; // Earlier time gets higher priority
-  if (timeA > timeB) return 1; // Later time gets lower priority
+  if (timeA < timeB) return -1;
+  if (timeA > timeB) return 1;
 
   // If date and time are the same, compare urgency
   if (urgencyLevels[a.urgency] < urgencyLevels[b.urgency]) return -1;
   if (urgencyLevels[a.urgency] > urgencyLevels[b.urgency]) return 1;
 
-  return 0; // Dates, times, and urgency are equal
+  return 0;
 };
 
 // Timsort algorithm implementation
@@ -39,7 +39,6 @@ const timsort = (arr) => {
 // Function to get and optimize delivering requests
 export const getOptimisedDeliveringRequests = async () => {
   try {
-    // Fetch delivering requests
     const requests = await getDeliveringRequests();
 
     // Sort the requests using Timsort
@@ -63,7 +62,6 @@ export const getOptimisedDeliveringRequests = async () => {
 // Function to fetch delivering requests from Firestore
 export const getDeliveringRequests = async () => {
   try {
-    // Create a reference to the "waterRequests" collection
     const requestsCollection = collection(db, "waterRequests");
 
     // Build the query to fetch documents where the status is "Delivering"

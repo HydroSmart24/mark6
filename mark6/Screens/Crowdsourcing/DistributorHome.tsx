@@ -4,14 +4,18 @@ import DistributorCard from "../../components/Modals/DistributorCard";
 import DistributorNav from "../../components/Navigator/DistributorNav";
 import { getRequestsByStatus } from "../../utils/GetPendingReq";
 import { getOptimisedAcceptedRequests } from "../../utils/OptimisedAccepted";
-import Accepted from "./Accepted"; // Import the Accepted component
+import Accepted from "./Accepted";
+import DistributorHeader from "../../components/Navigator/DistributorHeader";
+import BasicLoading from "../../components/Loading/BasicLoading"; // Import BasicLoading
 
 export default function DistributorHome() {
   const [selectedOption, setSelectedOption] = useState("Pending");
   const [requests, setRequests] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false); // Loading state
 
   const fetchRequests = async () => {
     try {
+      setLoading(true); // Start loading before the fetch
       let fetchedRequests;
 
       if (selectedOption === "Accepted") {
@@ -28,6 +32,8 @@ export default function DistributorHome() {
         `Error fetching ${selectedOption.toLowerCase()} requests:`,
         error
       );
+    } finally {
+      setLoading(false); // End loading after the fetch
     }
   };
 
@@ -37,11 +43,19 @@ export default function DistributorHome() {
 
   return (
     <View style={styles.container}>
+      <DistributorHeader
+        selectedOption={selectedOption}
+        onSelectOption={setSelectedOption}
+      />
+
       <DistributorNav
         selectedOption={selectedOption}
         onSelectOption={setSelectedOption}
       />
-      {selectedOption === "Accepted" ? (
+
+      {loading ? ( // Show loading for the entire screen
+        <BasicLoading visible={true} />
+      ) : selectedOption === "Accepted" ? (
         <Accepted /> // Render the Accepted component
       ) : (
         <ScrollView
@@ -49,17 +63,21 @@ export default function DistributorHome() {
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
         >
-          {requests.map((request) => (
-            <DistributorCard
-              key={request.id}
-              requestId={request.id}
-              quantity={request.quantity}
-              urgency={request.urgency}
-              date={new Date(request.date.toDate())}
-              selectedOption={selectedOption}
-              onStatusUpdate={fetchRequests} // Pass fetchRequests as a prop
-            />
-          ))}
+          {requests.length === 0 && !loading ? ( // If no requests and not loading
+            <BasicLoading visible={true} /> // Show a smaller loading if still fetching data
+          ) : (
+            requests.map((request) => (
+              <DistributorCard
+                key={request.id}
+                requestId={request.id}
+                quantity={request.quantity}
+                urgency={request.urgency}
+                date={new Date(request.date.toDate())}
+                selectedOption={selectedOption}
+                onStatusUpdate={fetchRequests} // Pass fetchRequests as a prop
+              />
+            ))
+          )}
         </ScrollView>
       )}
     </View>
@@ -93,4 +111,3 @@ const styles = StyleSheet.create({
     elevation: 5, // Add shadow for depth
   },
 });
-

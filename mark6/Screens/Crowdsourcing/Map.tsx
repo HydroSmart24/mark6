@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useRef } from "react";
-import { View, StyleSheet, Dimensions, Button } from "react-native";
+import { View, StyleSheet, Dimensions, Linking } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import * as Location from "expo-location";
-import RequestWaterModal from "../../components/Modals/RequestWaterModal";
 import { getOptimisedDeliveringRequests } from "../../utils/GetDeliveringReq";
-import { getDistance } from "geolib";
+import { getDistance } from 'geolib'; // Assuming you're using geolib for distance calculation
+import Button3D from "../../components/Buttons/Button3D";
+import Start from "../../components/Buttons/Start";
 
 const Map: React.FC = () => {
   const initialLocation = {
@@ -14,8 +15,9 @@ const Map: React.FC = () => {
 
   const [myLocation, setMyLocation] = useState(initialLocation);
   const [pin, setPin] = useState(initialLocation);
-  const [modalVisible, setModalVisible] = useState(false);
   const [deliveringRequests, setDeliveringRequests] = useState<any[]>([]);
+  const [selectedRequest, setSelectedRequest] = useState<any>(null); // Store the selected marker
+  const [selectedEta, setSelectedEta] = useState<string>(''); // Store the calculated ETA
   const mapRef = useRef<MapView | null>(null);
   const [region, setRegion] = useState({
     latitude: initialLocation.latitude,
@@ -32,12 +34,10 @@ const Map: React.FC = () => {
   const _getLocation = async () => {
     try {
       let { status } = await Location.requestForegroundPermissionsAsync();
-
       if (status !== "granted") {
         console.warn("Permission to access location was denied");
         return;
       }
-
       let location = await Location.getCurrentPositionAsync({});
       setMyLocation(location.coords);
       setPin(location.coords);
@@ -55,29 +55,45 @@ const Map: React.FC = () => {
   const fetchDeliveringRequests = async () => {
     try {
       const requests = await getOptimisedDeliveringRequests(); // Use optimized function
+      console.log("Fetched Requests: ", requests); // Log the fetched requests to check data
       setDeliveringRequests(requests);
-      console.log("Sorted Delivering Requests Locations:");
-      requests.forEach(
-        (request: { id: any; latitude: any; longitude: any }, index: any) => {
-          console.log(
-            `ID: ${request.id}, Latitude: ${request.latitude}, Longitude: ${request.longitude}`
-          );
-        }
-      );
     } catch (error) {
       console.error("Error fetching delivering requests:", error);
     }
   };
 
-  const calculateEstimatedTime = (latitude: number, longitude: number) => {
-    const distance = getDistance(
+  // Function to open location in Google Maps app
+  const openInGoogleMaps = (latitude: number, longitude: number) => {
+    const url = `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`;
+    Linking.openURL(url)
+      .then(() => console.log("Opening Google Maps"))
+      .catch((err) => console.error("Error opening Google Maps:", err));
+  };
+
+  // Function to start navigation in Google Maps app
+  const startNavigation = (latitude: number, longitude: number) => {
+    const url = `google.navigation:q=${latitude},${longitude}`;
+    Linking.openURL(url)
+      .then(() => console.log("Starting navigation in Google Maps"))
+      .catch((err) => console.error("Error starting navigation:", err));
+  };
+
+  // Calculate ETA based on distance (assuming speed of 40 km/h for more accurate urban estimate)
+  const calculateETA = (latitude: number, longitude: number) => {
+    const distanceInMeters = getDistance(
       { latitude: myLocation.latitude, longitude: myLocation.longitude },
       { latitude, longitude }
     );
-    const timePerKm = 13 / 3.3;
-    const distanceInKm = distance / 1000;
-    const estimatedTime = Math.round(distanceInKm * timePerKm);
-    return estimatedTime;
+    const speedInMetersPerSecond = (12 * 1000) / 3600; // 40 km/h to meters per second
+    const timeInSeconds = distanceInMeters / speedInMetersPerSecond;
+    const timeInMinutes = Math.round(timeInSeconds / 60);
+    return `${timeInMinutes} mins`;
+  };
+
+  const handleMarkerPress = (request: any) => {
+    const eta = calculateETA(request.latitude, request.longitude); // Calculate ETA when marker is pressed
+    setSelectedRequest(request); // Store the selected request
+    setSelectedEta(eta); // Store the calculated ETA
   };
 
   const focusOnLocation = () => {
@@ -88,19 +104,10 @@ const Map: React.FC = () => {
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
       };
-
       if (mapRef.current) {
         mapRef.current.animateToRegion(newRegion, 1000);
       }
     }
-  };
-
-  const openModal = () => {
-    setModalVisible(true);
-  };
-
-  const closeModal = () => {
-    setModalVisible(false);
   };
 
   return (
@@ -109,7 +116,7 @@ const Map: React.FC = () => {
         style={styles.map}
         region={region}
         ref={mapRef}
-        provider={PROVIDER_GOOGLE} // Use Google provider
+        provider={PROVIDER_GOOGLE}
       >
         {pin.latitude && pin.longitude && (
           <Marker
@@ -131,52 +138,48 @@ const Map: React.FC = () => {
             description="I am here"
           />
         )}
-        {deliveringRequests.map((request, index) => {
-          const estimatedTime = calculateEstimatedTime(
-            request.latitude,
-            request.longitude
-          );
-
-          // Calculate cumulative time
-          const cumulativeTime = deliveringRequests
-            .slice(0, index + 1)
-            .reduce(
-              (total, currentRequest) =>
-                total +
-                calculateEstimatedTime(
-                  currentRequest.latitude,
-                  currentRequest.longitude
-                ),
-              0
-            );
-
-          console.log(
-            `Request ID: ${request.id}, Cumulative Time: ${cumulativeTime} mins`
-          );
-
-          return (
+        {deliveringRequests.length > 0 &&
+          deliveringRequests.map((request, index) => (
             <Marker
               key={request.id}
               coordinate={{
                 latitude: request.latitude,
                 longitude: request.longitude,
               }}
-              title={`Request - ${index + 1}`}
-              description={`${request.quantity} Liters, ${cumulativeTime} mins`}
+              title={`Request ${index + 1}`} // Sequential request titles
+              description={`Quantity: ${request.quantity} Liters, ETA: ${calculateETA(
+                request.latitude,
+                request.longitude
+              )}`}
+              onPress={() => handleMarkerPress(request)} // Set selected marker and calculate ETA on press
+              pinColor={selectedRequest?.id === request.id ? "blue" : "red"} // Highlight selected marker
             />
-          );
-        })}
+          ))}
       </MapView>
-      <View style={styles.buttonContainer}>
-        <Button title="Get Location" onPress={focusOnLocation} />
-      </View>
 
-      <RequestWaterModal
-        visible={modalVisible}
-        onClose={closeModal}
-        latitude={myLocation.latitude}
-        longitude={myLocation.longitude}
-      />
+      <View style={styles.buttonContainer}>
+        <Button3D title="Get Location" onPress={focusOnLocation} />
+        <Button3D
+          title="Google Maps"
+          onPress={() => openInGoogleMaps(pin.latitude, pin.longitude)}
+        />
+        <Start
+          title="Start"
+          onPress={() => {
+            if (selectedRequest) {
+              // Start navigation to the selected marker's location
+              startNavigation(
+                selectedRequest.latitude,
+                selectedRequest.longitude
+              );
+            } else {
+              console.warn("No marker selected");
+            }
+          }}
+          uid={selectedRequest?.uid} // Pass the user id (uid) from selected request
+          eta={selectedEta} // Pass the calculated ETA as a prop
+        />
+      </View>
     </View>
   );
 };
@@ -184,19 +187,25 @@ const Map: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "flex-end", // Adjust to ensure the map takes up most of the space
+    justifyContent: "flex-end",
     alignItems: "center",
     backgroundColor: "#f8f8f8",
   },
   map: {
     width: Dimensions.get("window").width,
-    height: Dimensions.get("window").height, // Adjust for button container
+    height: Dimensions.get("window").height,
   },
   buttonContainer: {
     position: "absolute",
     bottom: 20,
-    width: "100%", // Use full width to position buttons correctly
-    alignItems: "center",
+    width: "100%",
+    flexDirection: "row", // Arrange buttons in a row
+    justifyContent: "space-between", // Add space between buttons
+    paddingHorizontal: 20, // Add padding to the left and right
+  },
+  buttonStyle: {
+    flex: 1, // Make buttons take equal space
+    marginHorizontal: 5, // Add space between buttons
   },
 });
 

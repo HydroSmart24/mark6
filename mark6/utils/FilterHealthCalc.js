@@ -7,8 +7,8 @@ const MONTHS = 1;
 const DAYS = MONTHS * 5; // Approximation for 6 months
 const PH_THRESHOLD = 7.5;
 const TURBIDITY_THRESHOLD = 5.0;
-const ALPHA = 0.1; // pH sensitivity
-const BETA = 0.2;  // Turbidity sensitivity
+const ALPHA = 30; // pH sensitivity
+const BETA = 30;  // Turbidity sensitivity
 
 async function fetchSensorData() {
   const db = getFirestore();
@@ -58,43 +58,55 @@ async function fetchSensorData() {
 
 // Calculate the filter health percentage
 function calculateFilterHealth(ph, turbidity, currentDate, expirationDate) {
-    if (ph === null || turbidity === null || !currentDate || !expirationDate) {
-      console.error("Invalid data provided to calculateFilterHealth");
-      return INITIAL_PERCENTAGE;
-    }
-  
-    const totalDays = Math.min(DAYS, moment(expirationDate).diff(currentDate, 'days'));
-    const baselineDecayRate = 1 / DAYS; // Decay rate based on the total period
-  
-    let percentage = INITIAL_PERCENTAGE;
-  
-    // Calculate daily impact
-    let k = 0;
-    if (ph < PH_THRESHOLD) {
-      k += ALPHA * (PH_THRESHOLD - ph);
-    }
-    if (turbidity > TURBIDITY_THRESHOLD) {
-      k += BETA * (turbidity - TURBIDITY_THRESHOLD);
-    }
-  
-    // Apply daily decay over the number of days
-    let decay = k * baselineDecayRate * totalDays;
-    percentage -= decay;
-  
-    // Clamp the percentage to ensure it doesn't go below zero
-    percentage = Math.max(0, percentage);
-  
-    console.log('Calculated Filter Health Percentage:', percentage);
-  
-    return percentage;
+  if (ph === null || turbidity === null || !currentDate || !expirationDate) {
+    console.error("Invalid data provided to calculateFilterHealth");
+    return INITIAL_PERCENTAGE;
   }
+
+  const totalDays = Math.min(DAYS, moment(expirationDate).diff(currentDate, 'days')); // Total remaining days till expiration
+  const passedDays = (DAYS - totalDays) - 1; // Subtract 1 to exclude today
+
+  // If passedDays is negative (i.e., the reset happens on the same day), set it to 0
+  const adjustedPassedDays = Math.max(0, passedDays);
+
+  const baselineDecayRate = INITIAL_PERCENTAGE / DAYS; // Decay rate per day based on full period
+  
+  let percentage = INITIAL_PERCENTAGE;
+
+  // Calculate daily impact based on pH and turbidity
+  let k = 0;
+  if (ph < PH_THRESHOLD) {
+    k += ALPHA * (PH_THRESHOLD - ph);
+  }
+  if (turbidity > TURBIDITY_THRESHOLD) {
+    k += BETA * (turbidity - TURBIDITY_THRESHOLD);
+  }
+
+
+  // Apply decay for passed days over total days
+  let decay = (baselineDecayRate * adjustedPassedDays) + (k * adjustedPassedDays / DAYS);
+  percentage -= decay;
+
+  // Clamp the percentage to ensure it doesn't go below zero
+  percentage = Math.max(0, percentage);
+
+  // Log for debugging
+  console.log('Calculated Filter Health Percentage:', percentage);
+  console.log('Total remaining days:', totalDays);
+  console.log('Passed days (excluding today):', adjustedPassedDays);
+  console.log('Decay:', decay);
+  console.log('k (impact factor):', k);
+
+  return percentage;
+}
+
   
   
 
-// Reset the filter expiration date to 6 months from today
+// Reset the filter expiration date to a specific number of days from today
 async function resetExpirationDate() {
   const db = getFirestore();
-  const newExpirationDate = moment().add(MONTHS, 'months').toDate();
+  const newExpirationDate = moment().add(DAYS, 'days').toDate(); // Use DAYS instead of MONTHS
 
   // Fetch the first document from the 'expiryDate' collection
   const expiryDateCollection = collection(db, 'expiryDate');
@@ -109,7 +121,7 @@ async function resetExpirationDate() {
     });
 
     // Log the new expiration date
-    console.log('New Expiration Date:', newExpirationDate);
+    console.log('New Expiration Date (Days):', newExpirationDate);
 
     return newExpirationDate;
   } else {
@@ -117,5 +129,6 @@ async function resetExpirationDate() {
     throw new Error("No expiration date document found");
   }
 }
+
 
 export { fetchSensorData, calculateFilterHealth, resetExpirationDate };
