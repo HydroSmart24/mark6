@@ -87,6 +87,7 @@ const styles = StyleSheet.create({
   closeButton: {
     backgroundColor: '#007BFF',
     padding: 10,
+    paddingHorizontal: 17,
     borderRadius: 5,
   },
   closeButtonText: {
