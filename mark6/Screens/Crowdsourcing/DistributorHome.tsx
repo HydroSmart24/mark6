@@ -73,11 +73,28 @@ export default function DistributorHome() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 20,
+    width: '100%', // Ensure the container takes full width
+    paddingHorizontal: 15, // Add some horizontal padding
+    paddingTop: 10, // Add padding at the top to separate from the status bar
+    backgroundColor: '#f9f9f9', // Set a subtle background color
   },
   scrollContainer: {
-    alignItems: "center",
+    flexGrow: 1,
+    width: '100%', // Ensure scroll view takes full width
+    paddingBottom: 20, // Add padding at the bottom
+    justifyContent: 'flex-start',
+  },
+  spacing: {
+    height: 20,
+  },
+  floatingButton: {
+    position: "absolute",
+    bottom: 30,
+    right: 20,
+    backgroundColor: "#4CAF50", // Add color to the button for visibility
+    borderRadius: 50, // Make the button circular
+    padding: 15, // Increase padding for better touch target
+    elevation: 5, // Add shadow for depth
   },
 });
+

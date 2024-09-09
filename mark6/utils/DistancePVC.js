@@ -50,7 +50,7 @@ export const startFetchingDistanceReadings = (callback) => {
 
   const intervalId = setInterval(() => {
     fetchLatestDistanceReading().then(callback);
-  }, 120000); // 2 minutes in milliseconds
+  }, 60000); // 1 minutes in milliseconds
 
   // Return a function to stop the interval when needed
   return () => clearInterval(intervalId);

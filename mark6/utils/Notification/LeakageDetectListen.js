@@ -1,9 +1,9 @@
 import { db } from '../../firebase/firebaseConfig';
-import { collection, onSnapshot } from 'firebase/firestore';
+import { collection, onSnapshot, doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import * as Notifications from 'expo-notifications';
 
 // Function to listen for leakage detection and notify the logged-in user
-export function listenForLeakageAndNotify(pushToken, onLeakageDetected) {
+export function listenForLeakageAndNotify(pushToken, uid, onLeakageDetected) {
   const leakageDetectRef = collection(db, 'leakageDetect');
 
   // Capture the app load time
@@ -34,6 +34,9 @@ export function listenForLeakageAndNotify(pushToken, onLeakageDetected) {
 
           // Call the onLeakageDetected callback to trigger in-app alert
           onLeakageDetected(messageBody);
+
+          // Store the notification in Firestore under the user's notifications collection
+          await addNotificationToFirestore(uid, notificationContent);
         }
       }
     });
@@ -65,5 +68,24 @@ async function sendPushNotification(pushToken, message) {
     console.log('Push notification result:', result);
   } catch (error) {
     console.error('Error sending push notification:', error);
+  }
+}
+
+// Function to store the notification in Firestore
+async function addNotificationToFirestore(uid, notificationContent) {
+  try {
+    const notificationRef = doc(collection(db, `users/${uid}/notifications`));
+
+    // Store the notification document with the title, body, and timestamp
+    await setDoc(notificationRef, {
+      title: notificationContent.title,
+      body: notificationContent.body,
+      timestamp: serverTimestamp(),
+      data: notificationContent.data,
+    });
+
+    console.log('Notification successfully added to Firestore');
+  } catch (error) {
+    console.error('Error adding notification to Firestore:', error);
   }
 }

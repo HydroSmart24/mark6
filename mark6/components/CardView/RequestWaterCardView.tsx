@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Modal, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import RequestWaterFromtankbtn from '../Buttons/RequestWaterFromTankBtn';
 import TankRequestWaterModal from '../Modals/TankRequestWaterModal';
 
@@ -7,33 +7,47 @@ interface CardProps {
   title: string;
   onRequestPress: () => void;
   availableLiters: number;
+  ownerId: string;  // The userId of the tank owner
+  reqUserId: string;  // The userId of the current user
+  currentUserName: string;
 }
 
-const CardView: React.FC<CardProps> = ({ title, availableLiters }) => {
+const CardView: React.FC<CardProps> = ({ title, availableLiters, ownerId, currentUserName, reqUserId }) => {
   const [modalVisible, setModalVisible] = useState(false);
 
+  // Handle Request button press and show the modal
   const handleRequestPress = () => {
     setModalVisible(true);
   };
 
+  // Close the modal
   const handleCloseModal = () => {
     setModalVisible(false);
   };
 
   return (
     <View>
-      <Text style={styles.heading}>Tanks in your area</Text>
-
       <View style={styles.card}>
         <View style={styles.cardContent}>
           <View style={styles.textContainer}>
             <Text style={styles.title}>{title}</Text>
             <Text style={styles.availableLiters}>{availableLiters} liters Available</Text>
           </View>
+          {/* Pass userId to RequestWaterFromtankbtn if necessary */}
           <RequestWaterFromtankbtn title="Request" onPress={handleRequestPress} availableLiters={availableLiters} />
         </View>
       </View>
-      <TankRequestWaterModal visible={modalVisible} onClose={handleCloseModal} ownerName={title} availableLiters={availableLiters} />
+
+      {/* Pass the userId as a prop to the modal */}
+      <TankRequestWaterModal
+        visible={modalVisible}
+        onClose={handleCloseModal}
+        ownerName={title}
+        availableLiters={availableLiters}
+        ownerId={ownerId}
+        currentUserName={currentUserName}
+        reqUserId={reqUserId}
+      />
     </View>
   );
 };
