@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, Modal, StyleSheet, TouchableOpacity, Alert } from 'react-native';
-import { doc, getDoc, deleteDoc } from 'firebase/firestore'; 
+import { doc, getDoc, deleteDoc, runTransaction } from 'firebase/firestore'; 
 import axios from 'axios';
 import { db } from '../../firebase/firebaseConfig';
 import BasicLoading from '../Loading/BasicLoading';
@@ -30,21 +30,24 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
 }) => {
   const [processLoading, setProcessLoading] = useState(false); // State for loading
 
+  // Function to calculate motor time based on requested liters
   const calculateMotorTime = (liters: number): number => {
-    const litersPerSecond = 100 / 5;
+    const litersPerSecond = 100 / 5; // 100 liters per 5 seconds (example)
     return liters / litersPerSecond;
   };
 
+  // Function to fetch user IP from Firestore
   const fetchUserIp = async (userId: string) => {
     const userDocRef = doc(db, 'users', userId);
     const userDoc = await getDoc(userDocRef);
     if (userDoc.exists()) {
-      return userDoc.data().ip;
+      return userDoc.data()?.ip;  // Ensure we handle 'undefined'
     } else {
       throw new Error('User IP not found.');
     }
   };
 
+  // Function to start the motor on the receiver's side
   const startMotor = async (ip: string, duration: number) => {
     try {
       await axios.post(`http://${ip}/send-water`, { duration });
@@ -55,6 +58,7 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
     }
   };
 
+  // Function to receive water on the requester's side
   const receiveWater = async (ip: string) => {
     try {
       await axios.post(`http://${ip}/receive-water`);
@@ -65,6 +69,7 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
     }
   };
 
+  // Function to stop the motor on the receiver's side
   const stopPump = async (ip: string) => {
     try {
       await axios.post(`http://${ip}/stop-water`);
@@ -75,10 +80,10 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
     }
   };
 
+  // Function to delete the notification from Firestore
   const deleteNotification = async () => {
-    const userId = receiverUserId;
+    const notificationDocRef = doc(db, `users/${receiverUserId}/notifications`, notificationId);
     try {
-      const notificationDocRef = doc(db, `users/${userId}/notifications`, notificationId);
       await deleteDoc(notificationDocRef);
       console.log('Notification deleted');
     } catch (error) {
@@ -87,11 +92,45 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
     }
   };
 
-  // Handle Accept Request
+  // Lock the motor to prevent concurrent operations
+  const lockMotor = async (): Promise<boolean> => {
+    const motorStatusRef = doc(db, 'system', 'motorStatus');
+    return runTransaction(db, async (transaction) => {
+      const motorStatusDoc = await transaction.get(motorStatusRef);
+      if (motorStatusDoc.exists()) {
+        const isMotorActive = motorStatusDoc.data()?.isMotorActive;
+        if (!isMotorActive) {
+          transaction.update(motorStatusRef, { isMotorActive: true });
+          return true; // Motor is successfully locked
+        } else {
+          return false; // Motor is already active
+        }
+      } else {
+        throw new Error('Motor status document does not exist.');
+      }
+    });
+  };
+
+  // Unlock the motor after completion
+  const unlockMotor = async () => {
+    const motorStatusRef = doc(db, 'system', 'motorStatus');
+    await runTransaction(db, async (transaction) => {
+      transaction.update(motorStatusRef, { isMotorActive: false });
+    });
+  };
+
+  // Handle Accept Request with the motor locking mechanism
   const handleAccept = async () => {
     setProcessLoading(true); // Start loading for Accept
-    console.log("Loading set to true for Accept");
     try {
+      const motorLocked = await lockMotor(); // Lock the motor
+      if (!motorLocked) {
+        Alert.alert('Motor Busy', 'Another request is being processed. Please wait.');
+        setProcessLoading(false);
+        return;
+      }
+
+      // Proceed with water transfer if the motor is locked
       const requesterIp = await fetchUserIp(reqUserId);
       const receiverIp = await fetchUserIp(receiverUserId);
       const motorTime = calculateMotorTime(requestedAmount);
@@ -102,34 +141,32 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
       setTimeout(async () => {
         await stopPump(receiverIp);
         await axios.post(`http://${requesterIp}/stop-receive-water`);
-        console.log('Stopped receiving water');
 
         await deleteNotification();
         Alert.alert('Success', 'Water request completed and pump stopped.');
-        setProcessLoading(false); // Stop loading after success
-        console.log("Loading set to false");
+
+        await unlockMotor(); // Unlock the motor after completion
+        setProcessLoading(false);
         onAccept(); // Call parent accept handler
       }, motorTime * 1000);
     } catch (error) {
       console.error('Error handling accept:', error);
       Alert.alert('Error', 'An error occurred while processing the request.');
-      setProcessLoading(false); // Stop loading in case of error
+      setProcessLoading(false);
     }
   };
 
   // Handle Decline Request
   const handleDecline = async () => {
-    setProcessLoading(true); // Start loading for Decline
-    console.log("Loading set to true for Decline");
+    setProcessLoading(true);
     try {
-      await deleteNotification(); // Call function to delete the notification
-      setProcessLoading(false); // Stop loading after success
+      await deleteNotification(); // Delete the notification
+      setProcessLoading(false);
       onDecline(); // Call parent decline handler
-      console.log("Loading set to false after decline");
     } catch (error) {
       console.error('Error handling decline:', error);
       Alert.alert('Error', 'An error occurred while processing the decline.');
-      setProcessLoading(false); // Stop loading in case of error
+      setProcessLoading(false);
     }
   };
 
