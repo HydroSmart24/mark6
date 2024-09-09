@@ -36,7 +36,7 @@ export default function OrderHistory() {
     };
 
     fetchRequests(); // Initial fetch
-    const intervalId = setInterval(fetchRequests, 3000); // Fetch every 30 seconds
+    const intervalId = setInterval(fetchRequests, 30000); // Fetch every 30 seconds
 
     return () => clearInterval(intervalId); // Clean up interval on unmount
   }, []);
