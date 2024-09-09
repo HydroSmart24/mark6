@@ -39,7 +39,7 @@ export default function LogoutCard() {
           <Text style={styles.bulletText}>Click on 'User Profile' screen</Text>
         </View>
         {/* Image 2 */}
-        <Image source={require('../../assets/Info/contact2.png')} style={styles.image2} />
+        <Image source={require('../../assets/Info/logout2.png')} style={styles.image2} />
 
         {/* Bullet point 3 */}
         <View style={styles.bulletPoint}>
@@ -53,7 +53,7 @@ export default function LogoutCard() {
           </Text>
         </View>
         {/* Image 3 */}
-        <Image source={require('../../assets/Info/contact3.png')} style={styles.image3} />
+        <Image source={require('../../assets/Info/logout3.png')} style={styles.image3} />
       </View>
     </View>
   );
@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 29, // Position the line so it aligns with the bullet points
     top: 40,
-    bottom: 360,
+    bottom: 300,
     width: 2,
     backgroundColor: '#D4ECF5',
   },
