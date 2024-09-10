@@ -14,8 +14,11 @@ const TurbidityGauge: React.FC<TurbidityGaugeProps> = ({ size = 80, value = 0 })
   const progressStrokeWidth = 2; // Define the progress stroke width
   const circumference = 2 * Math.PI * circleRadius; // Calculate the circumference of the circle
 
+  // Ensure the value is positive using Math.abs
+  const positiveValue = Math.abs(value || 0);
+
   // Limit the value to a maximum of 10
-  const limitedValue = Math.min(value, 10);
+  const limitedValue = Math.min(positiveValue, 10);
 
   // Initialize animated value with 0 to ensure animation starts from 0
   const animatedValue = useRef(new Animated.Value(0)).current;
