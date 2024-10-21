@@ -35,6 +35,7 @@ import LeakageAlert from "./components/AlertModal/LeakageAlert";
 import NotificationsScreen from "./Screens/Notifications";
 import { createNavigationContainerRef } from '@react-navigation/native';
 import { RainfallAPI } from './utils/RainfallAPI'; // Import the RainfallAPI function from the utils folder
+import CustomDrawerContent from "./components/Navigator/CustomDrawerContent";
 
 
 export const navigationRef = createNavigationContainerRef<RootStackParamList>();
@@ -102,10 +103,11 @@ function MainTabNavigator({ userName }: { userName: string }) {
 function MainDrawerNavigator({ userName }: { userName: string }) {
   return (
     <Drawer.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
+    drawerContent={(props) => <CustomDrawerContent {...props} />} // Use custom drawer content
+    screenOptions={{
+      headerShown: false,
+    }}
+  >
       <Drawer.Screen
         name="homeScreen"
         options={{

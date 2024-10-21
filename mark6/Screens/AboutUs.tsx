@@ -1,10 +1,11 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import i18n from '../i18n';
 
 const AboutUs: React.FC = () => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.heading}>About Us</Text>
+      <Text style={styles.heading}>{i18n.t('about_us')}</Text>
       <Text style={styles.description}>
         We are a leading company in the industry, committed to providing the best services and products to our customers.
       </Text>
