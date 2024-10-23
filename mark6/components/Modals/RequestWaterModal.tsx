@@ -13,6 +13,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { Picker } from "@react-native-picker/picker";
 import { sendRequest } from "../../utils/SendRequest";
 import { Ionicons } from '@expo/vector-icons';
+import i18n from "../../i18n";
 
 interface RequestWaterModalProps {
   visible: boolean;
@@ -96,13 +97,13 @@ const RequestWaterModal: React.FC<RequestWaterModalProps> = ({
               <Ionicons name="close" size={24} color="white" />
             </TouchableOpacity>
 
-          <Text style={styles.modalTitle}>Request Water</Text>
+          <Text style={styles.modalTitle}>{i18n.t('purchase_water')}</Text>
 
           {/* Date Input */}
           <TouchableOpacity onPress={() => setShowDatePicker(true)}>
             <TextInput
               style={[styles.input, styles.dateInput]}
-              placeholder="Date"
+              placeholder={i18n.t('date')}
               placeholderTextColor="#999"
               value={dateText}
               editable={false}
@@ -113,7 +114,7 @@ const RequestWaterModal: React.FC<RequestWaterModalProps> = ({
           <TouchableOpacity onPress={() => setShowTimePicker(true)}>
             <TextInput
               style={[styles.input, styles.timeInput]}
-              placeholder="Time"
+              placeholder={i18n.t('time')}
               placeholderTextColor="#999"
               value={timeText}
               editable={false}
@@ -123,7 +124,7 @@ const RequestWaterModal: React.FC<RequestWaterModalProps> = ({
           {/* Water Quantity Input */}
           <TextInput
             style={styles.input}
-            placeholder="Water Quantity (Liters)"
+            placeholder={i18n.t('water_quantity')}
             placeholderTextColor="#999"
             keyboardType="numeric"
             value={quantity}
@@ -136,14 +137,14 @@ const RequestWaterModal: React.FC<RequestWaterModalProps> = ({
             style={styles.picker}
             onValueChange={(itemValue) => setUrgencyLevel(itemValue)}
           >
-            <Picker.Item label="Urgency Level" value="" />
-            <Picker.Item label="Low" value="Low" />
-            <Picker.Item label="Medium" value="Medium" />
-            <Picker.Item label="High" value="High" />
+            <Picker.Item label={i18n.t('urgency_level')} value="" />
+            <Picker.Item label={i18n.t('low')} value="Low" />
+            <Picker.Item label={i18n.t('medium')} value="Medium" />
+            <Picker.Item label={i18n.t('high')} value="High" />
           </Picker>
 
           {/* Request Button */}
-          <Button title="Request" onPress={handleSubmit} />
+          <Button title={i18n.t('request')} onPress={handleSubmit} />
 
           {/* Date Picker */}
           {showDatePicker && (

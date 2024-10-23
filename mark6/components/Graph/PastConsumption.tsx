@@ -2,6 +2,7 @@ import React from 'react';
 import { View, StyleSheet, Dimensions, ScrollView, Text } from 'react-native';
 import { BarChart } from 'react-native-gifted-charts';
 import { Picker } from '@react-native-picker/picker'; // Import Picker from the correct package
+import i18n from '../../i18n';
 
 const { width } = Dimensions.get('window');
 
@@ -38,7 +39,7 @@ export default function PastConsumption({ data = testData }: PastConsumptionProp
     return (
         <View style={styles.container}>
             <View style={styles.headerContainer}>
-                <Text style={styles.headerText}>Past Consumption</Text>
+                <Text style={styles.headerText}>{i18n.t('past_consumption')}</Text>
                 <Picker
                     style={styles.picker}
                     selectedValue={selectedMonth}

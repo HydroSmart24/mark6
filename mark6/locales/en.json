@@ -6,6 +6,63 @@
     "water_quality": "Water Quality",
     "request_water": "Request Water",
     "purchase_water": "Purchase Water",
-    "water_remaining_for": "Water remaining for"
+    "water_remaining_for": "Water remaining for",
+    "availability_and_consumption": "Availablity and Consumption",
+
+    "availability": "Availability",
+    "water_consumption" : "Water Consumption",
+    "past_consumption": "Past Consumption",
+
+    "filter_health": "Filter Health",
+    "estimated_expiration": "Estimated Filter Expire Date",
+    "detect_debris": "Click to detect debris in the tank*",
+    "severity": "Severity",
+    "detect_debris_button": "Detect Debris",
+    "debris_detection": "Debris Detection",
+    "debris": "Debris",
+    "More_Info": "More Info",
+    "rest_filter": "Reset Filter",
+    "filter_health_low": "The filter health is low!",
+    "reset_popup": "Did you renew the filter and do you want to reset the filter health?",
+    "proceed_safety": "Proceed if you really have renewed your filter for your own safety!",
+    "what_do": "What should I do?",
+    "stop_drinking": "If the Severity levels are high, you should stop drinking water!",
+    "next": "Next",
+    "clear_out": "Clear out the debris and clean the water tank before drinking.",
+
+    "contact_us": "Contact Us",
+    "contact_for_support": "Contact for support",
+    "got_tech_issue": "Got a technical issue? Want to send feedback about a feature? Need details about our Business plan? Let us know.",
+    "send_message": "Send message",
+    "your_message": "Your message",
+
+    "leading_company": " We are a leading company in the industry, committed to providing the best services and products to our customers.",
+    "value": "We value customer satisfaction above all.",
+    "innovate": "Innovation is at the heart of our mission.",
+    "strive": "We strive for excellence in everything we do.",
+
+
+    "order_history": "Order History",
+    "date": "Date",
+    "time": "Time",
+    "water_quantity": "Water Quantity (Liters)",
+    "urgency_level": "Urgency Level",
+    "low": "Low",
+    "medium": "Medium",
+    "high": "High",
+
+
+    "your_water_level": "Your Water Level",
+    "request": "Request",
+    "tank_owner": "Tank Owner",
+    "confirm": "Confirm",
+
+
+    "yes": "Yes",
+    "no": "No",
+    "yes, I'm sure": "Yes, I'm sure",
+    "no_notifications": "No notifications found",
+    "notifications": "Notifications"
+
 }
   

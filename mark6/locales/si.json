@@ -6,6 +6,60 @@
     "water_quality": "ජලයේ ගුණය",
     "request_water": "ජලය ඉල්ලන්න",
     "purchase_water": "ජලය මිලට",
-    "water_remaining_for": "ජලය ඉතිරි දවස්"
+    "water_remaining_for": "ජලය ඉතිරි දවස්",
+    "availability_and_consumption": "ජල ප්‍රමාණය සහ පරිභෝජනය",
+
+    "availability": "ජල ප්‍රමාණය",
+    "water_consumption" : "ජල පරිභෝජනය",
+    "past_consumption": "අතීත පරිභෝජනය",
+
+    "filter_health": "පෙරහන තත්ත්වය",
+    "estimated_expiration": "පෙරහන කල් ඉකුත් වීමේ දිනය",
+    "detect_debris": "ටැංකියේ සුන්බුන් හඳුනා ගන්න*",
+    "severity": "බරපතලකම",
+    "detect_debris_button": "සුන්බුන් හඳුනා ගන්න",
+    "debris_detection": "සුන්බුන් හඳුනාගැනීම",
+    "debris": "සුන්බුන්",
+    "More_Info": "වැඩි විස්තර",
+    "rest_filter": "Reset පෙරහන",
+    "filter_health_low": "පෙරහන health is low!",
+    "reset_popup": "ඔබ පෙරහන අලුත් කර ඇති අතර ඔබට පෙරහන සෞඛ්‍යය යළි සැකසීමට අවශ්‍යද?",
+    "proceed_safety": "ඔබ ඔබේම ආරක්ෂාව සඳහා ඔබේ පෙරහන ඇත්තටම අලුත් කර ඇත්නම් ඉදිරියට යන්න!",
+    "what_do": "මම කළ යුත්තේ කුමක් ද?",
+    "stop_drinking": "බරපතලකම වැඩි නම්, ඔබ ජලය පානය කිරීම නතර කළ යුතුය!",
+    "next": "ඊළඟ",
+    "clear_out": "බීමට පෙර සුන්බුන් ඉවත් කර ජල ටැංකිය පිරිසිදු කරන්න.",
+
+    "contact_us": "අපව අමතන්න",
+    "contact_for_support": "සහාය සඳහා අමතන්න",
+    "got_tech_issue": "තාක්ෂණික ගැටලුවක් තිබේද? App එක ගැන feedback යැවීමට අවශ්‍යද? අපගේ ව්‍යාපාර සැලැස්ම පිළිබඳ විස්තර අවශ්‍යද? අපට දන්වන්න.",
+    "send_message": "පණිවිඩයක් යවන්න",
+    "your_message": "ඔබගේ පණිවිඩය",
+
+    "leading_company": "අපි අපගේ ගනුදෙනුකරුවන්ට හොඳම සේවා සහ නිෂ්පාදන සැපයීමට කැපවී සිටින කර්මාන්තයේ ප්‍රමුඛ සමාගමකි.",
+    "value": "අපි සියල්ලටම වඩා පාරිභෝගික තෘප්තිය අගය කරමු.",
+    "innovate": "නවෝත්පාදනය අපගේ මෙහෙවරේ හදවතයි.",
+    "strive": "අප කරන සෑම දෙයකම විශිෂ්ටත්වය සඳහා අපි උත්සාහ කරමු.",
+
+    "order_history": "අතීත ඇණවුම්",
+    "date": "දිනය",
+    "time": "වේලාව",
+    "water_quantity": "ජල ප්‍රමාණය (Liters)",
+    "urgency_level": "හදිසි මට්ටම",
+    "low": "අඩු",
+    "medium": "මද්‍යම",
+    "high": "ඉහළ",
+
+    "your_water_level": "ඔබේ ජල මට්ටම",
+    "request": "ඉල්ලීම",
+    "tank_owner": "ටැංකි අයිතිකරු",
+    "confirm": "තහවුරුයි",
+
+    "yes": "ඔව්",
+    "no": "නැත",
+    "yes, I'm sure": "ඔව් මට විශ්වාසයි",
+    "no_notifications": "දැනුම්දීම් නැත",
+    "notifications": "දැනුම්දීම්"
+
 }
   

@@ -57,7 +57,7 @@ export default function TabOneScreen({ userName }: TabOneScreenProps) {
       
       <View style={styles.buttonRow}>
         <RequestWaterButton title={i18n.t('request_water')} />
-        <IconButton title={i18n.t('purchase_water')} style={styles.buttonSpacing} />
+        <IconButton title={i18n.t('purchase_water')}/>
       </View>
       
       <Prediction style={styles.prediction} />
@@ -125,15 +125,15 @@ const styles = StyleSheet.create({
   },
   buttonRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-between', // Keep buttons aligned at the ends
     alignItems: 'center',
-    width: '100%',
-    paddingHorizontal: 40, 
-    marginTop: 10, 
+    width: '90%',
+    paddingHorizontal: 10, // Increase padding to add more space
+    marginTop: 10,
   },
-  buttonSpacing: {
-    marginLeft: 25, 
-  },
+  // buttonSpacing: {
+  //   marginLeft: 20, 
+  // },
   prediction: {
     marginTop: 35, 
     width: '85%', 

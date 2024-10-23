@@ -6,13 +6,12 @@ const AboutUs: React.FC = () => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.heading}>{i18n.t('about_us')}</Text>
-      <Text style={styles.description}>
-        We are a leading company in the industry, committed to providing the best services and products to our customers.
+      <Text style={styles.description}>{i18n.t('leading_company')}
       </Text>
       <View style={styles.pointsContainer}>
-        <Text style={styles.point}>• We value customer satisfaction above all.</Text>
-        <Text style={styles.point}>• Innovation is at the heart of our mission.</Text>
-        <Text style={styles.point}>• We strive for excellence in everything we do.</Text>
+        <Text style={styles.point}>• {i18n.t('value')}</Text>
+        <Text style={styles.point}>• {i18n.t('innovate')}</Text>
+        <Text style={styles.point}>• {i18n.t('strive')}</Text>
       </View>
     </ScrollView>
   );

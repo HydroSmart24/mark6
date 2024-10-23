@@ -126,7 +126,7 @@ function MainDrawerNavigator({ userName }: { userName: string }) {
         options={{
           headerShown: true,
           headerTitle: "",
-          drawerLabel: "FilterHealth",
+          drawerLabel: i18n.t('water_quality'),
           drawerIcon: ({ color, size }) => (
             <MaterialIcons name="health-and-safety" size={size} color={color} />
           ),
@@ -137,8 +137,8 @@ function MainDrawerNavigator({ userName }: { userName: string }) {
         component={AvailableScreen}
         options={{
           headerShown: true,
-          headerTitle: "Availability & Consumption",
-          drawerLabel: "Availability",
+          headerTitle: i18n.t('availability_and_consumption'),
+          drawerLabel: i18n.t('availability'),
           drawerIcon: ({ color, size }) => (
             <Ionicons name="water" size={size} color={color} />
           ),
@@ -149,8 +149,8 @@ function MainDrawerNavigator({ userName }: { userName: string }) {
         component={DetectScreen}
         options={{
           headerShown: true,
-          headerTitle: "Debris Detection",
-          drawerLabel: "Debris Detection",
+          headerTitle: i18n.t('debris_detection'),
+          drawerLabel: i18n.t('debris_detection'),
           drawerIcon: ({ color, size }) => (
             <MaterialCommunityIcons
               name="smoke-detector-alert"
@@ -165,8 +165,8 @@ function MainDrawerNavigator({ userName }: { userName: string }) {
         component={OrderHistory}
         options={{
           headerShown: true,
-          headerTitle: "Order History",
-          drawerLabel: "Order History",
+          headerTitle: i18n.t('order_history'),
+          drawerLabel: i18n.t('order_history'),
           drawerIcon: ({ color, size }) => (
             <MaterialCommunityIcons
               name="tanker-truck"
@@ -181,8 +181,8 @@ function MainDrawerNavigator({ userName }: { userName: string }) {
         component={RequestWater}
         options={{
           headerShown: true,
-          headerTitle: "Request Water",
-          drawerLabel: "Request Water",
+          headerTitle: i18n.t('request_water'),
+          drawerLabel: i18n.t('request_water'),
           drawerIcon: ({ color, size }) => (
             <FontAwesome6 name="code-pull-request" size={size} color={color} />
           ),
@@ -194,7 +194,7 @@ function MainDrawerNavigator({ userName }: { userName: string }) {
         options={{
           headerShown: true,
           headerTitle: "",
-          drawerLabel: "Contact Us",
+          drawerLabel: i18n.t('contact_us'),
           drawerIcon: ({ color, size }) => (
             <Ionicons name="call" size={size} color={color} />
           ),
@@ -206,7 +206,7 @@ function MainDrawerNavigator({ userName }: { userName: string }) {
         options={{
           headerShown: true,
           headerTitle: "",
-          drawerLabel: "About Us",
+          drawerLabel: i18n.t('about_us'),
           drawerIcon: ({ color, size }) => (
             <Ionicons name="people" size={size} color={color} />
           ),
@@ -407,7 +407,7 @@ React.useEffect(() => {
                     component={AvailableScreen}
                     options={{
                       headerShown: true,
-                      title: 'Availability & Consumption',
+                      title: i18n.t('availability_and_consumption'),
                     }}
                   />
                   <Stack.Screen
@@ -415,7 +415,7 @@ React.useEffect(() => {
                     component={NotificationsScreen}
                     options={{ 
                       headerShown: true, 
-                      title: 'Notifications' }}
+                      title: i18n.t('notifications') }}
                   />
                  
               </>
