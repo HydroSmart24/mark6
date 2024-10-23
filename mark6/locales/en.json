@@ -1,6 +1,11 @@
 {
     "greeting": "Hello!",
-    "change_language": "Change Language",
-    "about_us": "About Us"
-  }
+    "about_us": "About Us",
+    "connected_to_tank": "Connected to Tank",
+    "check_status": "Check status of tank",
+    "water_quality": "Water Quality",
+    "request_water": "Request Water",
+    "purchase_water": "Purchase Water",
+    "water_remaining_for": "Water remaining for"
+}
   

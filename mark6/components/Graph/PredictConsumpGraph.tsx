@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Dimensions, ScrollView } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 import { calculateFutureTankVolumes } from '../../utils/FutureTankVolumes';
 import HomePredictionLoading from '../Loading/HomePredictionLoading';
+import i18n from '../../i18n';
 
 const { width } = Dimensions.get('window');
 
@@ -53,7 +54,7 @@ export default function Prediction({ style = {} }) {
   return (
     <View style={[styles.container, style]}>
       <View style={styles.header}>
-        <Text style={styles.text}>Water remaining for:</Text>
+        <Text style={styles.text}>{i18n.t('water_remaining_for')}:</Text>
         <View style={styles.box}>
           <Text style={styles.boxText}>{days} days</Text>
         </View>

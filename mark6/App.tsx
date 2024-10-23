@@ -36,6 +36,7 @@ import NotificationsScreen from "./Screens/Notifications";
 import { createNavigationContainerRef } from '@react-navigation/native';
 import { RainfallAPI } from './utils/RainfallAPI'; // Import the RainfallAPI function from the utils folder
 import CustomDrawerContent from "./components/Navigator/CustomDrawerContent";
+import i18n, { loadAppLanguage } from './i18n';
 
 
 export const navigationRef = createNavigationContainerRef<RootStackParamList>();
@@ -252,67 +253,87 @@ export default function App() {
 React.useEffect(() => {
   let unsubscribeLeakageListener: (() => void) | undefined;
 
-  const unsubscribe = onAuthStateChanged(auth, async (user) => {
-    setUser(user);
-    setLoading(false);
-
-    if (user) {
-      const uid = user.uid;
-      const docRef = doc(db, "users", user.uid);
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        setUserName(docSnap.data()?.name || null);
-      }
-
-      // Register the push token
-      const pushToken = await registerForPushNotificationsAsync();
-      if (pushToken) {
-        await setDoc(docRef, { pushtoken: pushToken }, { merge: true });
-
-        // Start listening for leakage detection and notify the logged-in user
-        unsubscribeLeakageListener = listenForLeakageAndNotify(pushToken, uid, handleLeakageDetected);
-
-      }
-
-      // Call RainfallAPI after user authentication
-      await RainfallAPI(); // Call your rainfall API function here
-
+  // Initialize the app by loading the language first
+  const initializeApp = async () => {
+    try {
+      await loadAppLanguage(); // Load saved language
+      console.log(`Language initialized to: ${i18n.locale}`);
+    } catch (error) {
+      console.error('Error loading language:', error);
     }
-  });
 
-  setupNotificationHandler(); // Setup the notification handler
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      setUser(user);
+      setLoading(false);
 
-  // Handle foreground notifications without showing an in-app alert
-  const foregroundSubscription = Notifications.addNotificationReceivedListener(notification => {
-      console.log('Notification received in foreground:', notification);
+      if (user) {
+        const uid = user.uid;
+        const docRef = doc(db, 'users', uid);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          setUserName(docSnap.data()?.name || null);
+        }
+
+        try {
+          const pushToken = await registerForPushNotificationsAsync();
+          if (pushToken) {
+            await setDoc(docRef, { pushtoken: pushToken }, { merge: true });
+
+            // Listen for leakage detection notifications
+            unsubscribeLeakageListener = listenForLeakageAndNotify(
+              pushToken,
+              uid,
+              handleLeakageDetected
+            );
+          }
+        } catch (error) {
+          console.error('Error registering push notifications:', error);
+        }
+
+        try {
+          await RainfallAPI(); // Call Rainfall API
+        } catch (error) {
+          console.error('Error calling Rainfall API:', error);
+        }
+      }
     });
 
-  // Handle notification click/tap (navigate to NotificationsScreen)
-  const responseListener = Notifications.addNotificationResponseReceivedListener(response => {
-    console.log('Notification clicked:', response);
+    // Handle foreground notifications
+    const foregroundSubscription = 
+      Notifications.addNotificationReceivedListener((notification) => {
+        console.log('Notification received in foreground:', notification);
+      });
 
-    if (navigationRef.isReady()) {
-      // Explicitly cast the type of the screen name
-      navigationRef.navigate('NotificationsScreen' as keyof RootStackParamList); // Correct type for navigate
-    }
-  });
+    // Handle notification responses
+    const responseListener = 
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log('Notification clicked:', response);
 
+        if (navigationRef.isReady()) {
+          navigationRef.navigate('NotificationsScreen' as keyof RootStackParamList);
+        }
+      });
 
-  return () => {
-    unsubscribe(); // Cleanup the auth listener
-    foregroundSubscription.remove(); // Cleanup the foreground notification listener
-    responseListener.remove(); // Cleanup the notification response listener
+    setupNotificationHandler(); // Set up the notification handler
 
-    if (unsubscribeLeakageListener) {
-      unsubscribeLeakageListener(); // Stop listening to leakage detection
-    }
+    // Cleanup function to remove listeners
+    return () => {
+      unsubscribe(); // Remove auth listener
+      foregroundSubscription.remove(); // Remove foreground listener
+      responseListener.remove(); // Remove response listener
+
+      if (unsubscribeLeakageListener) {
+        unsubscribeLeakageListener(); // Stop leakage listener
+      }
+    };
   };
+
+  // Call the initialize function
+  initializeApp();
 }, []);
 
   
-  
-
-
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>

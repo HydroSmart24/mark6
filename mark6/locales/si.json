@@ -1,6 +1,11 @@
 {
     "greeting": "ආයුබෝවන්!",
-    "change_language": "භාෂාව වෙනස් කරන්න",
-    "about_us": "භාෂාව වෙනස්"
-  }
+    "about_us": "අපි ගැන",
+    "connected_to_tank": "ටැංකියට සම්බන්ධයි",
+    "check_status": "ටැංකියේ තත්ත්වය පරීක්ෂා කරන්න",
+    "water_quality": "ජලයේ ගුණය",
+    "request_water": "ජලය ඉල්ලන්න",
+    "purchase_water": "ජලය මිලට",
+    "water_remaining_for": "ජලය ඉතිරි දවස්"
+}
   
