@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, StyleSheet, Animated, Easing, Text } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
+import i18n from '../../i18n';
 
 interface HalfPremiumProps {
   size?: number;
@@ -123,7 +124,7 @@ const HalfPremium: React.FC<HalfPremiumProps> = ({
           {formattedValue}
         </Text>
         <Text style={{ ...styles.labelText, fontSize: adjustedSize * 0.2, color: textColor }}>
-          Filter Health
+          {i18n.t('filter_health')}
         </Text>
       </View>
     </View>

@@ -9,6 +9,7 @@ import BasicContainer from '../components/Containers/BasicContainer';
 import Prediction from '../components/Graph/PredictConsumpGraph';
 import CustomHeader from '../components/CustomerHeader/IndexHeader';
 import { calculateFilterHealth, fetchSensorData } from '../utils/FilterHealthCalc';
+import i18n from '../i18n';
 
 interface TabOneScreenProps {
   userName: string | null; // Make sure to pass userName as a prop
@@ -37,7 +38,7 @@ export default function TabOneScreen({ userName }: TabOneScreenProps) {
       
       <View style={styles.header}>
         <Text style={styles.greeting}>Hi {userName}</Text>
-        <Text style={styles.subtitle}>Check status of tank</Text>
+        <Text style={styles.subtitle}>{i18n.t('check_status')}</Text>
       </View>
       
       <BasicContainer style={styles.basicContainer} height={230}> 
@@ -46,7 +47,7 @@ export default function TabOneScreen({ userName }: TabOneScreenProps) {
             <View style={styles.homeFilterHealthWrapper}>
               <HomeFilterHealth size={113} value={percentage ?? undefined} />
             </View>
-            <WaterQuality title="Water Quality" style={styles.waterQualityButton} />
+            <WaterQuality title={i18n.t('water_quality')} style={styles.waterQualityButton} />
           </View>
           <View style={styles.rightColumn}>
             <TankLevel size={130} clickable={true} /> 
@@ -55,8 +56,8 @@ export default function TabOneScreen({ userName }: TabOneScreenProps) {
       </BasicContainer>
       
       <View style={styles.buttonRow}>
-        <RequestWaterButton title="Request Water" />
-        <IconButton title="Purchase Water" style={styles.buttonSpacing} />
+        <RequestWaterButton title={i18n.t('request_water')} />
+        <IconButton title={i18n.t('purchase_water')}/>
       </View>
       
       <Prediction style={styles.prediction} />
@@ -124,15 +125,15 @@ const styles = StyleSheet.create({
   },
   buttonRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-between', // Keep buttons aligned at the ends
     alignItems: 'center',
-    width: '100%',
-    paddingHorizontal: 40, 
-    marginTop: 10, 
+    width: '90%',
+    paddingHorizontal: 10, // Increase padding to add more space
+    marginTop: 10,
   },
-  buttonSpacing: {
-    marginLeft: 25, 
-  },
+  // buttonSpacing: {
+  //   marginLeft: 20, 
+  // },
   prediction: {
     marginTop: 35, 
     width: '85%', 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Animated } from 'react-native';
+import i18n from '../../i18n';
 
 interface MoreInfoModalProps {
     onClose: () => void;
@@ -39,20 +40,20 @@ const MoreInfoModal: React.FC<MoreInfoModalProps> = ({ onClose }) => {
       <Animated.View style={[styles.modalContent, { transform: [{ scale: scaleAnim }] }]}>
         {step === 1 && (
           <>
-            <Text style={styles.modalTitle}>What should I do?</Text>
+            <Text style={styles.modalTitle}>{i18n.t('what_do')}</Text>
             <Text style={styles.modalText}>
-              If the Severity levels are high, you should stop drinking water!
+            {i18n.t('stop_drinking')}
             </Text>
             <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
-              <Text style={styles.buttonText}>Next</Text>
+              <Text style={styles.buttonText}>{i18n.t('next')}</Text>
             </TouchableOpacity>
           </>
         )}
         {step === 2 && (
           <>
-            <Text style={styles.modalTitle}>What should I do?</Text>
+            <Text style={styles.modalTitle}>{i18n.t('what_do')}</Text>
             <Text style={styles.modalText}>
-              Clear out the debris and clean the water tank before drinking.
+            {i18n.t('clear_out')}
             </Text>
             <TouchableOpacity style={styles.closeButton} onPress={onClose}>
               <Text style={styles.buttonText}>Close</Text>
