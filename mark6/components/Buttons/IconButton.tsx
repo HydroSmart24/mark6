@@ -31,7 +31,7 @@ const Button3D: React.FC<ButtonProps> = ({ title, style }) => {
   return (
     <TouchableOpacity style={[styles.button, style]} onPress={handlePress}>
       <View style={styles.buttonContent}>
-        <MaterialCommunityIcons name="tanker-truck" size={28} color="#FFF" />
+        <MaterialCommunityIcons name="tanker-truck" size={29} color="#FFF" />
         <View style={styles.textContent}>
           {/* Split the title into two lines */}
           <Text style={styles.buttonText}>{title.split(" ")[0]}</Text>
@@ -46,7 +46,8 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: "#4299E1", // equivalent to bg-blue-500
     paddingVertical: 15, // equivalent to py-2
-    paddingHorizontal: 20, // equivalent to px-4
+    // paddingHorizontal: 20, // equivalent to px-4
+    width: '46%', // equivalent to w-40
     borderRadius: 4, // equivalent to rounded
     borderBottomWidth: 4, // equivalent to border-b-4
     borderBottomColor: "#2B6CB0", // equivalent to border-blue-700

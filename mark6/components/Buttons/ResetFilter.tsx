@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { TouchableOpacity, Text, StyleSheet, View, Modal, ViewStyle, Pressable, Animated } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { resetExpirationDate } from '../../utils/FilterHealthCalc'; // Import the function
+import i18n from '../../i18n';
 
 interface ButtonProps {
   title: string;
@@ -65,23 +66,23 @@ const ResetFilter: React.FC<ButtonProps> = ({ title, style, onReset }) => {
           <View style={styles.modalContainer}>
             <MaterialIcons name="dangerous" size={50} color="red" />
             {step === 1 ? (
-              <Text style={styles.modalText}>Did you renew the filter and do you want to reset the filter health?</Text>
+              <Text style={styles.modalText}>{i18n.t('reset_popup')}</Text>
             ) : (
-              <Text style={styles.modalText}>Proceed if you really have renewed your filter for your own safety!</Text>
+              <Text style={styles.modalText}>{i18n.t('proceed_safety')}</Text>
             )}
             <View style={step === 1 ? styles.buttonContainer : styles.singleButtonContainer}>
               {step === 1 ? (
                 <>
                   <Pressable style={styles.modalButton} onPress={handleNoPress}>
-                    <Text style={styles.modalButtonText}>No</Text>
+                    <Text style={styles.modalButtonText}>{i18n.t('no')}</Text>
                   </Pressable>
                   <Pressable style={styles.modalButton} onPress={handleYesPress}>
-                    <Text style={styles.modalButtonText}>Yes</Text>
+                    <Text style={styles.modalButtonText}>{i18n.t('yes')}</Text>
                   </Pressable>
                 </>
               ) : (
                 <Pressable style={styles.modalButton} onPress={handleYesPress}>
-                  <Text style={styles.modalButtonText}>Yes, I'm sure</Text>
+                  <Text style={styles.modalButtonText}>{i18n.t("yes, I'm sure")}</Text>
                 </Pressable>
               )}
             </View>

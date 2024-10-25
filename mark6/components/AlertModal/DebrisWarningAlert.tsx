@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Animated } from 'react-native
 import Modal from 'react-native-modal';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import MoreInfoModal from './MoreInfoModal';
+import i18n from '../../i18n';
 
 interface IconTextModalProps {
   isVisible: boolean;
@@ -59,26 +60,26 @@ const IconTextModal: React.FC<IconTextModalProps> = ({
                 </Animated.View>
                 <Text style={styles.message}>{message}</Text>
                 <TouchableOpacity style={styles.closeButton} onPress={handleNext}>
-                <Text style={styles.closeButtonText}>What should i do?</Text>
+                <Text style={styles.closeButtonText}>{i18n.t('what_do')}</Text>
                 </TouchableOpacity>
             </>
         )}
         {step === 2 && (
             <>
-              <Text style={styles.modalTitle}>What should I do?</Text>
+              <Text style={styles.modalTitle}>{i18n.t('what_do')}</Text>
               <Text style={styles.modalText}>
-                If the Severity levels are high, you should stop drinking water!
+              {i18n.t('stop_drinking')}
               </Text>
               <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
-                <Text style={styles.buttonText}>Next</Text>
+                <Text style={styles.buttonText}>{i18n.t('next')}</Text>
               </TouchableOpacity>
             </>
         )}
         {step === 3 && (
           <>
-            <Text style={styles.modalTitle}>What should I do?</Text>
+            <Text style={styles.modalTitle}>{i18n.t('what_do')}</Text>
             <Text style={styles.modalText}>
-              Clear out the debris and clean the water tank before drinking.
+            {i18n.t('clear_out')}
             </Text>
             <TouchableOpacity style={styles.closeButton2} onPress={onClose}>
               <Text style={styles.buttonText}>Close</Text>
