@@ -86,7 +86,7 @@ function MainTabNavigator({ userName }: { userName: string }) {
         component={Information}
         options={{
           headerShown: true,
-          headerTitle: "Information",
+          headerTitle: i18n.t('information'),
           tabBarLabel: "Info",
           tabBarIcon: ({ color, size }) => (
             <Ionicons
@@ -216,8 +216,8 @@ function MainDrawerNavigator({ userName }: { userName: string }) {
         name="UserProfile"
         options={{
           headerShown: true,
-          headerTitle: "Profile",
-          drawerLabel: "User Profile",
+          headerTitle: i18n.t('user_profile'),
+          drawerLabel: i18n.t('user_profile'),
           drawerIcon: ({ color, size }) => (
             <Ionicons name="person-circle-outline" size={size} color={color} />
           ),
@@ -383,7 +383,7 @@ React.useEffect(() => {
                     component={DebrisMain}
                     options={{
                       headerShown: true,
-                      title: 'Filter Health',
+                      title: i18n.t('filter_health'),
                     }}
                   />
                   <Stack.Screen
@@ -391,7 +391,7 @@ React.useEffect(() => {
                     component={DetectScreen}
                     options={{ 
                       headerShown: true,
-                      title: 'Debris Detection',
+                      title: i18n.t('debris_detection'),
                     }}
                   />
                   <Stack.Screen

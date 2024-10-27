@@ -25,7 +25,7 @@ const ContactUs: React.FC = () => {
       </Text>
 
       <View style={styles.inputContainer}>
-        <Text style={styles.label}>Your email</Text>
+        <Text style={styles.label}>{i18n.t('your_email')}</Text>
         <TextInput
           style={styles.input}
           placeholder="name@example.com"
@@ -38,7 +38,7 @@ const ContactUs: React.FC = () => {
       </View>
 
       <View style={styles.inputContainer}>
-        <Text style={styles.label}>Subject</Text>
+        <Text style={styles.label}>{i18n.t('subject')}</Text>
         <TextInput
           style={styles.input}
           placeholder="Let us know how we can help you"

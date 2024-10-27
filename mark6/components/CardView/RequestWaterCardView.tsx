@@ -32,7 +32,7 @@ const CardView: React.FC<CardProps> = ({ title, availableLiters, ownerId, curren
         <View style={styles.cardContent}>
           <View style={styles.textContainer}>
             <Text style={styles.title}>{title}</Text>
-            <Text style={styles.availableLiters}>{availableLiters} liters Available</Text>
+            <Text style={styles.availableLiters}>{availableLiters} liters {i18n.t('available')}</Text>
           </View>
           {/* Pass userId to RequestWaterFromtankbtn if necessary */}
           <RequestWaterFromtankbtn title={i18n.t('request')} onPress={handleRequestPress} availableLiters={availableLiters} />

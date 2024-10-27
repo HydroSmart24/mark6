@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "mark6",
+    "name": "HydroSmart",
     "slug": "mark6",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -19,7 +19,12 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.disarasandali.mark6"
+      "package": "com.disarasandali.mark6",
+      "permissions": [
+        "INTERNET",
+        "ACCESS_NETWORK_STATE"
+      ],
+      "usesCleartextTraffic": true
     },
     "web": {
       "favicon": "./assets/favicon.png"

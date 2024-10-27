@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, ActivityIndicator, StyleSheet, Text } from 'react-native';
+import i18n from '../../i18n';
 
 interface LoadingProps {
   visible: boolean;
@@ -12,7 +13,7 @@ const Loading: React.FC<LoadingProps> = ({ visible }) => {
     <View style={styles.overlay}>
       <View style={styles.container}>
         <ActivityIndicator size="large" color="#4299E1" />
-        <Text style={styles.text}>Loading...</Text>
+        <Text style={styles.text}>{i18n.t('loading')}</Text>
       </View>
     </View>
   );

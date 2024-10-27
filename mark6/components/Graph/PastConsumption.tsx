@@ -45,18 +45,18 @@ export default function PastConsumption({ data = testData }: PastConsumptionProp
                     selectedValue={selectedMonth}
                     onValueChange={(itemValue: string) => setSelectedMonth(itemValue)}
                 >
-                    <Picker.Item label="January" value="January" />
-                    <Picker.Item label="February" value="February" />
-                    <Picker.Item label="March" value="March" />
-                    <Picker.Item label="April" value="April" />
-                    <Picker.Item label="May" value="May" />
-                    <Picker.Item label="June" value="June" />
-                    <Picker.Item label="July" value="July" />
-                    <Picker.Item label="August" value="August" />
-                    <Picker.Item label="September" value="September" />
-                    <Picker.Item label="October" value="October" />
-                    <Picker.Item label="November" value="November" />
-                    <Picker.Item label="December" value="December" />
+                    <Picker.Item label={i18n.t('jan')} value="January" />
+                    <Picker.Item label={i18n.t('feb')} value="February" />
+                    <Picker.Item label={i18n.t('mar')} value="March" />
+                    <Picker.Item label={i18n.t('apr')} value="April" />
+                    <Picker.Item label={i18n.t('may')} value="May" />
+                    <Picker.Item label={i18n.t('jun')} value="June" />
+                    <Picker.Item label={i18n.t('jul')} value="July" />
+                    <Picker.Item label={i18n.t('aug')} value="August" />
+                    <Picker.Item label={i18n.t('sep')} value="September" />
+                    <Picker.Item label={i18n.t('oct')} value="October" />
+                    <Picker.Item label={i18n.t('nov')} value="November" />
+                    <Picker.Item label={i18n.t('dec')} value="December" />
                 </Picker>
             </View>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
