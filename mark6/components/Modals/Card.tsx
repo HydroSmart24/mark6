@@ -67,36 +67,36 @@ const Card: React.FC<CardProps> = ({ quantity, status, date }) => {
           <Text style={styles.unitText}>Liters</Text>
         </View>
       </View>
-      <View
-        style={[
-          styles.statusContainer,
-          { backgroundColor: statusColors[status] }, // Apply status-specific color
-        ]}
-      >
-        <Text style={styles.statusText}>{status}</Text>
-      </View>
-    </View>
+  <View
+    style={[
+      styles.statusContainer,
+      { backgroundColor: statusColors[status] },
+    ]}
+  >
+    <Text style={styles.statusText}>{status}</Text>
+  </View>
+</View>
   );
 };
 
 const styles = StyleSheet.create({
   card: {
-    width: 350, // Width of the card
-    height: 150, // Height of the card
-    padding: 20, // Padding inside the card
+    width: 350,
+    height: 150,
+    padding: 20,
     backgroundColor: "white",
     borderRadius: 10,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 5,
-    elevation: 3, // For Android shadow
-    flexDirection: "row", // Arrange children in a row
-    alignItems: "center", // Center items vertically
-    justifyContent: "flex-start", // Align items to the start of the container
-    marginBottom: 20, // Space between cards if needed
-    borderLeftWidth: 8, // Add the thin bar on the left
-    borderLeftColor: "#4299E1", // Set the color of the thin bar
+    elevation: 3,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between", // Spread elements evenly
+    marginBottom: 20,
+    borderLeftWidth: 8,
+    borderLeftColor: "#4299E1",
   },
   dateContainer: {
     alignItems: "center",
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    marginLeft: 10, // Add margin to move the text slightly to the right
+    marginLeft: 5, // Add margin to move the text slightly to the right
   },
   quantityContainer: {
     alignItems: "center", // Center both text elements horizontally
@@ -139,13 +139,13 @@ const styles = StyleSheet.create({
     color: "#333",
   },
   statusContainer: {
-    padding: 10, // Padding inside the rectangle
-    borderRadius: 10, // Rounded corners for the rectangle
+    padding: 10,
+    borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
-    width: 100, // Adjust width if needed
+    width: 100,
     height: 40,
-    marginLeft: 10, // Space between the status rectangle and content
+    marginRight: 10, // Adjust with marginRight instead
   },
   statusText: {
     fontSize: 14,
