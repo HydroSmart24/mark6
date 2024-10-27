@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { auth } from '../../firebase/firebaseConfig';  // Adjust the path according to your project structure
+import { View, Text, TouchableOpacity, StyleSheet, Linking } from 'react-native';
+import { auth } from '../../firebase/firebaseConfig'; // Adjust the path according to your project structure
 import Loading from '../../components/Loading/BasicLoading';
 
 interface UserProfileProps {
@@ -12,10 +12,8 @@ const UserProfile: React.FC<UserProfileProps> = ({ userName, userEmail }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Simulate data fetching or any async operation
         const fetchData = async () => {
             try {
-                // Simulate a delay
                 await new Promise(resolve => setTimeout(resolve, 1000));
             } catch (error) {
                 console.error("Error fetching data: ", error);
@@ -35,7 +33,13 @@ const UserProfile: React.FC<UserProfileProps> = ({ userName, userEmail }) => {
         }
     };
 
-    // Extract the first letter of the user's name
+    console.log(userName)
+    console.log(userEmail)
+    const handleRedirectToHTML = () => {
+        const url = `https://hydrosmart24.github.io/Account-Delete-Page-/?username=${encodeURIComponent(userName)}&email=${encodeURIComponent(userEmail)}`;
+        Linking.openURL(url); // Open the URL in the device's web browser
+    };
+
     const firstLetter = userName.charAt(0).toUpperCase();
 
     if (loading) {
@@ -44,27 +48,29 @@ const UserProfile: React.FC<UserProfileProps> = ({ userName, userEmail }) => {
 
     return (
         <View style={styles.container}>
-            {/* Circle with the first letter */}
-            <View style={styles.circle}>
-                <Text style={styles.circleText}>{firstLetter}</Text>
-            </View>
+            <>
+                <View style={styles.circle}>
+                    <Text style={styles.circleText}>{firstLetter}</Text>
+                </View>
 
-            {/* Username Field */}
-            <View style={styles.rectangle}>
-                <Text style={styles.fieldHeading}>Username</Text>
-                <Text style={styles.rectangleText}>{userName}</Text>
-            </View>
+                <View style={styles.rectangle}>
+                    <Text style={styles.fieldHeading}>Username</Text>
+                    <Text style={styles.rectangleText}>{userName}</Text>
+                </View>
 
-            {/* Email Field */}
-            <View style={styles.rectangle}>
-                <Text style={styles.fieldHeading}>Email</Text>
-                <Text style={styles.rectangleText}>{userEmail}</Text>
-            </View>
+                <View style={styles.rectangle}>
+                    <Text style={styles.fieldHeading}>Email</Text>
+                    <Text style={styles.rectangleText}>{userEmail}</Text>
+                </View>
 
-            {/* Logout Button */}
-            <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-                <Text style={styles.logoutButtonText}>Logout</Text>
-            </TouchableOpacity>
+                <TouchableOpacity style={styles.redirectButton} onPress={handleRedirectToHTML}>
+                    <Text style={styles.redirectButtonText}>Delete Account</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+                    <Text style={styles.logoutButtonText}>Logout</Text>
+                </TouchableOpacity>
+            </>
         </View>
     );
 };
@@ -85,7 +91,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         marginBottom: 30,
-        marginTop: -250,
+        marginTop: -180,
     },
     circleText: {
         fontSize: 36,
@@ -96,11 +102,11 @@ const styles = StyleSheet.create({
         width: '100%',
         padding: 20,
         backgroundColor: '#F5F5F5',
-        marginBottom: 15,
+        marginBottom: 20,
         borderRadius: 10,
         justifyContent: 'center',
         alignItems: 'flex-start',
-        elevation: 3, // Adds subtle shadow for depth
+        elevation: 3,
     },
     fieldHeading: {
         fontSize: 16,
@@ -113,6 +119,21 @@ const styles = StyleSheet.create({
         color: '#000',
         fontWeight: '500',
     },
+    redirectButton: {
+        width: '60%',
+        padding: 15,
+        backgroundColor: '#FF0000',
+        borderRadius: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 15,
+        elevation: 5,
+    },
+    redirectButtonText: {
+        fontSize: 18,
+        color: '#fff',
+        fontWeight: 'bold',
+    },
     logoutButton: {
         width: '60%',
         padding: 15,
@@ -120,9 +141,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         justifyContent: 'center',
         alignItems: 'center',
-        position: 'absolute',
-        bottom: 200,
-        elevation: 5, // Adds shadow to make the button stand out
+        elevation: 5,
     },
     logoutButtonText: {
         fontSize: 18,
