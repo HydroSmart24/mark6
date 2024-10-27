@@ -48,6 +48,7 @@
     "react-native-screens": "3.31.1",
     "react-native-svg": "15.2.0",
     "react-native-vector-icons": "^10.1.0",
+    "react-native-webview": "^13.12.3",
     "victory-native": "^41.1.0"
   },
   "devDependencies": {
