@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, Dimensions } from 'react-native';
 import Feather from '@expo/vector-icons/Feather';
+import i18n from '../../i18n';
 
 const { width } = Dimensions.get('window');
 
@@ -24,7 +25,7 @@ export default function LogoutCard() {
               <Text style={styles.bulletIcon}>•</Text>
             </View>
           </View>
-          <Text style={styles.bulletText}>Find the User Profile Screen on the top left drawer <Feather name="menu" size={14} color="black" /></Text>
+          <Text style={styles.bulletText}>{i18n.t('find_profile')}<Feather name="menu" size={14} color="black" /></Text>
         </View>
         {/* Image 1 */}
         <Image source={require('../../assets/Info/header.png')} style={styles.image1} />
@@ -36,7 +37,7 @@ export default function LogoutCard() {
               <Text style={styles.bulletIcon}>•</Text>
             </View>
           </View>
-          <Text style={styles.bulletText}>Click on 'User Profile' screen</Text>
+          <Text style={styles.bulletText}>{i18n.t('click_profile')}</Text>
         </View>
         {/* Image 2 */}
         <Image source={require('../../assets/Info/logout2.png')} style={styles.image2} />
@@ -49,7 +50,7 @@ export default function LogoutCard() {
             </View>
           </View>
           <Text style={styles.bulletText}>
-            Click the Logout button
+          {i18n.t('click_logout')}
           </Text>
         </View>
         {/* Image 3 */}

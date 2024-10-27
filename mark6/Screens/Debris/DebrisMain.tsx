@@ -131,26 +131,39 @@ export default function DebrisMainScreen() {
   return (
     <>
       {loading ? (
-        <BasicLoading visible={true} /> 
+        <BasicLoading visible={true} />
       ) : (
-        <ScrollView style={styles.scrollContainer}>
-          <View style={styles.innerContainer}>
+        <ScrollView style={[styles.scrollContainer, { backgroundColor: '#FFFFFF' }]}>
+          <View style={[styles.innerContainer, { backgroundColor: '#FFFFFF' }]}>
             <>
               <HalfPremium size={200} value={percentage} marginTop={50} marginBottom={-50} />
               {expirationDate && (
                 <ReusableText text={`${i18n.t('estimated_expiration')}: ${moment(expirationDate).format('YYYY-MM-DD')}`} color="#9B9A9A" size={13} opacity={20} />
               )}
               <ResetFilter title={i18n.t('rest_filter')} onReset={handleReset} />
-              <View style={styles.gaugeContainer}>
+              <View style={[styles.gaugeContainer, { backgroundColor: '#FFFFFF' }]}>
                 <PhGauge size={120} value={ph} />
                 <TurbidityGauge size={120} value={turbidity} />
               </View>
-              {isOnscreenAlertVisible && <OnscreenAlert isVisible={isOnscreenAlertVisible} onClose={handleCloseOnscreenAlert} message={'The Water quality is bad! Please replace the filter or check for debris!'} />}
-              <View style={styles.detectContainer}>
-                <ReusableText text={i18n.t('detect_debris')} color="#DCDCDC" size={15} opacity={20} />
+              {isOnscreenAlertVisible && (
+                <OnscreenAlert isVisible={isOnscreenAlertVisible} onClose={handleCloseOnscreenAlert} message={'The Water quality is bad! Please replace the filter or check for debris!'} />
+              )}
+              <View style={[styles.detectContainer, { backgroundColor: '#FFFFFF' }]}>
+                <ReusableText 
+                  text={i18n.t('detect_debris')} 
+                  color="#DCDCDC" 
+                  size={15} 
+                  opacity={20} 
+                />
                 <DetectDebris title={i18n.t('detect_debris_button')} />
               </View>
-              {isWarningVisible && <FilterHealthWarning isVisible={isWarningVisible} onClose={handleCloseWarning} message={i18n.t('filter_health_low')} />}
+              {isWarningVisible && (
+                <FilterHealthWarning 
+                  isVisible={isWarningVisible} 
+                  onClose={handleCloseWarning} 
+                  message={i18n.t('filter_health_low')} 
+                />
+              )}
             </>
           </View>
         </ScrollView>

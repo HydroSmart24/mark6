@@ -25,7 +25,7 @@ export default function ContactInfoCard() {
               <Text style={styles.bulletIcon}>•</Text>
             </View>
           </View>
-          <Text style={styles.bulletText}>Find the Contact-Us Screen on the top left drawer <Feather name="menu" size={14} color="black" /></Text>
+          <Text style={styles.bulletText}>{i18n.t('find_contact')}<Feather name="menu" size={14} color="black" /></Text>
         </View>
         {/* Image 1 */}
         <Image source={require('../../assets/Info/header.png')} style={styles.image1} />
@@ -37,7 +37,7 @@ export default function ContactInfoCard() {
               <Text style={styles.bulletIcon}>•</Text>
             </View>
           </View>
-          <Text style={styles.bulletText}>Click on 'Contact-Us' screen</Text>
+          <Text style={styles.bulletText}>{i18n.t('click_contact')}</Text>
         </View>
         {/* Image 2 */}
         <Image source={require('../../assets/Info/contact2.png')} style={styles.image2} />
@@ -50,7 +50,7 @@ export default function ContactInfoCard() {
             </View>
           </View>
           <Text style={styles.bulletText}>
-            Enter the details and send us your concern. Our support team will reach you through the email.
+          {i18n.t('enter_details')}
           </Text>
         </View>
         {/* Image 3 */}
