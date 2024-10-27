@@ -19,7 +19,12 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.disarasandali.mark6"
+      "package": "com.disarasandali.mark6",
+      "permissions": [
+        "INTERNET",
+        "ACCESS_NETWORK_STATE"
+      ],
+      "usesCleartextTraffic": true
     },
     "web": {
       "favicon": "./assets/favicon.png"

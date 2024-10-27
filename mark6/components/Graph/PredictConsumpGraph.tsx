@@ -53,9 +53,10 @@ export default function Prediction({ style = {} }) {
 
   return (
     <View style={[styles.container, style]}>
-      <View style={styles.header}>
+      <View style={[styles.header, style]}>
         <Text style={styles.text}>{i18n.t('water_remaining_for')}:</Text>
-        <View style={styles.box}>
+        <View style={styles.flexSpacer} /> 
+          <View style={styles.box}>
           <Text style={styles.boxText}>{days} days</Text>
         </View>
       </View>
@@ -86,7 +87,7 @@ export default function Prediction({ style = {} }) {
             style={{
               marginVertical: 8,
               borderRadius: 10,
-              marginLeft: -20,
+              marginLeft: -20
             }}
           />
         </ScrollView>
@@ -99,8 +100,8 @@ export default function Prediction({ style = {} }) {
 
 const styles = StyleSheet.create({
   container: {
-    width: width - 40, // Full screen width minus 20px margin on each side
-    height: 300,
+    width: width - 40, 
+    height: 320,
     backgroundColor: 'white',
     borderRadius: 10,
     shadowColor: '#000',
@@ -108,7 +109,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.8,
     shadowRadius: 2,
     elevation: 5,
-    padding: 10,
+    paddingTop: 2,
+    paddingRight: 10,
+    paddingLeft: 10,
     marginTop: 20,
   },
   header: {
@@ -116,14 +119,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
     marginLeft: 10,
-    marginTop: 20,
+    marginTop: 2,
+  },
+  flexSpacer: {
+    flex: 1, // Pushes the box to the rightmost position
   },
   text: {
     fontSize: 18,
     color: 'black',
   },
   box: {
-    marginLeft: 40,
+    marginRight: -20, // Keeps the box from moving
+    width: 80, // Fixed width for consistency
     padding: 10,
     backgroundColor: '#4299E1',
     borderRadius: 5,
