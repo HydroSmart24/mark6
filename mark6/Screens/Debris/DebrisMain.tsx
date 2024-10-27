@@ -16,6 +16,7 @@ import { FilterHealth } from '../../utils/Notification/FilterHealth';
 import { getAuth } from 'firebase/auth'; // Import Firebase Auth for v9+
 import { getFirestore, doc, getDoc } from 'firebase/firestore'; // Firestore v9+ functions
 import { app } from '../../firebase/firebaseConfig'; // Import your Firebase config
+import i18n from '../../i18n';
 
 export default function DebrisMainScreen() {
   const [isWarningVisible, setWarningVisible] = useState(false);
@@ -137,19 +138,19 @@ export default function DebrisMainScreen() {
             <>
               <HalfPremium size={200} value={percentage} marginTop={50} marginBottom={-50} />
               {expirationDate && (
-                <ReusableText text={`Estimated Filter Expiry Date: ${moment(expirationDate).format('YYYY-MM-DD')}`} color="#9B9A9A" size={13} opacity={20} />
+                <ReusableText text={`${i18n.t('estimated_expiration')}: ${moment(expirationDate).format('YYYY-MM-DD')}`} color="#9B9A9A" size={13} opacity={20} />
               )}
-              <ResetFilter title="Reset Filter" onReset={handleReset} />
+              <ResetFilter title={i18n.t('rest_filter')} onReset={handleReset} />
               <View style={styles.gaugeContainer}>
                 <PhGauge size={120} value={ph} />
                 <TurbidityGauge size={120} value={turbidity} />
               </View>
               {isOnscreenAlertVisible && <OnscreenAlert isVisible={isOnscreenAlertVisible} onClose={handleCloseOnscreenAlert} message={'The Water quality is bad! Please replace the filter or check for debris!'} />}
               <View style={styles.detectContainer}>
-                <ReusableText text={"Click to detect debris in the tank*"} color="#DCDCDC" size={15} opacity={20} />
-                <DetectDebris title="Detect Debris" />
+                <ReusableText text={i18n.t('detect_debris')} color="#DCDCDC" size={15} opacity={20} />
+                <DetectDebris title={i18n.t('detect_debris_button')} />
               </View>
-              {isWarningVisible && <FilterHealthWarning isVisible={isWarningVisible} onClose={handleCloseWarning} message={'The filter health is low!'} />}
+              {isWarningVisible && <FilterHealthWarning isVisible={isWarningVisible} onClose={handleCloseWarning} message={i18n.t('filter_health_low')} />}
             </>
           </View>
         </ScrollView>

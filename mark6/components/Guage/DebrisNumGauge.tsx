@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, StyleSheet, Animated, Easing, Text } from 'react-native';
+import i18n from '../../i18n';
 
 interface TextOnlyGaugeProps {
   size?: number;
@@ -67,7 +68,7 @@ const TextOnlyGauge: React.FC<TextOnlyGaugeProps> = ({
           {formattedValue}
         </Text>
         <Text style={{ ...styles.labelText, fontSize: adjustedSize * 0.2, color: textColor }}>
-          Debris
+          {i18n.t('debris')}
         </Text>
       </View>
     </View>

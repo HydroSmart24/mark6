@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import RequestWaterFromtankbtn from '../Buttons/RequestWaterFromTankBtn';
 import TankRequestWaterModal from '../Modals/TankRequestWaterModal';
+import i18n from '../../i18n';
 
 interface CardProps {
   title: string;
@@ -34,7 +35,7 @@ const CardView: React.FC<CardProps> = ({ title, availableLiters, ownerId, curren
             <Text style={styles.availableLiters}>{availableLiters} liters Available</Text>
           </View>
           {/* Pass userId to RequestWaterFromtankbtn if necessary */}
-          <RequestWaterFromtankbtn title="Request" onPress={handleRequestPress} availableLiters={availableLiters} />
+          <RequestWaterFromtankbtn title={i18n.t('request')} onPress={handleRequestPress} availableLiters={availableLiters} />
         </View>
       </View>
 

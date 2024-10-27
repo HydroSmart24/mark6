@@ -15,6 +15,7 @@ import { HighDebris } from '../../utils/Notification/HighDebris';
 import { getAuth } from 'firebase/auth'; // Import Firebase Auth for v9+
 import { getFirestore, doc, getDoc } from 'firebase/firestore'; // Firestore v9+ functions
 import { app } from '../../firebase/firebaseConfig'; // Import your Firebase config
+import i18n from '../../i18n';
 
 
 // Fetch the latest image from Firebase Storage based on timestamp metadata (full date and time)
@@ -267,7 +268,7 @@ export default function DetectScreen() {
         <DebrisWarningAlert isVisible={isWarningVisible} onClose={handleCloseWarning} message={'Water contamination is high!'} />
       )}
 
-      <DetectInfo title="More Info" colorType={1} />
+      <DetectInfo title={i18n.t('More_Info')} colorType={1} />
     </View>
   );
 }

@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { getPushNotificationToken } from '../../utils/GetTankOwnerPushNotificationToken';
 import { sendPushNotification } from '../../utils/Notification/TankWaterRequestNotification';
 import BasicLoading from '../Loading/BasicLoading'; // Import your loading component
+import i18n from '../../i18n';
 
 interface ModalProps {
   visible: boolean;
@@ -88,12 +89,12 @@ const TankRequestWaterModal: React.FC<ModalProps> = ({ visible, onClose, ownerNa
             </TouchableOpacity>
 
             {/* Modal Content */}
-            <Text style={styles.modalText}>Request Water</Text>
+            <Text style={styles.modalText}>{i18n.t('request_water')}</Text>
             <View style={styles.separator} />
 
             {/* Tank Owner's Name */}
             <Text style={styles.contentText}>
-              Tank Owner - <Text style={styles.boldText}>{ownerName}</Text>
+              {i18n.t('tank_owner')} - <Text style={styles.boldText}>{ownerName}</Text>
             </Text>
 
             {/* Request Amount Input */}
@@ -122,7 +123,7 @@ const TankRequestWaterModal: React.FC<ModalProps> = ({ visible, onClose, ownerNa
               <Text
                 style={[styles.confirmButtonText, error ? styles.disabledButtonText : null]}
               >
-                Confirm
+                {i18n.t('confirm')}
               </Text>
             </TouchableOpacity>
           </View>

@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, StyleSheet, Animated, Easing, Text } from 'react-native';
+import i18n from '../../i18n';
 
 interface SeverityGaugeProps {
   size?: number;
@@ -78,7 +79,7 @@ const SeverityGauge: React.FC<SeverityGaugeProps> = ({
           {formattedValue}
         </Text>
         <Text style={{ ...styles.labelText, fontSize: adjustedSize * 0.2, color: textColor }}>
-          Severity
+          {i18n.t('severity')}
         </Text>
       </View>
     </View>

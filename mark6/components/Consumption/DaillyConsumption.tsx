@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { currentConsumption } from '../../utils/FetchCurrentConsumption';
+import i18n from '../../i18n';
 
 interface DailyConsumptionProps {}
 
@@ -28,7 +29,7 @@ export default function DailyConsumption() {
     return (
         <View style={styles.container}>
             <View style={styles.leftContainer}>
-                <Text style={styles.titleText}>Water Consumption</Text>
+                <Text style={styles.titleText}>{i18n.t('water_consumption')}</Text>
                 <Text style={styles.dateText}>{currentDate}</Text>
             </View>
             <View style={styles.rightContainer}>

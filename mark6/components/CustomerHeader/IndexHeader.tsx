@@ -4,6 +4,7 @@ import { DrawerActions, useNavigation, NavigationProp } from '@react-navigation/
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import {RootStackParamList} from '../../App'; 
+import i18n from '../../i18n';
 
 const { width } = Dimensions.get('window'); // Get the screen width
 
@@ -25,7 +26,7 @@ export default function CustomHeader({ userName }: CustomHeaderProps) {
         </TouchableOpacity>
         <View style={styles.connectionStatusContainer}>
           <View style={styles.statusDot} />
-          <Text style={styles.connectionText}>Connected to Tank</Text>
+          <Text style={styles.connectionText}>{i18n.t('connected_to_tank')}</Text>
         </View>
       </View>
 

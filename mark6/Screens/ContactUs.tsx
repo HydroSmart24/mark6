@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
+import i18n from '../i18n';
 
 const ContactUs: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -18,9 +19,9 @@ const ContactUs: React.FC = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.heading}>Contact Us</Text>
+      <Text style={styles.heading}>{i18n.t('contact_us')}</Text>
       <Text style={styles.subheading}>
-        Got a technical issue? Want to send feedback about a feature? Need details about our Business plan? Let us know.
+        {i18n.t('got_tech_issue')}
       </Text>
 
       <View style={styles.inputContainer}>
@@ -48,7 +49,7 @@ const ContactUs: React.FC = () => {
       </View>
 
       <View style={styles.inputContainer}>
-        <Text style={styles.label}>Your message</Text>
+        <Text style={styles.label}>{i18n.t('your_message')}</Text>
         <TextInput
           style={[styles.input, styles.textArea]}
           placeholder="Leave a comment..."
@@ -61,7 +62,7 @@ const ContactUs: React.FC = () => {
       </View>
 
       <TouchableOpacity style={styles.button} onPress={handleFormSubmit}>
-        <Text style={styles.buttonText}>Send message</Text>
+        <Text style={styles.buttonText}>{i18n.t('send_message')}</Text>
       </TouchableOpacity>
     </ScrollView>
   );
