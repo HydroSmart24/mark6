@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, Modal, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { RFValue } from 'react-native-responsive-fontsize';
 import { db } from '../../firebase/firebaseConfig'; // Adjust path if needed
 import {
   collection,
@@ -163,23 +164,7 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
     }
   };
 
-  const updateQueueStatus = async (
-    ip: string | null,
-    position: number,
-    status: string
-  ): Promise<void> => {
-    if (!ip) {
-      console.error('IP address is null, cannot update queue status.');
-      return;
-    }
-    try {
-      const payload = { queuePosition: position, status };
-      await sendAPIRequest(`${ip}/update-queue`, payload);
-      console.log(`Queue status updated to ${status} for position ${position}`);
-    } catch (error) {
-      console.error('Failed to update queue status:', error);
-    }
-  };
+  
   
   
   const stopReceivingWater = async (ip: string): Promise<void> => {
@@ -203,7 +188,6 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
   
       if (queueNumber === 1) {
         await processWaterRequest();
-        await updateQueueStatus(await fetchUserIp(receiverUserId), queueNumber, 'in-queue');
       } else {
         Alert.alert('Queue', `You're in position ${queueNumber}. Please wait.`);
         await waitForQueueTurn();
@@ -255,7 +239,6 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
         await stopReceivingWater(requesterIp);  // Turn green, then red
   
         console.log('Updating queue status to complete...');
-        await updateQueueStatus(await fetchUserIp(receiverUserId), 1, 'complete');
   
         console.log('Deleting queue entry and notification...');
         await deleteQueueEntry(receiverUserId);
@@ -343,8 +326,6 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
     }
   };
   
-  
-
   return (
     <Modal visible={visible} transparent animationType="slide">
       <View style={styles.modalBackground}>
@@ -354,34 +335,37 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
 
           <View style={styles.buttonContainer}>
             <TouchableOpacity
-              style={styles.declineButton}
+              style={[styles.declineButton, processLoading && styles.disabledButton]}
               onPress={handleDecline}
               disabled={processLoading}
             >
               <Text style={styles.declineButtonText}>
-                {processLoading ? 'Processing...' : 'Decline'}
+                {processLoading ? 'Loading' : 'Decline'}
               </Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={styles.acceptButton}
+              style={[styles.acceptButton, processLoading && styles.disabledButton]}
               onPress={handleAccept}
               disabled={processLoading}
             >
               <Text style={styles.acceptButtonText}>
-                {processLoading ? 'Processing...' : 'Accept'}
+                {processLoading ? 'Loading' : 'Accept'}
               </Text>
             </TouchableOpacity>
           </View>
 
-          {processLoading && <BasicLoading visible={processLoading} />}
+          {/* Overlay during loading */}
+          {processLoading && (
+            <View style={styles.loadingOverlay}>
+              <BasicLoading visible={processLoading} />
+            </View>
+          )}
         </View>
       </View>
     </Modal>
   );
 };
-
-
 
 const styles = StyleSheet.create({
   modalBackground: {
@@ -396,6 +380,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 20,
     alignItems: 'center',
+    overflow: 'hidden', // Prevents content overflow
   },
   modalTitle: {
     fontWeight: 'bold',
@@ -405,6 +390,7 @@ const styles = StyleSheet.create({
   modalBody: {
     fontSize: 16,
     marginBottom: 20,
+    textAlign: 'center', // Center-align text for consistency
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -418,20 +404,36 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 10,
     marginLeft: 20,
+    width: '40%', // Prevents overflow when loading text
   },
   acceptButtonText: {
     color: 'white',
     fontWeight: 'bold',
+    textAlign: 'center',
+    fontSize: RFValue(13), // 16 will adjust according to screen size
   },
   declineButton: {
     backgroundColor: '#f44336',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 10,
+    width: '40%', // Prevents overflow when loading text
   },
   declineButtonText: {
     color: 'white',
     fontWeight: 'bold',
+    textAlign: 'center',
+    fontSize: RFValue(13), // 16 will adjust according to screen size
+  },
+  disabledButton: {
+    opacity: 0.7, // Dim the button when disabled
+  },
+  loadingOverlay: {
+    ...StyleSheet.absoluteFillObject, // Covers the entire modal
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 10,
   },
 });
 
