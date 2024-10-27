@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
     redirectButton: {
         width: '60%',
         padding: 15,
-        backgroundColor: '#FF0000',
+        backgroundColor: '#FA5454',
         borderRadius: 10,
         justifyContent: 'center',
         alignItems: 'center',
