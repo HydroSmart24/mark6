@@ -7,6 +7,7 @@ import { getAuth } from 'firebase/auth';
 import axios from 'axios';
 import { db } from '../../firebase/firebaseConfig';
 import { useFocusEffect } from '@react-navigation/native'; // Import useFocusEffect
+import i18n from '../../i18n';
 
 const POLLING_INTERVAL = 10000; // Poll every 60 seconds
 
@@ -174,7 +175,7 @@ export default function RequestWater() {
         <SafeAreaView style={{ flex: 1 }}>
             {/* Dashboard container to display current user's water level */}
             <View style={styles.dashboardContainer}>
-                <Text style={styles.dashboardHeading}>Your Water Level</Text>
+                <Text style={styles.dashboardHeading}>{i18n.t('your_water_level')}</Text>
                 <Text style={styles.dashboardText}>
                     {currentUserWaterLevel !== null ? `${currentUserWaterLevel} Liters` : 'Loading...'}
                 </Text>

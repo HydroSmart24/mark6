@@ -6,6 +6,7 @@ import { auth } from '../firebase/firebaseConfig';
 import Loading from '../components/Loading/BasicLoading';
 import NotificationModal from '../components/Modals/TankAcceptWaterModal';
 import BasicLoading from '../components/Loading/BasicLoading';
+import i18n from '../i18n';
 
 interface Notification {
   id: string;
@@ -137,7 +138,7 @@ export default function NotificationsScreen() {
         renderItem={renderNotification}
         ListEmptyComponent={
           <View style={styles.emptyNotificationContainer}>
-            <Text style={styles.emptyNotificationText}>No notifications found.</Text>
+            <Text style={styles.emptyNotificationText}>{i18n.t('no_notifications')}</Text>
           </View>
         }
       />

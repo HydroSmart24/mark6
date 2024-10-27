@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, Dimensions } from 'react-native';
 import Feather from '@expo/vector-icons/Feather';
+import i18n from '../../i18n';
 
 const { width } = Dimensions.get('window');
 
@@ -9,7 +10,7 @@ export default function ContactInfoCard() {
     <View style={styles.cardContainer}>
       {/* Header that pops out of the card */}
       <View style={styles.header}>
-        <Text style={styles.headerText}>Contact for support</Text>
+        <Text style={styles.headerText}>{i18n.t('contact_for_support')}</Text>
       </View>
 
       {/* Content goes here */}
