@@ -39,3 +39,6 @@ firebase/firebaseConfig.js
 
 # package-lock.json
 package-lock.json
+
+# Google service account
+serviceAccount.json
