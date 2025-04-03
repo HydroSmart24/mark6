@@ -300,7 +300,7 @@ React.useEffect(() => {
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" color="#007BA7" />
+        <ActivityIndicator size={40} color="#007BA7" />
       </View>
     );
   }

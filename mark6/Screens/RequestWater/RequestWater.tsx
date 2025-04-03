@@ -161,7 +161,7 @@ export default function RequestWater() {
     if (loading) {
         return (
             <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <ActivityIndicator size="large" color="#0000ff" />
+                <ActivityIndicator size={40} color="#0000ff" />
             </SafeAreaView>
         );
     }
